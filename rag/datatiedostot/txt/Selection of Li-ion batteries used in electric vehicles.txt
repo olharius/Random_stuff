@@ -1,0 +1,591 @@
+Vimala.et.al / Journal on Applied and Chemical Physics, 3(3), September 2024, 11-21
+Journal on Applied and Chemical Physics
+Vol: 3(3), September 2024
+REST Publisher; ISSN: 2583-7125
+Website: https://restpublisher.com/journals/jacp/
+DOI: https://doi.org/10.46632/jacp/3/3/2
+The Selection of Li-Ion Batteries Used
+in Electric Vehicles (EV)'s Using the TOPSIS Method
+*Vimala Saravanan, Chinnasami Sivaji, M. Ramachandran, Sathiyaraj Chinnasamy
+REST Labs, Kaveripattinam, Krishnagiri, Tamil Nadu, India.
+*Corresponding Author Email: vimalarsri@gmail.com
+Abstract: This study focuses on choosing lithium-ion cells for electric vehicles in order to increase its functionality
+and effectiveness. In the selection process, variables including energy density, longevity, cost, or environmental
+impact are considered. To determine which battery technology is best for EV applications, many different types of
+batteries and their properties are examined. The research intends to increase EV performance overall, decrease
+charging time, and increase driving range. The research advances environmentally friendly transport options and
+broadens the shift to electric mobility. For decision-makers, producers, and other industry participants, the study
+offers useful insights. Introduction: Lithium-ion battery selection for electrically powered cars is a crucial choice
+that has an impact on both the individual vehicle's efficiency and overall performance. The selection of battery
+technology has a direct impact on variables like Distance, charging time, and longevity because batteries are the
+main source of power for EVs. Power weight, cycle life, safety, price, and environmental effect are important
+factors to consider when choosing a battery. To achieve optimal performance, a longer driving range, and
+customer happiness, these aspects must be in balance. The choice of lithium-ion batteries will have a significant
+impact on how sustainable transportation develops in the future as the EV industry grows. Research significance:
+The ability of Li-ion batteries to increase overall performance and dependability as an environmentally friendly
+transport solution underlies the research significance of choosing them for electric vehicles. Effective battery
+selection can address major issues with EV adoption by increasing driving range, cutting down on charging time,
+and improving overall energy efficiency. Additionally, improvements in battery technology help to lessen
+environmental impacts and carbon emissions. The choice of affordable and dependable battery options is also
+essential to the commercial viability and general acceptance of EVs. The advancement of technology, innovation,
+and the shift to a more environmentally friendly transportation system can all be sped up by this kind of research.
+Method: A multi-criteria decision-making process called TOPSIS (process of Prioritisation through Similarity to
+Ideal Solution) is used to assess and rank alternatives depending on many factors. To evaluate their relative
+proximity, options are compared with a superior option and a worse solution. a combination of similarity to the
+most effective answer and closeness to the worst solution, the approach determines an evaluation of performance
+for each alternative. The option with the greatest score is regarded as the best option. In difficult decision-making
+scenarios, TOPSIS offers a methodical method for objectively assessing and ranking alternatives. Alternate
+parameters: Lithium- Cobalt Oxide Battery (LiCoO2) – LCOB, Lithium-Manganese Oxide Battery (LiMn2O4)-
+LMOB, Lithium-Nickel Manganese Cobalt Oxide Battery (LiNiMnCoO2)-LNMCOB, Lithium Iron Phosphate
+Battery (LiFePO4)-LFPB, Lithium-Titanate Battery (Li4Ti5O12) LTOB. Evaluation parameters: Reliability,
+Safety, Specific power, Specific energy density, Price. Result: Lithium- Cobalt Oxide Battery (LiCoO2) – LCOB is
+in 5th rank, Lithium-Manganese Oxide Battery (LiMn2O4)- LMOB is in 4th rank, Lithium-Nickel Manganese
+Cobalt Oxide Battery (LiNiMnCoO2)-LNMCOB is in 3rd rank, Lithium Iron Phosphate Battery (LiFePO4)-LFPB
+is in 1st rank, Lithium-Titanate Battery (Li4Ti5O12) LTOB is in 2nd rank. Conclusion: the selection of li ion
+batteries used in electric vehicles (ev)'s Lithium- Cobalt Oxide Battery (LiCoO2) – LCOB is in 5th rank, Lithium-
+Manganese Oxide Battery (LiMn2O4)- LMOB is in 4th rank, Lithium-Nickel Manganese Cobalt Oxide Battery
+(LiNiMnCoO2)-LNMCOB is in 3rd rank, Lithium Iron Phosphate Battery (LiFePO4)-LFPB is in 1st rank,
+Lithium-Titanate Battery (Li4Ti5O12) LTOB is in 2nd rank.
+Key words: Reliability, Safety, Specific power, Specific energy density, LNMCOB.
+1. INTRODUCTION
+Electric automobiles with batteries are progressively replacing those with internal combustion engines. However, because the research
+and creation of more efficient batteries is still ongoing, this is occurring at a far slower rate. The development of battery technology
+must adhere to tight specifications, including quick charging, high driving range, long battery life, and low cost. The most popular
+lithium-ion (Li-ion) batteries can deliver a respectable performance, but they are costly and have a limited lifespan. The performance,
+price, and lifespan of a battery are significantly influenced by the materials chosen for the electrodes. Based on the components used to
+Copyright@ REST Publisher 11
+Vimala.et.al / Journal on Applied and Chemical Physics, 3(3), September 2024, 11-21
+create the electrodes, Li-ion batteries in use today are categorised. The issue in practise is that it is challenging for EV producers to
+select the finest Li-ion battery while making compromises An MCDM-based strategy for choosing of lithium-ion cells according to
+cathode/anode materials is proposed in this research, which is important for Ev’s in order to choose the most suitable battery and
+optimise the price and performance of EVs [1]. The solar vehicle from Northern Regional University is powered by a lithium-ion
+battery pack. Fuji Laser Desert Rose, an in 1999 Global Solar Challenge WSC competitor. Why Li-ion batteries are preferable to
+silver-zinc batteries The administration of cells and cell protection boards are detailed, along with the construction methods used. Data
+from pre-race testing and during the race are shown, along with an analysis of the battery's coulombic & power capacities. Conclusion:
+For these kinds of traction applications, Li-ion batteries clearly outperform other commercially available batteries. High-performance
+electric vehicles can benefit from the use of lithium-ion Li-ion batteries. Li-ion batteries have the greatest amount of specific energy
+and the most charge-discharge cycles when compared to other batteries that can be recharged. The price is also fair. Because of this,
+Li-ion batteries [2]. Environmental problems brought on by conventional vehicles' emissions have sped up the use of batteries-
+powered cars also known as for urban transportation. The most likely battery technology for closely meeting the US Advance Battery
+Consortium's (USABC) minimal objectives for the commercialization of EVs is lithium-ion technology. EVs are powered by a variety
+of lithium-ion batteries, but the performance parameters associated with these cells have not yet been precisely defined in a
+comparable way. Considering their capabilities and usefulness as a power source in EVs, four kinds of frequently utilised lithium-ion
+batteries are reviewed in this article along with an analysis of their specifications. The findings can be utilised as standards for
+choosing lithium-ion batteries for electric vehicle (EV) battery control system (BMS) designs. In recent decades, investigators,
+supporters of the environment, and other groups have begun to pay more attention to the greenhouse gases that conventional
+automobiles release, particularly the environmentally conscious electric vehicles (EVs). Electricity is utilised to power electric motors
+and the fundamental components of a battery-powered EV, which is a significant property of EVs. It consists of a battery pack, a
+power converter, an electric motor, and a mechanical gearbox. When driving or regeneration, the energy flow can be either forward or
+backward. Depending on the source of power, Batteries electric automobiles (BEVs), electric hybrids (HEVs), hybrid electric vehicles
+with plug-in technology (PHEVs), solar electric vehicle (PEVs) and fuel cell cars (FCVs) are the main categories under which EVs
+fall. Due to its cutting-edge technology, battery packs that recharge have been extensively embraced as the primary power sources in
+EVs [3]. With the development of EVs, numerous charger strategies have been proposed, including unchanged flow (CTC), constant
+electricity (CC), constant power (CV), as well as constant current constant electricity (CCCV) battery charging strategies. The CCCV
+charging technique has historically been the most popular type. The power source is charged at CC during the CCCV charging
+procedure until the voltage hits the higher cut-off voltage. Up until the present level hits a predetermined minimum value, the battery
+will go through the CV charging procedure. Several strategies have been put forth by researchers to enhance battery charging
+efficiency. To find the most rapid charging method, they developed an Ant-Colony-System also known as the based algorithm,
+although the suggested multistage CC charging methodology did not account for the charging duration at each stage. Controller to alter
+the default charging mode for CVs. Surman suggested a fuzzy system genetic optimisation approach for recharging larger Ni Cd
+batteries for high power charging. Ullah et al. created a rapid battery charger for Ni Cd battery pack utilising National Proprietary
+Neural Network-based Neu Fuzz technology viewed the Li-ion battery as a grey system and used the grey prediction technique to
+develop a grey-predicted Li-ion battery charge system [4]. Enhance the factors that affect lithium-ion (Li-Ion) battery air cooling in
+electric vehicles (EVs). Investigated is a battery pack made from 150-cylinder Li-Ion battery cells enclosed in a PVC case. When the
+car is parked or ambient air is moving, a comparable number of pipes are employed in the power pack as a cooling medium for the
+battery. The factors affecting the battery's air cooling are investigated and optimised while taking into account their real-world
+limitations. The development of the goal function and the transfer unit number (NTU). Finally, the choice factors are optimised using a
+genetic algorithm technique. The study's findings indicate that by enlarging the battery's tubes' diameter and maintaining their internal
+air velocity, their NTU can be maximised a specific range. A generator, electric motor drive, battery, and an ultra-capacitor are used to
+power electric cars. Battery charging stations are connected to the mains. When in use, electric vehicles emit no greenhouse gases and
+have the potential for exceptional energy efficiency. The primary limitations of electric cars are problems with battery size and
+temperature management, a lack of charging stations, a lack of battery life, and high vehicle costs [5]. Raising the marketplace's share
+for electric vehicles (EVs) faces significant obstacles in terms of cost, efficiency, dependability, and safety. These problems are
+intimately related to how EVs store their energy. As the go-to battery for EVs, lithium-ion batteries have revolutionised the EV sector.
+This is a result of their exceptional qualities, which also include their capacity for rapid charging and discharging rates, high voltage,
+minimal self-discharge, and energy density. The engine and auxiliary components in EVs are powered by lithium-ion batteries that are
+coupled in series or parallel. However, the battery that uses lithium- may not operate to its full capacity when included in a battery
+pack for electric vehicles because of the EVs' working conditions. The incorporation of a battery powered by lithium-ion into this work
+for an EV Various battery chemistry, cell packing, wiring and oversight, thermal control, installation, and service and maintenance are
+some of the topics included in the investigation of the battery pack. As an additional benchmarking research, a lithium-ion, iron-
+phosphate cell with various cell packaging is used as a means of storing energy. This study offers fundamental recommendations for
+EV battery pack cell choice and cell integration [6]. Although the environmental viability of this practise is unknown, recycling spent
+batteries in communications base stations (CBSs) is a potential solution to get rid of large retired lithium-ion batteries (LIPs) in electric
+vehicles (EVs). This study compares the environmental effects of recovered EV LIBs, which with lead-acid battery packs (LABs) used
+in traditional energy storage facilities (ESSs) of CBSs using life cycle assessment (LCA). Economically based allocation techniques
+are employed in multifunctional systems. According to the LCA results, the environmental effects of recovered LIBs are primarily
+attributable to the production and recycling processes, whereas recycling of batteries can lessen these effects. Additionally, in all the
+chosen categories, with the exception of one, the secondary usage of EV LIBs had a smaller effect on the environment than the
+utilisation of LABs. A sensitivity analysis is carried out to evaluate the effects of cycle life, power sources, and two alternative
+allocation strategies on the outcomes. The usage of used LIBs with a 50/50 allocation scheme was found to have poor ecological
+performance and little advantage over the use of LABs. A more environmentally friendly energy mix and prolonging the useful life of
+disposable LIPs both greatly lessen environmental effects. This study offers suggestions for addressing the end-of-life management
+issue with EV LIBs, such as an end-of-life management platform, efficient supply chain integration, and hints for the ongoing "green"
+shift in the communications sector. [7]. A sensitivity analysis is carried out to evaluate the effects of cycle life, power sources, and two
+alternative allocation strategies on the outcomes. The usage of used LIBs with a 50/50 allocation scheme was found to have poor
+Copyright@ REST Publisher 12
+Vimala.et.al / Journal on Applied and Chemical Physics, 3(3), September 2024, 11-21
+ecological performance and little advantage over the use of LABs. A more environmentally friendly energy mix and prolonging the
+useful life of disposable LIPs both greatly lessen environmental effects. This study offers suggestions for addressing the end-of-life
+management issue with EV LIBs, such as an end-of-life management platform, efficient supply chain integration, and hints for the
+ongoing "green" shift in the communications sector [8]. Forecasting and proper management of lithium-ion batteries in EV
+applications is the primary responsibility of BMS. The stability, reliability, security, or any aspect of the whole EV of the battery
+system can be directly impacted by a healthy state. Researchers and engineers are therefore eagerly awaiting an accurate calculation of
+SOH. A data-driven approach creates a model with enough test cycle data to predict cell change over the entire cycle with some
+chosen features rather than creating a battery ageing model using previous understanding of the cell's chemical mechanism.
+Additionally, free source datasets are what motivates the development of data-driven PHM. Machine learning algorithms frequently
+occur in the literature due to their nonlinear properties and improved capacity to adapt to complicated systems and complex
+interactions. To avoid random estimating mistakes from the network, a neural network and Markov chain were utilised to calculate the
+battery SOH. A lithium-ion battery's capacity decline and ageing process were modelled using an SVR. The model's RMSE was
+calculated and it was discovered to be 20mAh. a battery ageing model via GPR enhanced with covariance kernel function and
+similarity measurements of input data. This model's RMSE is roughly 1% [9]. Electric vehicles (EVs) frequently employ lithium-ion
+Because of its large battery capacity, high energy density, lengthy lifespan, and comparatively low self-discharge rate, batteries are
+very useful. For the purpose of supplying power as well as electricity for automobiles, thousands of photovoltaic cells are connected. a
+collection that creates a fantastic battery pack. A battery management system (BMS) is created to keep track of each cell and assess
+each component of the battery pack while taking safety management and efficient utilisation of numerous cells into account. In both
+diesel and gasoline vehicles, the state on charge (SoC) and remaining fuel are important baseline metrics. SoC estimation in battery
+packs differs from SoC estimation for battery cells, and the differences must be taken into account. Efficient & low-complexity
+estimation of costs for battery packs is usually challenging due to both intrinsic and extrinsic variability between cells. Using the "per-
+cell" method. Tesla's Model S has a sophisticated battery system made up of 95 series-connected battery modules. Because it primarily
+relies on filter-based estimate, this method has a significant computational cost and necessitates the replication of 96 filters. An very
+difficult assignment for the microcontroller in the BMS [10]. Electric cars with batteries for power (BEVs) are an important part of the
+mobility future. It is unclear what effects lithium-ion (Li-ion) battery manufacture, use, and disposal will have. Comparing the
+environmental impacts of BEVs with vehicles with gasoline or diesel engines (ICEVs) is therefore difficult. As a result, an in-depth
+life cycle assessment for Li-ion batteries and a flawless Epc of BEV-based motors were created. The analysis shows that the
+environmental costs are the same whether a gasoline-fueled electric-fueled BEV is employed. The battery is accountable for 15% of
+the overall environmental impact of electric drives, as determined by 99 environmental indicator points. a big contributor to the harm
+batteries do to the environment. This work offers a strong framework for comprehensive environmental evaluations of battery-powered
+electronic mobility [11]. The demand for energy security has raised interest in power produced from renewable sources, particularly
+solar and wind energy. However, storage of electricity (EES) is a desirable solution since grid operators face considerable challenges
+as a result of disruptions in the supply of solar and wind energy. Numerous sources of energy storage, such as hydroelectric energy,
+air-compressed flywheels in particular capacitors, and batteries, are making it possible for a future smart grid [12]. In the often-utilised
+battery battery backup systems in electric vehicles, precise calculation of The capability of battery deterioration characteristics over the
+course of the battery's lifespan is established and evaluated using a 3-D reaction surface-based SoC-open circuits voltage (OCV)
+capability approach. Genetic algorithms, also known as GA, are used to assess the battery's capabilities and initialise the CPU round an
+initial RC model in order to track the battery's health and power status. To validate the suggested method, six instances with batteries
+at various ages and data calculation rates are considered. The findings show that for batteries at different stages of ageing, the big
+capacity or SoC error estimations are around 5%. And. The recommended GA-based battery capacity computation and initialization
+are accurate, stable, and secure. For lithium-ion batteries, the effect of temperature on the precision of calculations for the battery's
+voltage in an open circuit is considered. Without altering the model's hierarchy, the accuracy of battery terminal voltage calculations is
+increased. The initial concept of the model was based on his model as well as the voltage and charge state in an open circuit. The parts
+of the battery model were established using polynomials fitting and a genetic algorithm, respectively, based on the results of the tests
+of the combined energy pulsed characteristic test and the open-circuit voltage test. In voltage open-circuit tests and composite impulse
+characteristic tests, temperature factors were applied. [14]. In recent years, numerous electric vehicles (EVs) have been created to solve
+the pollution issues brought on by fuel-injected engines' emissions. Environmental concerns are the driving force behind the launch of
+the newest batch of electric vehicles for urban transportation. It is well acknowledged that one of the disadvantages of electric vehicles
+is their battery system. Vehicle autonomy and, subsequently, the precise identification of battery present condition (SoC) and charge
+projected life, i.e., battery health, are two of the primary problems holding back the adoption of electric automobiles in the consumer
+market. An electric scooter might be a more useful EV. They may eventually replace the ordinary utility vehicle if the cost, safety, and
+efficiency of the drive are equivalent to genuine combustion vehicles due to their affordability, especially in Europe and Asia [15].
+Early notification of EOL for repair purposes is made possible by a mechanism for predicting the condition of the lithium-ion batteries
+on board. There are two types of battery SOH evaluation techniques. In the primary group, battery SOH is calculated using
+electrochemical or comparable circuit models in conjunction with cutting-edge filtering methods like Kalman and particle filters.
+Based on observed current, voltage, and temperature, these techniques may calculate battery SOH online. Typically needed and so
+collected offline is the connection between voltage in the open circuit (OCV) and condition of charge (SOC) at various battery SOHs
+and temperatures. The application of these technologies in a system for battery management (BMS) is restricted by the need for
+computationally demanding methods to mimic the intricate electrochemical characteristics of lithium-ion batteries [16]. Due to energy
+and global warming issues, lithium-ion batteries, which are used in electric vehicles (EVs), have recently attracted a lot of attention.
+Nevertheless, because lithium is very unpredictable, a strong and sophisticated battery control system (BMS) is needed to constantly
+track every state of the batteries when operating EVs and guarantee a secure and dependable power source for the batteries. The ion
+battery. In particular, and state-of-power (SOP) can all be utilised to infer nearly any battery issue. Current, voltage, and temperature
+were all measured. As a result, researchers have made great efforts to investigate various battery kinds and technologies [17]. The
+voltage curve's data collecting interval was chosen depending on the writers' prior experiences, therefore it might not be the perfect
+interval. In contrast to earlier research, this one makes accurate predictions of battery SOH using compression power and SOC changes
+over an improved partial charging time. This allows for the estimation of the battery SOH while charging for electric vehicles without
+Copyright@ REST Publisher 13
+Vimala.et.al / Journal on Applied and Chemical Physics, 3(3), September 2024, 11-21
+adding more strain to the network [18]. The environmental sustainability of reused batteries from electric automobiles in conventional
+automotive applications was examined using a parameterized life cycle model. The model assumes that a lithium-i or Li-ion, EV
+batteries have longer lived and incorporates recycling and reuse of materials into storing energy for utility usage. A 56% decrease in
+emissions of carbon dioxide is possible relative with employing gasoline as a source for high energy production because an EV battery
+may be utilised for storing clean electricity during off-peak hours to fulfil peak demand. Reusing battery cells can reduce CO2
+emissions in a similar way to switching from using conventional to electric vehicles, which involves extending the lifespan of EV
+batteries, using cheap electricity, and making better use of cheap, clean electricity [19].The lifespan and security for lithium-ion
+batteries used in electric vehicles (EVs) are increased by a battery temperature management system (BTMS), a sophisticated system
+that employs a variety of methods for heat evacuation and temperature control tactics to maintain batter packages at optimal thermal
+conditions. However, because there are so many subsystems and/or departments involved, BTMS' ideal architecture is still difficult to
+implement. The battery the laws of thermodynamic fluid dynamics, structural, and lifetime modelling subsystems and/or subfields of
+the air-based BTMS are hierarchically divided to handle this issue [20].
+2. MATERIALS AND METHOD
+TOPSIS is a popular estimating technique for resolving MCDM issues. It has several practical uses, including comparing
+business performance, analysing financial ratios for a specific industry, and investing money in cutting-edge
+manufacturing methods. It does, however, have some restrictions. Up until now, efforts to enhance the original TOPSIS
+approach have primarily focused on weight optimisation to achieve the R value. Additionally, the R value formula, or
+"Miqiezhi method," has been improved. To comprehend the fundamental connection among the value of R and the
+alternative estimate, a better and easier method is required due to the complexity of estimating difficulties. The D+ D
+plane's length among options and reference points is calculated in this report's innovative, modified TOPSIS (M-
+TOPSIS) method, which also creates a R value to assess the quality of alternatives. This issue was resolved using a
+MATLAB programme. The key distinction among the M-TOPSIS technique and TOPSIS is the ranking both x8.x8,
+which is placed fourth in the M-TOPSIS technique and third by TOPSIS, ahead of x3 and x7. The observed ratio for x8
+equals 0.4, which is which is close to the minimum (0.3), and x3/x8 is 25.8 based on the data in Table 1. This had a big
+impact on the x8 in MCDM quality. It follows that the M-TOPSIS evaluation result is clearly extremely reasonable [21].
+Making decisions is a crucial aspect of daily and professional life for both individuals and organisations. Though
+techniques that use multiple criteria give decision-makers the essential tools, they vary in terms of underlying theory and
+assumptions. Therefore, making the best decision is just as crucial as using the appropriate decision-making process.
+Researchers have focused on the TOPSIS (Technique for Ordering Effectiveness Similar to Perfect Solution) method, one
+of the most popular multi-criteria decision-making techniques, and several enhanced variations of the technique have
+been suggested. The typical TOPSIS method is taken into consideration in this study, which employs a simulation
+technique to experimentally demonstrate the underlying causes of the method's drawbacks. The theoretical underpinnings
+of the TOPSIS approach are better understood and helped to be improved by detailed practical study using simulations
+with an application [22]. The foundation of TOPSIS, regarded to be one of the most traditional MCDM approaches, is the
+notion that the selected alternative should be the closest to the ideal solution that is positive and the furthest from the
+ideal solution that is negative. The selected option should be "a long way" from the ideal solution that is negative and
+"brief distances" from the beneficial ideal solution. This is the fundamental tenet of the TOPSIS technique. Two
+"reference" locations are introduced by the TOPSIS approach, but the relative significance of the journey from these
+points is not considered [23]. The alternative with the lowest OPV value is the best. Unfortunately, according on the data
+shown, these 220 modifications are insufficient to address RRP, even though they lessen its consequences by introducing
+or eliminating alternatives. RRP chose resources using decision-making exercises taken from the literature. According to
+their findings, the TOPSIS method performed the least well out of all the methodologies they examined [24]. The
+evaluations of many options, numerous subjective criteria, and the relative importance for all criteria are assessed using
+and via fuzzy numbers in the fuzzy TOPSIS approach for robot selection. To verify that the values of the goal criterion
+and the linguistic values are compatible, all values of the subjective criteria are translated into dimensionless indices. Of
+subjective criteria. Each weighted estimator's membership function is produced using fuzzy interval arithmetic. These
+weighted estimations are converted to smooth values by the rank approach for the average of eliminations in order to
+avoid the complicated aggregation of fuzzy numbers. By measuring the distance between the ideal and non-ideal
+solutions, the proximity coefficient is used to rank the alternatives in that order. The suggested method's computational
+process is illustrated by a numerical example [25]. The TOPSIS method uses finding the best solution to establish order
+preference. One of the most widely used multi-criteria decision-making (MCDM) techniques now is this one. The
+TOPSIS approach was primarily created to work with data that only had real values. It is frequently challenging to
+provide precise estimates of options with respect to local criteria, and as a result these estimates are considered gaps.
+There aren't many articles that focus on TOPSIS interval extensions, but the few that do are based on various heuristic
+methods for defining both beneficial and detrimental optimal solutions. Real numbers or ranges that cannot be reached in
+the choice matrix provide these ideal answers. In this research, we offer a new direct way to interval extending the
+TOPSIS method that is without the heuristic assumptions and constraints of existing approaches because this conflicts
+with the basic principles of the original TOPSIS method. We demonstrate with numerical examples how the findings of a
+"direct intervals extension for the TOPSIS method" may drastically differ from those of the results produced by using
+established methods [26]. Hwang & Yoon (1981) developed the TOPSIS approach, a method of choosing an order by
+Copyright@ REST Publisher 14
+Vimala.et.al / Journal on Applied and Chemical Physics, 3(3), September 2024, 11-21
+finding the best answer. A solution that maximises the benefit criteria or attributes while minimising the cost criteria or
+attributes is referred to as an ideal solution (also known as a positive ideal solution), whereas a solution that maximises
+and minimises the cost criteria or attributes is referred to as an anti-optimal solution. Advantage Standards or Qualities.
+The price criteria/attributes are for minimization, whereas the allegedly benefit criteria/attributes are for maximisation.
+The ideal option, which is farthest from the unfavourable ideal solution and closer to the ideal solution, is the optimal
+alternative [27]. TOPSIS application requires certain procedures, such as numerical evaluations of the relative relevance
+of qualities and the effectiveness of each choice on these attributes. However, precise data may be challenging to
+ascertain accurately because human judgements are frequently erroneous in a variety of circumstances. Consequently,
+TOPSIS model generalisation to fuzzy environments is a logical extension of TOPSIS models. For each m n
+combination, the consistency rate gauges overall level of coherence among two relative preference orders provided by
+various distances. 10,000 test observations were used to get the results for each paired comparison. According to
+computational findings, consistency rates are quite high (i.e., 80% to fifty percent or 40%) when a decision problem has
+few alternatives. Therefore, one should not worry about the distance term to apply if the amount of decision options is
+limited. However, as a problem's number of alternatives rises, this trait of great stability vanishes. Stability rates
+drastically decline as m rises. Additionally, the stability ratio typically approaches Zero when the value of m exceeds 13.
+It should be emphasised at this point that the interval-valued fuzz Topsy technique's priority ordering are not equal when
+alternative distance metrics are used [28]. The fundamental tenet of the technique is that the alternative should be picked
+if it is closest to the ideal positive outcome and farthest from the adverse one. The weights of the estimations and criteria
+are exactly known in conventional MCDM approaches. The relative importance of the criteria and ratings of the options
+in the traditional TOPSIS technique are by actual values, which. The traditional TOPSIS approach has been effectively
+applied in a few disciplines. an exhaustive examination of TOPSIS applications. However, depending on local standards,
+it might be challenging to precisely ascertain the true values of the assessment of alternatives, and therefore, these
+evaluations are frequently given as confusing values. The fundamental tenet of the classical TOPSIS approach is that the
+best option should be the one that is closest to the ideal solution that is positive and farthest from the ideal solution that is
+negative. The ideal solution is simple to specify provided every nearby criterion is monotonically rising or decreasing
+[29]. The refinement and expansion of current security assessment techniques are crucial. Using stochastic value and
+TOPSIS, an extensive model of coal coal mine security is developed in this research and utilised to assess the four coal
+mines' safety conditions, to raise the bar for safety management, and to guarantee coal mines' safe operation. Determining
+the index weight is crucial to a multi-index thorough assessment model. In this study, the entropy weight technique
+efficiently avoids subjectivity by utilising the specialised scoring method, resulting in more objective results while
+simultaneously fully utilising the inherent information of the indexes possible. The relative degree of approximation, the
+optimal solution, the negative ideal solution, and the optimal solution are all computed in this study using TOPSIS. The
+security conditions of coal mines are then assessed based on the relative degree of approximation [30].
+Alternative parameters:
+Lithium- Cobalt Oxide Battery (LiCoO2) – LCOB: The most typical material for the cathode in lithium-ion batteries that
+are rechargeable is lithium-cobalt dioxide batteries (LiCoO2), additionally referred to as LCOP. Its high density of power
+and solid all-around performance makes it appropriate for an array of uses, such as electric vehicles and compact devices.
+However, LCOB has many disadvantages, including a short cycle life, poor thermal stability, and safety issues with
+cobalt. Exploring material changes & alternative cathode materials is being done to increase efficiency and get around
+these difficulties. Overall, in the world of lithium-ion batteries, LCOB continues to be a commonly utilised and
+thoroughly researched battery technology.
+Lithium-Manganese Oxide Battery (LiMn2O4)- LMOB: A form within cathode material that's utilised by lithium-ion
+batteries is lithium-manganese oxides battery (LiMn2O4), sometimes referred to as LMOB. Relative to other cathode
+materials, LMOB has several benefits, including excellent thermal resistance, good protective qualities, and inexpensive
+cost. It is perfect for uses like car batteries and power tools since it has an average energy density and a long cycle life.
+However, in contrast to certain other cathode materials, LMOB exhibits a low specific capacity. In order to increase its
+use in the expanding battery sector, present study focuses on increasing the density of energy and general efficiency.
+Lithium-Nickel Manganese Cobalt Oxide Battery (LiNiMnCoO2)-LNMCOB: The most typical material for the cathode
+utilised by batteries with lithium ion is LNMCOB, commonly known as lithium-nickel chrome cobalt dioxide battery. By
+combining the advantages of nickel, manganese, and cobalt, it strikes a balance between energy density, energy
+efficiency, and cycle life. LNMCOB is appropriate for tremendous-performance, long-range applications like electric cars
+because of its high energy density. It has excellent thermal stability and defence qualities. However, LNMCOB units tend
+to be pricier and may have supply and environmental effect difficulties compared to alternative cathode materials. The
+present research emphasis is on improving efficiency and efficiency.
+Lithium Iron Phosphate Battery (LiFePO4)-LFPB: Lithium-ion batteries frequently use the cathode material lithium iron
+phosphate batteries (LiFePO4), commonly referred to as LFPB. In comparison to other cathode materials, it provides
+higher thermal stability, increased protection, and longer cycle life. Industries where security is a top consideration, like
+Copyright@ REST Publisher 15
+Vimala.et.al / Journal on Applied and Chemical Physics, 3(3), September 2024, 11-21
+electric cars, clean energy storage facilities, and backup power options, frequently use LFPB. Its solid performance,
+dependability, and lower danger of thermal runaway problems are the main reasons for its widespread acceptance.
+Lithium-Titanate Battery (Li4Ti5O12) LTOB: A special anode material distinguishes the lithium-titanate battery
+(Li4Ti5O12), sometimes referred to as LTOB, from other lithium-ion battery types. In comparison to conventional
+lithium-ion batteries, LTOB delivers greater energy efficiency, quicker charging, and extended cycle life. It is frequently
+employed in fast-charging applications such energy storage systems, hybrid electric vehicles, and electric buses. Because
+of its outstanding performance qualities, LTOB is a good option for demanding as well as high power applications.
+Evaluation parameters:
+Reliability: A system, product, or process's reliability is determined by its capacity to carry out its intended function over
+an extended length of time and under a given set of conditions. To ensure safe and reliable operations, high reliability is
+crucial in a variety of industries, including engineering, manufacturing, healthcare, and transportation. Increased
+reliability is a result of factors like product uniformity, quality assurance procedures, maintenance practises, and
+adherence to standards. Potential failures are identified and minimised using reliability engineering approaches like
+failure analysis, risk assessment, and predictive maintenance. Increased customer satisfaction, decreased downtime,
+greater safety, and cost savings are all benefits of increased reliability.
+Safety: Being secure means that you are safe from harm, risk, or danger.
+Keeping people safe is crucial in many areas, including jobs, transportation, and consumer goods. To limit possible
+hazards and assure people's safety, safety procedures include risk assessment, risk identification, execution of
+preventative measures, and continual monitoring.
+Specific power: The power output of a computer or other equipment based on its weight or volume is referred to as
+specific power. This is a crucial parameter for high power density applications like electric cars and portable electronics.
+A system's capacity to provide more power in relation to its dimension or weight, allowing for effective and high-
+performance activities, is referred to as having high specific power.
+Specific energy density: The quantity of energy that is contained in a system or device per volume or mass per unit is
+referred to as specific energy density. This is a crucial measurement for long-term or prolonged energy storage
+applications, like grid-scale energy storage and electric automobiles. A system with a high energy density can store more
+energy compared to its dimensions or weight, leading to longer working durations or more storage space. To increase the
+overall effectiveness and variety of energy storage systems, cell research and development is heavily focused on
+optimising specific energy density.
+Price: The cost or monetary value of a good, service, or item is referred to as the price. It has a big impact on consumers'
+purchasing choices and the level of market competition. Production expenses, demand and supply dynamics,
+competitiveness, and economic variables are some of the factors that determine price. Pricing strategies try to balance
+market positioning, profitability, and client affordability.
+3. ANALYSIS AND DISSECTION
+TABLE 1. The selection of Li-Ion batteries used in electric vehicles (EVs)
+Price
+Reliability Safety Specificpower Specific energy density LCOB 3 3 3 5 4
+LNMCOB 4 4 4 5 4
+LMOB 3 4 4 4 2
+LFPB 5 5 5 3 2
+LTOB 5 5 4 3 1
+The selection of different types of Li ion battery are displayed in Table 1. LCOB, LNMCOB, LMOB, LFPB, LTOB are
+available as the alternative parameters. Reliability, Safety, Specific power, Specific energy density, Price are the
+evaluation parameters. Reliability, Safety, Specific power, Specific energy density are beneficial parameters price is the
+non-beneficial parameter.
+Copyright@ REST Publisher 16
+Vimala.et.al / Journal on Applied and Chemical Physics, 3(3), September 2024, 11-21
+FIGURE 1. different types of Li-ion batteries
+Figure 1 illustrates the different types of Li ion batteries LCOB, LNMCOB, LMOB, LFPB, LTOB are available as the
+alternative parameters. Reliability, Safety, Specific power, Specific energy density, Price are the evaluation parameters.
+Reliability, Safety, Specific power, Specific energy density are beneficial parameters price is the non-beneficial
+parameter.
+TABLE 2. Normalized matrix
+NORMALIZED MATRIX
+0.981981 0.943456 0.993884 2.727724 2.49878
+1.745743 1.677256 1.766904 2.727724 2.49878
+0.981981 1.677256 1.766904 1.745743 0.624695
+2.727724 2.727724 Table2. shows the normalized matrix values for the given decision matrix TOPSIS method.
+TABLE 3. Weighted matrix
+0.2 0.2 2.620712 2.620712 0.2 2.760788 0.981981 0.624695
+1.766904 0.981981 0.156174
+0.2 0.2
+0.2 0.2 0.2 0.2 0.2
+0.2 0.2 0.2 0.2 0.2
+0.2 0.2 0.2 0.2 0.2
+0.2 0.2 0.2 0.2 0.2
+Table 3. shows the weighted matrix among the evaluation parameters.
+TABLE 4. weighted normalized matrix
+0.196396 0.188691 0.198777 0.545545 0.499756
+0.349149 0.335451 0.353381 0.545545 0.499756
+0.196396 0.335451 0.353381 0.349149 0.124939
+0.545545 0.524142 0.552158 0.196396 0.124939
+0.545545 0.524142 0.353381 0.196396 0.031235
+Table 4 shows the weighted normalized matrix. Here we multiply the normalized matrix and the weighted matrix.
+TABLE 5. positive matrix
+0.545545 0.524142 0.552158 0.545545 0.031235
+0.545545 0.524142 0.552158 0.545545 0.031235
+0.545545 0.524142 0.552158 0.545545 0.031235
+0.545545 0.524142 0.552158 0.545545 0.031235
+0.545545 0.524142 0.552158 0.545545 0.031235
+Copyright@ REST Publisher 17
+Vimala.et.al / Journal on Applied and Chemical Physics, 3(3), September 2024, 11-21
+Table 5 shows the positive matrix of the alternate parameters. The positive matrix is obtained by multiplying the
+maximum into to the beneficial parameters and multiplying the minimum with negative parameters.
+TABLE 6. Negative matrix
+0.196396 0.188691 0.198777 0.196396 0.499756
+0.196396 0.188691 0.198777 0.196396 0.499756
+0.196396 0.188691 0.198777 0.196396 0.499756
+0.196396 0.188691 0.198777 0.196396 0.499756
+0.196396 0.188691 0.198777 0.196396 0.499756
+Table 6 shows the negative matrix of the alternate parameters. The positive matrix is obtained by multiplying the
+minimum into to the beneficial parameters and multiplying the maximum into the negative parameters.
+TABLE 7. Si+, Si-, Ci, Rank
+Si+ Si- Ci Rank
+0.760804 0.349149 0.314562 5
+0.577235 0.436668 0.43068 4
+0.494341 0.457452 0.480621 3
+0.361504 0.706964 0.661661 1
+0.401767 0.691265 0.632429 2
+Table 7 shows the si plus, si minus, ci, rank of the different types of Li-ions. Here the rank of LCOB is 5th. LNCOB is 4th
+.
+LMOB is 3rd. LFPB is 1st. LTOB is 2nd
+.
+Figure 2. si+ &si-
+Figure 2 graph shows the si plus and si minus of the alternative parameters.
+FIGURE 3. ci
+Copyright@ REST Publisher 18
+Vimala.et.al / Journal on Applied and Chemical Physics, 3(3), September 2024, 11-21
+The graph shows the ci values. The ci value obtained by si- divided by the sum of si+ and si -.
+FIGURE 4. Rank
+The figure 4 shows the rank of the alternative parameters. The rank is awarded to the alternative parameters by the beneficial and non-
+beneficial parameters
+4. CONCLUSION
+In order to maximise the functionality and efficiency of electric vehicles, this study emphasises the choice of lithium-ion
+batteries. Variables like energy density, durability, cost, or ecological impact are considered throughout the selecting
+process. The choice of lithium-ion battery for electric vehicles is a crucial decision that affects both the performance of
+each individual vehicle and the performance of the entire fleet. Given that batteries are the primary power source for
+EVs, the selection of battery technology directly affects aspects like range, charging time, and longevity. When choosing
+a battery, it's crucial to take energy to pounds, cycle life, safety, cost, and environmental impact into account. Internal
+combustion engines are being gradually replaced by battery-powered vehicles Due to continued research and
+development into more effective batteries, this is taking place at a much slower rate. Tight requirements, such as quick
+charging, great range for driving, long battery life, and cheap cost, must be met when developing battery technology. The
+most common lithium-ion (Li-ion) batteries are expensive and have a limited lifespan despite being able to deliver an
+acceptable performance. The materials selected for the electrodes have a considerable impact on the battery's efficiency,
+cost, and lifespan. Current Li-ion batteries are categorised based on the materials used to create the electrodes. When EV
+manufacturers make concessions, the practical issue is that selecting the ideal Li-ion battery is difficult. This research
+suggests an MCDM-based technique for choosing lithium-ion cells based on the cathode/anode materials, which is
+crucial for choosing the best battery for EVs and enhancing the price and performance of EVs. A lithium-ion battery pack
+powers the solar vehicle used by Northern Regional University. Fujifilm Laser Desert Rose, a competitor in the 1999
+World Solar Challenge. The oversight of cells and their protection boards, as well as the construction techniques
+employed, are covered in detail, along with reasons why Li-ion batteries are favoured over silver-zinc batteries. With
+study about the battery's coulombic & energetic capabilities, results from pre-race research along with the race are
+displayed. Li-ion batteries perform better than other readily available batteries in such kinds of traction applications.
+Lithium-ion batteries can help high-performance electric vehicles. batteries. Compared to conventional rechargeable
+batteries, lithium-ion packs offer greater capacities and longer charge-discharge cycles. Furthermore, the cost is
+affordable. As a result, Li-ion batteries. TOPSIS is a well-liked estimating method for resolving MCDM issues. It can be
+used for a variety of practical purposes, such as assessing corporate performance, examining financial metrics for a
+certain industry, and making investments in innovative production techniques. It does, however, have some limitations.
+Up till now, weight optimisation to reach the R value has been the focus of efforts to enhance the original TOPSIS
+methodology. The "Miqiezhi method" or R value formula has also been enhanced. Due to the complexity of estimation
+challenges, a better and easier technique is required to comprehend the underlying connection with the cost of R and
+other valuation. The distance of the D+ D plane between alternatives is calculated using the novel, altered TOPSIS (M-
+TOPSIS) method presented in this research.The MATLAB programme was used to resolve this issue. The placement for
+both approaches x8.x8, which is placed fourth by M-TOPSIS approach and third by TOPSIS before x3 and x7, is the
+primary distinction between the two methods. Based on the information in Table 1, the calculated proportion for x8 is
+equivalent to 0.4, that is the lowest (0.3), so x3/x8 is 25.8. On the MCDM norm x8, this had a significant effect. It is
+obvious that the M-TOPSIS evaluation result is perfectly reasonable. For both individuals and organisations, decision-
+Copyright@ REST Publisher 19
+Vimala.et.al / Journal on Applied and Chemical Physics, 3(3), September 2024, 11-21
+making is an essential part of everyday and professional life. Despite providing decision-makers with crucial tools,
+multicriteria approaches have different underlying theories and assumptions. Making the right choice is therefore just as
+crucial as using the appropriate decision-making process. One of the most widely used multi-criteria decision-making
+strategies, TOPSIS (Technique for Optimising Efficiency Optimisation), has been the subject of research, and various
+improved variations of the method have been proposed. This study, which employs the use of simulation to
+experimentally show the origins of the method's flaws, considers the traditional TOPSIS method. The TOPSIS approach's
+theoretical foundations have undergone significant practical investigation with applied simulations, which has improved
+them.
+REFERENCES
+[1]. Loganathan, M. K., Bikash Mishra, Cher Ming Tan, Trond Kongsvik, and R. N. Rai. "Multi-Criteria decision making
+(MCDM) for the selection of Li-Ion batteries used in electric vehicles (EVs)." Materials Today: Proceedings 41 (2021):
+1073-1077.
+[2]. Kennedy, B., Dean Patterson, and S. Camilleri. "Use of lithium-ion batteries in electric vehicles." Journal of Power Sources
+90, no. 2 (2000): 156-162.
+[3]. Ayyalasomayajula, Madan Mohan Tito. "Metadata Enhanced Micro-Partitioned Bitmap Indexes for Managing Large-Scale
+Datasets." PhD diss., Aspen University, 2024.
+[4]. Chen, Xiaopeng, Weixiang Shen, Thanh Tu Vo, Zhenwei Cao, and Ajay Kapoor. "An overview of lithium-ion batteries for
+electric vehicles." In 2012 10th International Power & Energy Conference (IPEC), pp. 230-235. IEEE, 2012.
+[5]. Zhang, Shuo, Chengning Zhang, Rui Xiong, and Wei Zhou. "Study on the optimal charging strategy for lithium-ion batteries
+used in electric vehicles." Energies 7, no. 10 (2014): 6783-6783.
+[6]. M. Kalyan, Phani, Anish Kumar, and Vani Shankar. "Elasticity mapping of precipitates in nickel-base superalloys using
+atomic force acoustic microscopy." Journal of Materials Science 51 (2016): 8400-8413.
+[7]. Mousavi, Mohsen, Shaikh Hoque, Shahryar Rahnamayan, Ibrahim Dincer, and Greg F. Naterer. "Optimal design of an air-
+cooling system for a Li-Ion battery pack in Electric Vehicles with a genetic algorithm." In 2011 IEEE Congress of
+Evolutionary Computation (CEC), pp. 1848-1855. IEEE, 2011.
+[8]. Ayyalasomayajula, Madan Mohan Tito, and Sailaja Ayyalasomayajula. "Support Vector Machines in Virtual Screening for
+Therapeutic Exploration Using Radial Basis Function (RBF) Kernel for Kinase Inhibitor Discovery."
+[9]. Saw, Lip Huat, Yonghuang Ye, and Andrew AO Tay. "Integration issues of lithium-ion battery into electric vehicles battery
+pack." Journal of Cleaner Production 113 (2016): 1032-1045.
+[10]. Yang, Jie, Fu Gu, and Jianfeng Guo. "Environmental feasibility of secondary use of electric vehicle lithium-ion batteries in
+communication base stations." Resources, Conservation and Recycling 156 (2020): 104713.
+[11]. Chen, Weidong, Jun Liang, Zhaohua Yang, and Gen Li. "A review of lithium-ion battery for electric vehicle applications
+and beyond." Energy Procedia 158 (2019): 4363-4368.
+[12]. Wu, Ji, Xuchen Cui, Hui Zhang, and Mingqiang Lin. "Health prognosis with optimized feature selection for lithium-ion
+battery in electric vehicle applications." IEEE Transactions on Power Electronics 36, no. 11 (2021): 12646-12655.
+[13]. Zhou, Zhongkai, Bin Duan, Yongzhe Kang, Naxin Cui, Yunlong Shang, and Chenghui Zhang. "A low-complexity state of
+charge estimation method for series-connected lithium-ion battery pack used in electric vehicles." Journal of Power Sources
+441 (2019): 226972.
+[14]. Ayyalasomayajula, Madan Mohan Tito, Santhosh Bussa, and Sailaja Ayyalasomayajula. "Forecasting Home Prices
+Employing Machine Learning Algorithms: XGBoost, Random Forest, and Linear Regression." ESP Journal of Engineering
+& Technology Advancements (ESP-JETA) 1, no. 1 (2021): 125-133.
+[15]. Notter, Dominic A., Marcel Gauch, Rolf Widmer, Patrick Wager, Anna Stamp, Rainer Zah, and Hans-Jorg Althaus.
+"Contribution of Li-ion batteries to the environmental impact of electric vehicles." (2010): 6550-6556.
+[16]. Crawford, Alasdair J., Qian Huang, Michael CW Kintner-Meyer, Ji-Guang Zhang, David M. Reed, Vincent L. Sprenkle,
+Vilayanur V. Viswanathan, and Daiwon Choi. "Lifecycle comparison of selected Li-ion battery chemistries under grid and
+electric vehicle duty cycle combinations." Journal of Power Sources 380 (2018): 185-193.
+[17]. Chinnasami Sivaji, Ramya Sharma, M. Ramachandran, Prabakaran Nanjundan, "Cell seeding success and efficacy in avian
+tendon xenografts - a promising alternative for tendon and ligament reconstructionusing the COPRAS method", Journal on
+Applied and Chemical Physics, 3(2), June 2024, 11-18.
+[18]. Yang, Ruixin, Rui Xiong, Hongwen He, Hao Mu, and Chun Wang. "A novel method on estimating the degradation and state
+of charge of lithium-ion batteries used for electrical vehicles." Applied Energy 207 (2017): 336-345.
+[19]. Ding, Xiaofeng, Donghuai Zhang, Jiawei Cheng, Binbin Wang, and Patrick Chi Kwong Luk. "An improved Thevenin
+model of lithium-ion battery with high accuracy for electric vehicles." Applied Energy 254 (2019): 113615.
+[20]. Affanni, Antonio, Alberto Bellini, Giovanni Franceschini, Paolo Guglielmi, and Carla Tassoni. "Battery choice and
+management for new-generation electric vehicles." IEEE transactions on industrial electronics 52, no. 5 (2005): 1343-1349.
+[21]. Xiong, Rui, Yongzhi Zhang, Ju Wang, Hongwen He, Simin Peng, and Michael Pecht. "Lithium-ion battery health prognosis
+based on a real battery management system used in electric vehicles." IEEE Transactions on Vehicular Technology 68, no. 5
+(2018): 4110-4121.
+[22]. Ayyalasomayajula, Madan Mohan Tito, Sathishkumar Chintala, and Sandeep Reddy Narani. "INTELLIGENT SYSTEMS
+AND APPLICATIONS IN ENGINEERING."
+Copyright@ REST Publisher 20
+Vimala.et.al / Journal on Applied and Chemical Physics, 3(3), September 2024, 11-21
+[23]. Devulapalli, Shyam Prasad, Ch Srinivasa Rao, and K. Satya Prasad. "FLM-based optimization scheme for ocular artifacts
+removal in EEG signals." In Microelectronics, Electromagnetics and Telecommunications: Proceedings of the Fifth
+ICMEET 2019, pp. 777-782. Singapore: Springer Singapore, 2020.
+[24]. Ms B Sakthimala, Ms N Hemamalini, “FACETS OF GLOBALIZATION AND MULTICULTURALISM IN KIRAN
+DESAI’S THE INHERITANCE OF LOSS” Journal of Critical Reviews, 7(13), 2020, 3982-3983.
+[25]. Zhang, Shuzhi, Nian Peng, and Xiongwen Zhang. "An application‐oriented multistate estimation framework of lithium‐ion
+battery used in electric vehicles." International Journal of Energy Research 45, no. 13 (2021): 18554-18576.
+[26]. Phani, M. Kalyan, Anish Kumar, T. Jayakumar, Walter Arnold, and Konrad Samwer. "Mapping of elasticity and damping in
+an α+ β titanium alloy through atomic force acoustic microscopy." Beilstein Journal of Nanotechnology 6, no. 1 (2015): 767-
+776.
+[27]. Verma, Pradeep. "Transforming Supply Chains Through AI: Demand Forecasting, Inventory Management, and Dynamic
+Optimization." Integrated Journal of Science and Technology 1, no. 9 (2024).
+[28]. Meng, Jinhao, Lei Cai, Daniel-Ioan Stroe, Guangzhao Luo, Xin Sui, and Remus Teodorescu. "Lithium-ion battery state-of-
+health estimation in electric vehicle using optimized partial charging voltage profiles." Energy 185 (2019): 1054-1062.
+[29]. Ahmadi, Leila, Arthur Yip, Michael Fowler, Steven B. Young, and Roydon A. Fraser. "Environmental feasibility of re-use
+of electric vehicle batteries." Sustainable Energy Technologies and Assessments 6 (2014): 64-74.
+[30]. Kalyan Phani, M., Anish Kumar, and T. Jayakumar. "Elasticity mapping of delta precipitate in alloy 625 using atomic force
+acoustic microscopy with a new approach to eliminate the influence of tip condition." Philosophical magazine letters 94, no.
+7 (2014): 395-403.
+[31]. Chandrasekar Raja, M. Ramachandran, Sathiyaraj Chinnasamy, Vimala Saravanan, "Competitiveness and Sustainable
+Development Analysis of Alternative Energy Exploitation Using MOORA Method", Journal on Materials and its
+Characterization 3(2), June 2024, 11-18.
+[32]. Wang, Xiaobang, Mao Li, Yuanzhi Liu, Wei Sun, Xueguan Song, and Jie Zhang. "Surrogate based multidisciplinary design
+optimization of lithium-ion battery thermal management system in electric vehicles." Structural and Multidisciplinary
+Optimization 56 (2017): 1555-1570.
+[33]. Ren, Lifeng, Yanqiong Zhang, Yiren Wang, and Zhenqiu Sun. "Comparative analysis of a novel M-TOPSIS method and
+TOPSIS." Applied Mathematics Research eXpress 2007 (2007).
+[34]. Çelikbilek, Yakup, and Fatih Tüysüz. "An in-depth review of theory of the TOPSIS method: An experimental analysis."
+Journal of Management Analytics 7, no. 2 (2020): 281-300.
+[35]. Narani, Sandeep Reddy, Madan Mohan Tito Ayyalasomayajula, and Sathishkumar Chintala. "Strategies For Migrating
+Large, Mission-Critical Database Workloads To The Cloud." Webology (ISSN: 1735-188X) 15, no. 1 (2018).
+[36]. Jahanshahloo, Gholam Reza, F. Hosseinzadeh Lotfi, and Mohammad Izadikhah. "Extension of the TOPSIS method for
+decision-making problems with fuzzy data." Applied mathematics and computation 181, no. 2 (2006): 1544-1551.
+[37]. de Farias Aires, Renan Felinto, and Luciano Ferreira. "A new approach to avoid rank reversal cases in the TOPSIS method."
+Computers & Industrial Engineering 132 (2019): 84-97.
+[38]. Verma, Pradeep. "Sales of Medical Devices–SAP Supply Chain." International Journal of Computer Trends and Technology
+70, no. 9 (2022): 6-12.
+[39]. Chu, T-C., and Y-C. Lin. "A fuzzy TOPSIS method for robot selection." The International Journal of Advanced
+Manufacturing Technology 21 (2003): 284-290.
+[40]. Hemamalini, N., and M. Kavi Bharathi. "Prominence of Indianess in English Literature with Reference to Indian English
+Writers and Their Notable Works." Elementary Education Online 20, no. 5 (2021): 5568-5568.
+[41]. Varun Dixit, “Optimizing Cost and Carbon Footprint With Smart Scaling Using SQS Queue Triggers: Part 1” 2024.
+[42]. Dymova, Ludmila, Pavel Sevastjanov, and Anna Tikhonenko. "A direct interval extension of TOPSIS method." Expert
+Systems with Applications 40, no. 12 (2013): 4841-4847.
+[43]. Wang, Ying-Ming, and Taha MS Elhag. "Fuzzy TOPSIS method based on alpha level sets with an application to bridge risk
+assessment." Expert systems with applications 31, no. 2 (2006): 309-319.
+[44]. Devulapalli, Shyam Prasad, Ch Srinivasa Rao, and K. Satya Prasad. "Eye-blink artifact removal of EEG signal using EMD."
+International Journal of Recent Technology and Engineering (IJRTE) (2019).
+[45]. Verma, Pradeep. "Effective Execution of Mergers and Acquisitions for IT Supply Chain." International Journal of Computer
+Trends and Technology 70, no. 7 (2022): 8-10.
+[46]. Chen, Ting-Yu, and Chueh-Yung Tsao. "The interval-valued fuzzy TOPSIS method and experimental analysis." Fuzzy sets
+and systems 159, no. 11 (2008): 1410-1428.
+[47]. Jindal, Mayank, Madan Mohan Tito Ayyalasomayajula, Dedeepya Sai Gondi, and Harish Mashetty. "Enhancing Federated
+Learning Evaluation: Exploring Instance-Level Insights with SQUARES in Image Classification Models." Journal of
+Electrical Systems 20, no. 7s (2024): 2516-2523.
+[48]. Dixit, Varun, and Davinderjit Kaur. "Secure and Efficient Outsourced Computation in Cloud Computing Environments."
+Journal of Software Engineering and Applications 17, no. 9 (2024): 750-762.
+[49]. Dymova, Ludmila, Pavel Sevastjanov, and Anna Tikhonenko. "An approach to generalization of fuzzy TOPSIS method."
+Information Sciences 238 (2013): 149-162.
+[50]. Li, Xiangxin, Kongsen Wang, Liwen Liu, Jing Xin, Hongrui Yang, and Chengyao Gao. "Application of the entropy
+weight and TOPSIS method in safety evaluation of coal mines." Procedia engineering 26 (2011): 2085-2091.
+Copyright@ REST Publisher 21
+Vimala.et.al / Journal on Applied and Chemical Physics, 3(3), September 2024, 11-21
+Copyright@ REST Publisher 22
