@@ -1,0 +1,1398 @@
+Review Article
+Published: 2024-10-10
+https://doi.org/10.20935/AcadEng7355
+The recent developments in EV batteries and REEs
+recovery processes from spent NiMH batteries
+Tülin Ulucan1,*, Fırat Burat1
+Academic Editor: Mohamed M. Rashad
+Abstract
+Electric vehicles (EVs) are becoming more popular than internal combustion engines for reasons such as ease of use, durability,
+efficiency, and speed. Electric motors aim to improve the efficiency of energy storage systems and be more environmentally friendly.
+Due to the growing population, the number of vehicles in use is also increasing, leading to higher carbon dioxide (CO2) and hydrocarbon
+emissions. This demand has positively affected the battery market in the EV industry. Battery electric vehicles (BEVs), hybrid electric
+vehicles (HEVs), and plug-in hybrid electric vehicles (PHEVs), along with lead-acid batteries, nickel–metal hydride (NiMH) batteries,
+and lithium-ion batteries, are frequently preferred in the EV industry. NiMH batteries contain approximately 35–50% nickel (Ni), 5–
+20% rare earth elements (REEs), and 10% iron (Fe) by weight. Considering the supply and demand gap for REEs, often called “vitamins
+of modern industry”, the recovery of REEs from waste NiMH batteries, which contain high amounts of these elements, becomes
+important. In this review article, literature on EVs, their types, and EV battery types is presented. In addition, the recycling process of
+NiMH batteries, which are very rich in REEs and precious metals, such as Ni, cobalt (Co), and manganese (Mn), is discussed, and the
+enrichment methods effective in the recycling process of NiMH batteries are examined.
+Keywords: electric vehicles, electric vehicle batteries, nickel–metal hydride batteries, rare earth elements, recycling
+Citation: Ulucan T, Burat F. The recent developments in EV batteries and REEs recovery processes from spent NiMH batteries.
+Academia Engineering 2024;1. https://doi.org/10.20935/AcadEng7355
+1. Introduction
+The release of greenhouse gases, which cause global warming, is a
+critical issue that demands worldwide action. Renewable energy
+sources are being proposed as substitutes for fossil fuels. As a
+result, advancements like cleaner gasoline engines, electric
+vehicles (EVs), plug-in hybrids, fuel cell cars, and other environ-
+mentally friendly transportation options are viewed as future
+possibilities [1]. The transportation sector is one of the major
+contributors to the increase in greenhouse gas emissions. The
+automotive industry is closely monitored as one of the largest
+contributors to global carbon emissions into the atmosphere.
+Therefore, researchers have had to consider a paradigm shift due
+to the unstable prices of fossil fuels and environmental issues.
+Today, EVs are emerging as a revolutionary option for trans-
+portation in the automotive sector, and a lot of research is being
+done on this subject. They offer advantages such as ease of use,
+fewer moving parts, and less heat generation [2]. The higher
+efficiency of EVs relative to conventional vehicles is largely due to
+the fact that the conversion efficiency in electric motors
+specifically, from the battery to the motor, is nearly 100%. In
+contrast, internal combustion engines achieve an efficiency of only
+about 30–40%. When assessing efficiency from the standpoint of
+energy transmission from the battery or fuel tank to the wheels,
+this process is typically referred to as “tank-to-wheel” [3, 4]. In
+addition, EVs have higher torque and offer fast starting and
+stopping capabilities. With developments in renewable energy
+systems, the EV market is expected to become a significant market
+over time [2]. EVs’ impact on the energy industry, policy, technical
+barriers, and power systems is also notable [3].
+Figure 1 shows global sales of EVs between 2010 and 2022 [5].
+Global sales of EVs are projected to increase significantly, from
+10.5 M in 2022 to over 31 million units in 2027, representing a
+growth of nearly three times. This growth is projected to more
+than double from the 2027 level to over 74.5 M by 2035. Despite
+this significant increase in EV sales, the share of EVs in the global
+vehicle fleet will remain limited due to the existing large fleet of
+internal combustion engine vehicles (ICEVs) [6–8]. Given the
+estimated 1.33 billion light vehicles in circulation worldwide and
+accounting for standard scrappage rates, EVs are expected to
+account for only 15% of the global vehicle fleet by 2030. As the
+transition to EVs accelerates, this is expected to increase to
+around 30% by 2035 and 50% by 2042. Despite these positive
+growth projections, further technological development of EVs is
+vital for their wider adoption and increased efficiency in the
+global vehicle fleet [6, 8, 9].
+1Department of Mineral Processing Engineering, Faculty of Mines, Istanbul Technical University, Istanbul, Maslak 34469, Türkiye.
+*email: ulucant@itu.edu.tr
+ACADEMIA ENGINEERING 2024, 1 1 of 19
+https://www.academia.edu/journals/academia-engineering/about https://doi.org/10.20935/AcadEng7355
+Figure 1 • Global sales of electric vehicles from 2010 to 2022 [5].
+To assess the technological development of EVs, it is possible to
+measure their efficiency in terms of kilowatt-hours (kWh) con-
+sumed per 100 miles (161 km), which is comparable to efficiency
+measurements of gasoline-powered vehicles in miles per liter [6].
+According to Wang et al. [10], the efficiency of EV batteries is the
+ratio of the amount of energy required to charge a battery to the
+energy obtained during discharge. The efficiency of EVs, i.e., how
+far they can travel with the same amount of electricity, depends
+on several factors. The current fleet of EVs, which have no
+internal combustion engine and run on small batteries, typically
+offers a range of 150–200 km. Theoretically, the range of EVs
+could be increased by doubling or tripling the battery mass.
+However, this would significantly increase the cost of EVs.
+Moreover, given the weight of the batteries, such an increase
+would require a more robust chassis. Nevertheless, most EVs are
+designed to be small and light, suitable for urban traffic, rather
+than large and heavy. The ability of EVs to achieve longer ranges
+depends to a large extent on adopting new material systems,
+increasing energy density, and improving production capacities
+through research and development (R&D) activities [6].
+The upcoming generation of EVs may feature distinct vehicle
+architectures and weight distributions, which could influence the
+vehicle’s overall crash performance. Central to this shift in
+vehicle design is the electric powertrain. The battery system, in
+particular, due to its substantial volume, distributed configura-
+tion, and significant mass, serves as a key factor in driving the
+adoption of new materials, assembly techniques, and methods
+for dissipating crash energy within the vehicle structure. Com-
+pared to ICEVs, battery electric vehicles (BEVs) face challenges
+such as higher costs and limited driving range. Both of these
+factors are largely influenced by the vehicle’s battery system. The
+costs associated with the battery system are divided among
+various components. Figure 2 illustrates the projected long-
+term evolution of battery system costs as outlined by Roland
+Berger [11, 12].
+Figure 2 • Improvement of battery system costs [11, 12].
+Based on this cost projection, in 2010, a 20 kWh battery system
+was projected to cost $15,000. Approximately two-thirds of these
+costs were attributed to raw materials for the cells, material
+processing, and cell production, while the remaining one-third
+ACADEMIA ENGINEERING 2024, 1 2 of 19
+https://www.academia.edu/journals/academia-engineering/about https://doi.org/10.20935/AcadEng7355
+covered system assembly and the manufacturing of peripheral
+components. The IWF (Institute of Machine Tools and Produc-
+tion Technology) identified reducing assembly costs as a key
+focus within the proposed methodology. Lithium-ion (Li-ion)
+batteries have a gravimetric energy density 100 times lower than
+gasoline, making it necessary to design large, high-mass systems
+to achieve adequate energy capacity in BEV battery systems. The
+lightweight design of the battery system is underpinned by the
+consideration of the relationship between total vehicle mass and
+energy consumption. This relationship exhibits an almost linear
+trend for vehicle masses ranging from 700 to 1,700 kg [11]. For
+instance, decreasing the vehicle mass from 1,600 to 1,280 kg can
+lead to approximately 15% energy savings. This reduction has the
+potential to lower the required drive power and battery capacity
+of the vehicle [11, 13]. Consequently, the overall structural mass
+of both the battery and the vehicle can be minimized. This
+approach involves an iterative process aimed at reducing vehicle
+weight across four primary stages. Figure 3 shows this relation-
+ship [11].
+Figure 3 • Lightweight design for electric vehicles [11].
+Product-level carbon emission accounting for automobiles
+encompasses the carbon emissions associated with all vehicle
+and automotive components, including both direct and indirect
+emissions across the entire life cycle of automotive products. This
+includes processes such as vehicle use, assembly, component
+manufacturing, raw material procurement, logistics, and recy-
+cling. For instance, prior studies have explored the life cycle
+carbon emissions of components like the ignition coil, fuel tank,
+and body steel in ICEVs. In the case of EVs, particularly BEVs,
+researchers have focused on analyzing the life cycle carbon
+emissions of power batteries [11].
+The carbon footprint of EVs primarily arises from electricity
+consumption during vehicle operation. Assessing the carbon
+footprint of automotive products across their entire life cycle
+allows for a comprehensive comparison of the environmental
+impacts of vehicles utilizing various energy sources and offers a
+theoretical and data-driven foundation for future emission
+reduction strategies in the automotive industry [14].
+Road transport is the predominant source of carbon emissions
+within the transportation sector. Data from the International
+Energy Agency (IEA) indicates that in 2021, global road transport
+emitted 5.86 Gt of carbon dioxide (CO2), representing 76.1% of
+the total emissions of 7.7 Gt. Petroleum products, which serve as
+the primary energy source for road transport, accounted for 90%
+of the sector’s energy consumption, whereas electricity contrib-
+uted less than 1% to the energy supply [14–16].
+The evaluation of vehicle carbon emissions should extend beyond
+exhaust emissions observed during the operational phase to
+encompass the environmental impacts of vehicle products from
+a life cycle perspective. Currently, the primary types of road
+vehicles include BEVs, ICEVs, and hybrid electric vehicles
+(HEVs) [14].
+As of 2021, life cycle CO2 emissions, encompassing production,
+manufacturing, material production, and maintenance processes
+are estimated at 22.4 tons for EVs. In contrast, the life cycle CO2
+emissions for gasoline ICEVs are 39.7 tons. Substituting gasoline
+ICEVs with EVs could reduce carbon emissions per vehicle by
+43.4%. The electrification of vehicles plays a crucial role in
+diminishing life cycle carbon emissions. Historical data from
+2012 to 2021 indicates that each additional million EVs could
+lead to a reduction of 7.28 Mt in life cycle carbon emissions and
+12.8 Mt indirect carbon emissions from fuel combustion in road
+transport. Consequently, vehicle electrification is increasingly
+recognized as a necessary trend for achieving carbon neutrality
+targets, and EVs are anticipated to progressively replace ICEVs
+within the road transport sector [14, 17, 18].
+However, EVs may not be as environmentally friendly as
+anticipated, as their life cycle carbon emissions remain relatively
+high, accounting for 56.4% of those from gasoline ICEVs. While
+EVs exhibit significantly lower carbon emissions during their
+operational phase compared to gasoline ICEVs, contributing to
+their overall reduced carbon footprint, the emissions associated
+with EVs during this phase are heavily influenced by the
+cleanliness of the electricity grid. Furthermore, EVs incur sub-
+stantially higher carbon emissions than ICEVs during the
+material production phase. Research indicates that batteries play
+a crucial role in the carbon emissions of EVs. The elevated energy
+consumption and emissions associated with battery production
+result in higher life cycle carbon emissions for EVs during the
+material production stage compared to conventional ICEVs [14].
+EVs require increased attention to carbon emissions during
+material production and component manufacturing, whereas
+ICEVs tend to focus on economic and environmental perfor-
+mance during operation. The lower carbon emissions of EVs
+during vehicle use are offset by higher carbon emissions
+associated with battery production in the material production
+phase. As the degree of vehicle electrification increases, it is
+anticipated that the average proportion of carbon emissions from
+vehicle material production will also rise. However, for EVs, the
+carbon emissions during material production could decrease due
+to the large-scale production of power batteries and related
+components. In the short term, the automotive industry may see
+an increase in carbon emissions due to the production of power
+batteries for EVs. Nonetheless, the benefits of reduced carbon
+emissions from EVs are expected to be reflected in their future
+operational use. As the operational phase of vehicles expands, the
+advantages of lower carbon emissions associated with EVs are
+becoming increasingly evident [14].
+ACADEMIA ENGINEERING 2024, 1 3 of 19
+https://www.academia.edu/journals/academia-engineering/about https://doi.org/10.20935/AcadEng7355
+The transportation sector accounts for about 25% of CO2
+emissions worldwide. Motor vehicles are responsible for 75% of
+these emissions. Cars and buses are the largest contributors,
+accounting for 45.1%, while freight trucks account for 29.4%. For
+this reason, authorities in both developed and developing
+countries are encouraging consumers to replace conventional
+vehicles with EVs to reduce the concentration of air pollutants,
+such as CO2, carbon monoxide (CO), sulfur dioxide, and other
+greenhouse gases [19].
+As the international community aims to achieve net zero emis-
+sions by 2050 and focus on Sustainable Development Goal 13, the
+transition to sustainable transport solutions, such as EVs, is
+imperative. EVs have the potential to reduce greenhouse gas
+emissions and improve air quality but face barriers, such as high
+initial costs, inadequate charging infrastructure, range limita-
+tions, and fossil fuel-generated electricity. To achieve net zero
+emissions by 2050 and reduce climate change, EVs need to be
+adopted as a credible alternative to ICEVs [20].
+In sustainable urban design, the advantages of EVs make them a
+preferred choice for transportation. Various alternative fuel
+vehicles have been proposed, such as HEVs, plug-in hybrid
+electric vehicles (PHEVs), BEVs, and fuel cell electric vehicles
+(FCEVs). EVs have attracted considerable attention in recent
+years, and their popularity continues to grow. Although BEVs
+have recently become quite common, the concept has been
+around for some time. The first experiments with the EV concept
+were conducted by Jedlik Anyos in 1828, but a rechargeable EV
+did not appear until 1881, after the invention of practical
+secondary batteries by engineer and inventor Gustave Trouvé. By
+1900, EVs were gaining traction, and the number of EV
+manufacturers and models increased. In 1912, there were 33,842
+EVs registered in the United States, their peak, but ICEVs soon
+took over [2].
+Thanks to advances in energy storage system technology, EVs
+have gained an important place in a world dominated by ICEVs.
+EVs are available in various types, such as road and rail vehicles,
+surface and underwater vessels, electric airplanes, and electric
+spacecraft. There are two main reasons for the growing im-
+portance of EVs: the first is to reduce demand for fossil fuels such
+as crude oil, natural gas, and coal. Due to the high demand for
+fossil fuels and an annual consumption rate of 22 billion barrels,
+oil reserves are estimated to last only 45–100 years. The second
+is to reduce greenhouse gas emissions. With the increasing
+number of ICEVs, the amount of CO2 emitted into the
+atmosphere has also increased. Greater adoption of EVs can
+significantly reduce CO2 emissions. Furthermore, HEVs emit less
+CO2 compared to conventional ICEVs [21].
+In general, this article provides an overview of global EVs and
+their various types. It includes information about the battery
+types used in EVs and a review of studies on the utilization of
+waste nickel–metal hydride (NiMH) batteries, which are seen as
+a potential source of rare earth elements (REEs).
+2. Electric vehicle types
+EV types can be categorized into four classes: BEVs, PHEVs,
+HEVs, and FCEVs [19].
+2.1. Battery electric vehicles
+BEVs are defined as “fully EVs” because their powertrain consists
+of a rechargeable battery. Such batteries are more environmen-
+tally friendly than conventional energy conversion systems.
+Charging of these batteries can be done using grid power or any
+power generation media via a charging plug. Unlike conventional
+internal combustion engines, the charging process for BEVs takes
+slightly longer. Using a slower charger, it can take 5–10 hours to
+fully charge the battery, whereas with a fast charger, it takes
+about 15–45 minutes. Heat management and battery capacity are
+the main factors affecting the overall performance of a BEV. The
+driving range of a BEV is between 160 and 250 km, while some
+EV models can travel up to 500 km on a single charge. The time
+required to fully charge the battery depends on the battery
+capacity, the charging system, and the type of connection used
+(parallel or serial). HEVs have been proposed by various research
+groups to replace BEVs to increase travel distance [2, 19].
+2.2. Plug-in hybrid electric vehicles
+These vehicles can run on fossil fuels, electricity, or a combina-
+tion of both and offer several advantages, including reduced
+dependence on oil, increased fuel economy, improved power
+efficiency, and lower greenhouse gas emissions. PHEVs can be
+superior to HEVs in terms of efficiency because the limited and
+selective use of the internal combustion engine increases overall
+efficiency. Furthermore, the internal combustion engine only
+operates at high speeds, allowing it to achieve the highest
+efficiency. PHEVs usually run on gasoline, but diesel or ethanol
+can also be used. PHEVs do not rely heavily on the internal
+combustion engine to charge the battery like HEVs. Instead, they
+have a battery pack that can be fully charged by plugging into a
+standard 120/240 V AC electrical outlet. They also feature
+regenerative braking, providing an alternative way to recharge
+the battery. Several studies have shown that PHEVs emit less CO2
+and other pollutants when charged from the electricity grid
+compared to conventional ICEVs and HEVs. PHEVs can
+therefore reduce emissions in the transport sector in many
+regions, as long as the electricity grid provides a cleaner energy
+source than gasoline or diesel. This means that the fuel mix used
+to generate electricity must be lower than the average emissions
+of a conventional gasoline car [22].
+2.3. Hybrid electric vehicles
+In HEVs, both a gasoline internal combustion engine and a
+battery-powered electric motor are used to power the vehicle.
+When the battery is low, the gasoline engine is used to start the
+vehicle and recharge the battery. These vehicles are less
+efficient compared to fully electric or plug-in hybrid vehicles.
+The combination of the battery and electric motor system aims
+to achieve better fuel economy or enhanced performance
+compared to a traditional ICEV. This is primarily accomplished
+by using the less efficient internal combustion engine alongside
+a much more efficient power source, such as the residual battery
+[19, 22].
+2.4. Fuel-cell electric vehicles
+FCEVs are also referred to as zero-emission vehicles. These
+vehicles operate on electricity, which is produced from a fuel
+source. Hydrogen is the primary fuel used in the fuel cells of these
+vehicles. Fuel cell engines are more efficient for long-distance
+ACADEMIA ENGINEERING 2024, 1 4 of 19
+https://www.academia.edu/journals/academia-engineering/about https://doi.org/10.20935/AcadEng7355
+travel. They offer an extended range, and refueling only takes a
+few minutes [19].
+3. Battery types used in electric vehicle
+An essential component of EV systems is a device that stores
+energy and manages its distribution. Recently, the significance of
+energy storage systems has been growing. Key factors include the
+amount of energy stored and the efficiency of energy storage
+systems. Selecting the appropriate energy conversion method is
+also crucial. Various energy storage systems are becoming
+prominent, such as fuel cells, supercapacitors, primary batteries,
+secondary batteries, and hybrid systems. Figure 4 illustrates the
+different types of batteries used in EVs [1].
+A battery, an electrochemical device, converts electrochemical
+energy into electrical energy and is crucial for EVs. In recent
+years, the use of rechargeable batteries in EVs has surged in
+popularity due to the inconsistency of renewable energy sources,
+which are unsuitable for situations requiring a continuous and
+reliable supply. Ideal characteristics for a good EV battery
+include high specific energy, high charge acceptance rate, high
+specific power, long life cycle, low self-discharge rate, long
+calendar life, recyclability, and low cost. Various types of
+batteries are used in EVs, including lead-acid, nickel-based, and
+Li-ion batteries [23].
+Figure 4 • Classification of electric vehicle batteries [1].
+Automotive manufacturers globally are making significant ef-
+forts to develop vehicles with electric powertrains. Additionally,
+substantial efforts are being focused on extending vehicle range
+and energy density while cutting costs. Li-ion batteries have
+taken the place of NiMH batteries in electric and hybrid vehicles
+and are now also being utilized in “stop–start” vehicles [21].
+Figure 5 illustrates the economic trends for lead-acid, NiMH,
+and Li-ion batteries within the EV market. These three battery
+types are the predominant choices for EV applications, and their
+market share is anticipated to experience substantial growth
+throughout the forecast period [21, 24].
+Figure 6 illustrates the average costs of lead-acid, NiMH, and
+Li-ion batteries from 2014 to 2022. According to the figure, the
+average cost of a Li-ion battery pack decreased to $181 in 2022.
+Advances in battery technology over the past decade have
+resulted in average cost reductions of 72% for lead-acid batteries,
+68% for NiMH batteries, and 82% for Li-ion batteries since 2014.
+It is anticipated that the cost of Li-ion batteries will decline to
+$100 per kWh by 2024 [21, 25].
+From the perspectives of manufacturers and buyers, battery price
+and battery cost are defined differently. As the battery market is
+relatively new to the automotive industry, these values are
+subject to variation due to numerous factors. Two primary
+methods are used to evaluate battery cost: the market data
+survey, which indicates the prices at which manufacturers sell
+battery packs, and the bottom-up cost model, which encom-
+passes all production-related expenses. Manufacturers then set a
+price that includes a profit margin. Market analysis suggests that
+both the market data approach and the cost modeling method
+can be utilized for determining battery pricing [21].
+ACADEMIA ENGINEERING 2024, 1 5 of 19
+https://www.academia.edu/journals/academia-engineering/about https://doi.org/10.20935/AcadEng7355
+Figure 5 • The evolving trends in the use of various battery technologies in electric vehicle applications in the United States [12].
+Figure 6 • Average cost per kWh of different battery types between 2014 and 2022 [21, 25].
+3.1. Lithium-ion batteries
+Li-ion batteries, similar to lead-acid and NiMH batteries, are
+well-known examples of rechargeable batteries that can be
+recharged whether fully or partially discharged and are used in
+EVs and HEVs. Since their introduction to the battery market in
+1991, Li-ion batteries have gained significant importance. They
+are considered the most promising batteries for EVs due to their
+high energy density and long cycle life. Historically, a major
+challenge with Li-ion batteries was their limited operational
+temperature range, which affected performance. However, in
+recent years, Li-ion batteries have offered superior battery
+economy due to their high power and energy density ratios. They
+have become increasingly vital in industrial applications,
+providing higher voltage per cell, improved life cycles, and
+greater energy density. Additionally, Li-ion batteries are
+distinguished by their excellent low-temperature performance,
+low self-discharge rates, and straightforward charging methods,
+setting them apart from other battery types. These characteristics
+make Li-ion batteries the preferred choice for commercial
+applications. The Li-ion battery market was valued at over USD
+24 billion and is projected to grow by over 12% from 2017 to
+2024. Stringent government regulations on lead usage, along
+with the increasing demand for electronic devices, have propelled
+the growth of the Li-based battery market. Figure 7 illustrates
+the usage trend of Li-ion batteries across various application
+areas in 2016 and 2024 [21, 26].
+ACADEMIA ENGINEERING 2024, 1 6 of 19
+https://www.academia.edu/journals/academia-engineering/about https://doi.org/10.20935/AcadEng7355
+Battery
+type
+Metal type (elemental weight %)
+Co Li Mn Ni Cu Al Fe Ref.
+LiNixCoyMnzO2 14.88 5.75 16.96 21.87 0.05 10.82 [30]
+LiCoO2 16 2 - - 10 3 19 [31]
+LiCoO2 5–20 5–7 - 5–10 - - - [32]
+Figure 7 • The use of lithium-ion batteries in different applications in 2016 and 2024 [21, 26].
+Li-ion batteries are recognized as the most efficient type of
+battery for various portable electronic devices due to their high
+energy and power density per unit weight. These batteries
+typically consist of a cathode, anode, organic electrolyte, and
+separator enclosed in a metal case and plastic cover. The cathode
+is usually composed of Li metal oxides such as LiCoO2, LiNiO2,
+LiMn2O4, and LiNi0.33Mn0.33Co0.33O2, while the anode is typically
+graphite. Since the anode is usually composed of graphite or
+activated carbon (C), most of the precious metals in Li-ion
+batteries are found in the cathode [27]. Batteries are also
+classified according to the type of cathode material. The first
+commercially developed cathode materials include LCO (lithium
+cobalt oxide) (LiCoO2), LFP (lithium iron phosphate) (LiFePO4),
+NCA (lithium nickel cobalt aluminum oxide) (LiNiCoAlO2), LMO
+(lithium manganese oxide) (LiMnO2 or LiMn2O4), and NMC
+(nickel manganese cobalt oxide) (LiNixMnyCozO2, where x + y +
+z = 1). Today, NMC batteries dominate around 72% of the market
+and are the most widely used battery type. NCA batteries
+represent 26% of the market share, with LFP and LMO batteries
+following [28]. LCO batteries have achieved considerable success
+in portable electronics due to their high volumetric energy
+density. These batteries also power EVs such as the Tesla
+Roadster and Smart ForTwo. However, the high cost driven by
+limited cobalt (Co) availability has constrained their broader
+adoption in the EV market. Another cathode material utilized in
+EVs, particularly in electric buses in China, is LFP. The primary
+benefits of LFP batteries include stable voltage, high cycling
+efficiency, and thermal stability, though their lifespan is signifi-
+cantly impacted by moisture. LMO is another commercially used
+cathode material, valued for its thermal stability and cost-
+effectiveness. Nonetheless, its low energy density limits its stand-
+alone use in EVs, leading to its common combination with NMC
+to enhance energy density. Among the most prevalent cathode
+materials for EVs are ternary-layered oxides, particularly nickel-
+rich variants like NMC and NCA. While nickel-rich NMC offers
+higher capacity, it faces challenges with thermal stability and
+cyclic performance, which can be addressed through a full
+concentration gradient approach. Similarly, nickel-rich NCA
+provides high specific energy but requires additional safety
+measures due to its lower safety profile before being incorporated
+into EVs; NCA is notably used in vehicles, such as those produced
+by Tesla [2]. In general, the raw materials for Li-ion batteries are
+lithium carbonate and lithium hydroxide, which are used in the
+production of Li cathode materials. In addition, Li salt forms can
+also be included in the battery structure as electrolytes [29]. It is
+shown in Table 1 that Co, Li, Ni, and manganese (Mn) dominate
+the cathode structure and require special pyrometallurgical or
+hydrometallurgical processes for recycling [27, 30–36].
+Table 1 • The precious metals in the most common commercial
+lithium-ion batteries [27, 30–36]
+LiCoO2 16.5 2 - - 7.1 4.1 - [33]
+LiCoO2 29.49 3.14 0.02 16.48 8.02 - [34]
+LiCoO2 27.5 14.5 - 24.5 14 - [35]
+LiNiMnCoO2 8.45 1.28 5.86 14.84 16.6 22.72 8.79 [36]
+In general, Li-ion batteries consist of positive and negative
+electrodes and electrolytes that conduct Li-ions. Figure 8 shows
+the schematic structure of Li-ion batteries [37, 38].
+The electromechanical charging and discharging process for Li-
+ion batteries operates as follows: during charging, the battery is
+connected to a charger. The positive electrode releases negatively
+charged electrons. To maintain charge balance at the negative
+electrode, an equivalent amount of positively charged ions is
+dissolved into the electrolyte solution. As lithium ions migrate to
+the positive electrode, they are absorbed by the graphite in the
+anode. This absorption process not only involves the incorpora-
+tion of lithium ions into the graphite but also includes the
+ACADEMIA ENGINEERING 2024, 1 7 of 19
+https://www.academia.edu/journals/academia-engineering/about https://doi.org/10.20935/AcadEng7355
+deposition of electrons to “lock” the lithium ions in place. During
+discharge, when a load is connected to the battery terminals, the
+negative electrode releases lithium ions, which move toward the
+electrolyte. The positive electrode then absorbs these lithium
+ions. Concurrently, electrons are released from the negative
+electrode and travel through the external circuit to the positive
+electrode, thereby supplying electrical current to the circuit [37].
+Figure 8 • Schematic structure of lithium-ion batteries [37, 38].
+Figure 9 shows the size of the global Li-ion battery market and
+its projected growth in US$ billion from 2015 to 2024. The Li-ion
+battery market is expected to grow from USD 22.5 billion in 2015
+to USD 58.6 billion by 2024, primarily driven by demand in light-
+and medium-/heavy-duty vehicles [21, 39].
+Figure 10 shows the recycling process of used Li-ion batteries,
+consisting of three main stages. During the pretreatment stage,
+the batteries undergo discharging, disassembly, crushing, classi-
+fication, and separation of materials, such as plastics, C, alumi-
+num (Al), iron (Fe), and copper (Cu), from the cathode and anode
+components. The metal extraction stage can employ pyrometal-
+lurgical, hydrometallurgical, electrometallurgical, and bio-met-
+allurgical methods. This stage utilizes energy, reagents, reducing
+agents, water, and bacteria or microorganisms and produces
+outputs like concentrates, slag, wastewater, and waste gases. The
+final stage of product preparation includes the separation and
+recovery of various materials and the synthesis of cathode active
+materials for the production of new Li-ion batteries [40].
+Figure 9 • The growth in the global lithium-ion battery market [21, 39].
+ACADEMIA ENGINEERING 2024, 1 8 of 19
+https://www.academia.edu/journals/academia-engineering/about https://doi.org/10.20935/AcadEng7355
+Figure 10 • Primary steps in the recycling of active materials from spent lithium-ion batteries [40].
+Typically, EVs use three main types of batteries: lead-acid, NiMH,
+and Li-ion batteries. A comprehensive comparison summarizing
+the features, advantages, and disadvantages of each of these
+battery technologies is shown in Table 2 [21, 41–51].
+Table 2 • Main characteristics of different battery types [21, 41–51]
+Battery type Lead acid NiMH Lithium ion
+Main components Metallic lead, lead dioxide, lead sulfate,
+and sulfuric acid (H2SO4)
+Hydrogen, nickel hydroxide (Ni(OH)2), and
+potassium hydroxide (KOH) Li, Fe, Al, Cu, Co, graphite, and Mn
+Energy density (J/kg) 30–50 40–110 100–250
+Battery voltage (V) ~2.00 1.35 2.50–5.00
+Efficiency 75–80% - ~100%
+Service life (years) 2–3 > 5 5–6
+Life cycle (cycles) 500–1,000 300–500 >1,000
+Fast charging time (hour) 8–16 h 2–4 h
+≤1 h (for manganese and phosphate
+based ones)
+and 3–4 h (Co-based)
+Advanced charging ability Good Good Weak
+Working temperature (°C) 18–45 −30 to 70 20–65
+Environmental impact Harmful Less impact Less impact
+Recyclability Good Good Weak
+Cost benefit Low Sealed maintenance and free design Low maintenance cost
+3.2. Nickel-based batteries
+Alkaline batteries, which are Ni based, use an alkaline solution as
+their electrolyte. Batteries, such as nickel–zinc (Ni-Zn), nickel–
+iron (Ni-Fe), nickel–cadmium (Ni-Cd), and NiMH, are produced
+with nickel oxyhydroxide (NiOOH) as the cathode material. The
+Ni-Zn battery family typically has a maximum nominal cell
+voltage of 1.6 V and surpasses Ni-Cd batteries in specific energy
+and environmental friendliness due to their nontoxic nature.
+Additionally, Ni-Zn batteries offer excellent charge and discharge
+rates and a broad operating temperature range. However, their
+commercialization is significantly restricted by a short life cycle
+of approximately 300 cycles, caused by the preferential solubility
+of zinc species in the electrolyte. Since 1992, the EV market has
+extensively adopted NiMH batteries, which have a nominal cell
+voltage of 1.32 V and greater specific energy than lead-acid
+batteries [23].
+3.2.1. Ni-Cd batteries
+Ni, as a strategic metal, is used in a wide variety of applications,
+including the production of stainless steel and nonferrous alloys,
+chemical or petrochemical catalysts, military industries, and
+battery production. Recently, Ni-Cd batteries have become a
+popular rechargeable power source for many portable devices,
+such as laptops, cameras, and music players. These used Ni-Cd
+batteries contain valuable materials, including cathode and
+ACADEMIA ENGINEERING 2024, 1 9 of 19
+https://www.academia.edu/journals/academia-engineering/about https://doi.org/10.20935/AcadEng7355
+anode materials made of Ni and Cd (approximately 43%), plastic
+separators (5%), a steel container (27%), and a Ni mesh plate that
+supports the anodic powder (25%). The significant value of the
+metallic Ni content, along with the toxic and carcinogenic nature
+of Cd, has led to increased interest in recycling these batteries for
+both academic and industrial purposes [27].
+In 1908 and 1909, Edison developed Ni batteries as a portable
+and versatile power source. The five main types of rechargeable
+Ni batteries are Ni-H2, Ni-Zn, NiMH, Ni-Cd, and Ni-Fe. All these
+batteries use NiOOH as the cathode material and Cd as the anode
+material. Ni-Cd batteries, which use nickel oxide hydroxide
+(NiO(OH)) and metallic cadmium as electrodes, were invented in
+1899 and were widely used in portable electronic devices and EVs
+until the 1990s. They have since been largely replaced by newer
+battery technologies due to their lower energy density and the
+environmental concerns related to cadmium. Despite this, Ni-Cd
+batteries excel in high-rate capacity and longevity, lasting up to
+ten years under optimal temperatures of 30–80°C. However,
+they quickly lose capacity and have a high self-discharge rate
+when stored at room temperature. Their energy density ranges
+from 1.2 V to 50 J/kg [1]. Figure 11 illustrates the charging
+principle of a Ni-Cd battery [37].
+Figure 11 • Ni-Cd battery charging principle [37, 38].
+The charging and discharging mechanism of Ni-Cd batteries is
+illustrated in Eq. (1) [41]:
+stability of these batteries. NiMH batteries were subsequently
+developed and brought to market in Japan between 1989 and
+1990, and they have become some of the most widely used
+( ) ( )0
+2 2 2 2NiOOH 2H O Cd 2Ni OH Cd OH 1.29V E + +  + = (1)
+rechargeable batteries today. They offer numerous advantages,
+including low self-discharge rates, excellent electrochemical per-
+The electromechanical charging and discharging process for Ni-
+Cd batteries operates as follows: upon connecting a load to the
+battery terminals, the battery begins to discharge. The KOH
+electrolyte dissociates into positive potassium ions (K+) and
+negative hydroxyl ions (OH–). The K+ migrate toward the positive
+electrode (anode), while the OH– move toward the negative
+electrode (cathode). The negative electrode releases electrons,
+which travel to the positive electrode through an external circuit,
+generating current that flows from the positive electrode to the
+negative electrode through the load. During charging, the OH–
+migrate toward the anode, and the K+ move toward the cathode.
+To discharge, the reaction is reversed: Ni(OH)2 at the positive
+electrode is converted to NiO(OH), releasing electrons, while
+Cd(OH)2 at the negative electrode is reduced to Cd as it receives
+electrons from the external circuit [37].
+formance, reasonable environmental compatibility, safety, and
+efficient operation across a broad temperature range. While Ni-
+Cd batteries dominated the portable rechargeable battery market
+until 1992, the introduction of NiMH batteries led to their
+replacement of over half of the Ni-Cd batteries in use. NiMH
+batteries avoid the issue of Cd toxicity and outperform in terms
+of energy density and storage effect. Currently, NiMH batteries
+deliver 40% higher specific energy than conventional Ni-Cd
+batteries. These rechargeable batteries are widely utilized as
+power sources for various electrical applications, including mo-
+bile devices, stationary energy storage systems, and notably,
+transportation systems. Despite their robust performance and
+longevity, NiMH batteries have a relatively lower specific energy
+density compared to Li-ion batteries. To bridge this energy
+density gap, ongoing research on NiMH batteries is being
+conducted in the United States, China, Japan, and Europe. Over
+3.2.2. NiMH batteries
+Research on NiMH batteries began in 1967. However, issues with
+the stability of metal hydride (MH) led to the exploration and
+development of nickel–hydrogen (NiH) batteries. The discovery
+of new hydride alloys in the 1980s significantly enhanced the
+10 million HEVs currently in operation rely on NiMH batteries
+for propulsion. Consequently, given the significant contribution
+of NiMH batteries to the battery market, a comprehensive
+economic analysis of this battery type is essential. The anodes of
+NiMH batteries incorporate less harmful elements, such as
+ACADEMIA ENGINEERING 2024, 1 10 of 19
+https://www.academia.edu/journals/academia-engineering/about https://doi.org/10.20935/AcadEng7355
+lanthanum (La), cerium (Ce), praseodymium (Pr), and neodym-
+ium (Nd). Typically, NiMH batteries consist of 36–42 wt% Ni, 25
+wt% Fe, 4 wt% Co, and 8–10 wt% REEs, such as La, Ce, Pr, and
+Nd. As NiMH batteries are a major application for REEs, the
+global supply of these resources is experiencing considerable
+pressure. Currently, the supply of lanthanide group elements is
+severely constrained due to inefficiencies in mining processes
+and the scarcity of ore resources. Consequently, recycling used
+NiMH batteries is becoming increasingly attractive due to the
+substantial quantities of Ni and REEs they contain [21, 27].
+MH alloys are active materials in the negative electrodes of NiMH
+batteries that can reversibly store hydrogen in electrochemical
+media. MH alloys, which exhibit metal bond strengths suitable
+for electrochemical applications at room temperature, can be
+classified as solid-solution and binary intermetallic alloys. These
+alloys are specifically categorized as A3B, A2B, AB, AB2, AB3,
+A2B7, and AB5, where “A” represents one or a combination of
+REEs, alkaline earth elements, and light transition metals [e.g.,
+titanium (Ti) and zirconium (Zr)] and “B” represents transition
+metals, mainly Ni [52].
+The NiMH battery market reached its peak between 2012 and
+2013, with approximately 1.5 million HEV batteries. However, it
+is now gradually declining as higher-performance Li-ion batter-
+ies take over. In 2013, more than half of all HEVs utilized NiMH
+batteries, and a substantial number of these batteries remain on
+the market. Consequently, a significant quantity of used NiMH
+batteries is being discarded, posing a hazardous waste disposal
+challenge. Additionally, these used NiMH batteries contain valu-
+able metal elements that can serve as secondary resources. For
+instance, each Toyota Prius HEV contains 10–15 kg of REEs, and
+large-scale recovery of these elements could provide significant
+resources for new battery production. REEs are among the most
+critical raw material groups in certain regions, particularly in
+Europe, and the recovery of Ni is becoming increasingly attrac-
+tive due to its high market value [53].
+As with batteries, NiMH has four main components: cathode,
+anode, electrolyte, and separator, as well as case (steel). The
+cathode of a NiMH battery consists of a Ni core coated with
+sodium hydroxide (NaOH), while the anode is an alloy made up
+of misch metal (primarily Ce, La, Pr, and Nd), Ni, Co, Mn, and Al.
+The anode alloy is usually represented as MmNi3.5Co0.8
+Mn0.4Al0.3, where Mm denotes misch metal. A separator made of
+polyamide or polypropylene is placed between the two
+electrodes, and a KOH solution is used as the electrolyte [54]. The
+chemical composition and reactions of NiMH batteries are
+illustrated in Figure 12 [37, 55–57] and detailed in Eq. (2) [41]:
+Figure 12 • The principle of operation of a NiMH battery [37, 55–57].
+( )0
+2 MH NiOOH M Ni OH 1.35V E +  + = . (2)
+The electromechanical charging and discharging process for
+NiMH batteries operates as follows: during the charging phase,
+the cathode is composed of Ni(OH)2, and the anode consists of a
+metal. When the charger is connected across the electrodes, a
+current flows through the cathode. KOH serves as the electrolyte,
+dissociating into positive K+ and negative hydroxide ions (OH–).
+The OH– react with Ni(OH)2 at the cathode to produce NiO(OH)
+and water. This reaction generates electrons that travel through
+the external circuit to the anode. At the anode, water reacts with
+the metal to form MH, which releases OH–. During discharge,
+NiOOH is formed at the cathode, and MH is formed at the anode.
+A load is connected across the electrodes. The KOH electrolyte
+again splits into K+ and OH–. The OH– react with the MH to
+produce the metal and water, releasing electrons in the process.
+These electrons travel through the external circuit, powering the
+load and returning to the cathode. At the cathode, water reacts
+with NiOOH to regenerate Ni(OH)2 and release OH–. The
+reactions that occur during discharge are the reverse of those in
+the charging phase [37].
+As in NiMH batteries, both the anode and cathode are porous
+structures with a large surface area, providing low internal
+resistance and the ability to perform at high speeds. The cathode
+is usually produced by embedding or bonding Ni compounds into
+foam Ni or a highly porous sintered substrate, while the anode is
+an alloy-coated perforated Ni foil or grid that stores hydrogen. In
+practice, NiMH batteries can be used in telecommunications,
+uninterruptible power supplies, and powering HEVs due to their
+high energy and power (40–110 J/kg, 200–1,200 J/kg), environ-
+mental friendliness, wide operating temperature range (−30°C to
+ACADEMIA ENGINEERING 2024, 1 11 of 19
+https://www.academia.edu/journals/academia-engineering/about https://doi.org/10.20935/AcadEng7355
+70°C), high tolerance to overcharge and over discharge, long life,
+low maintenance, and low cost [41].
+4. A potential source of rare earth
+elements: end-of-life NiMH batteries
+NiMH batteries are widely used in HEVs, cell phones, and
+laptops. However, NiMH batteries are slowly being replaced by
+Li-ion batteries, resulting in a higher amount of used NiMH
+batteries. Known for its low toxicity and high energy density,
+NiMH battery consists of a cathode, usually made of Ni(OH)2,
+and an anode made of a hydrogen storage alloy based on misch
+metal (mostly REEs). The typical composition of NiMH is 36–
+42% Ni, 3–5% Co, and 5–25% REEs, such as La, Ce, and Nd.
+Reuse and recycling of end-of-life NiMH batteries are important
+issues as they lead to minimal environmental impact in terms of
+CO2 emissions, resource depletion, and nonrenewable energy
+needs, as analyzed by life cycle assessment. Meanwhile, spent
+NiMH batteries are recognized as one of the most promising
+secondary sources of REEs for sustainable use [58].
+REEs comprise 17 chemical elements in the periodic table, as
+defined by the International Union of Pure and Applied Chemis-
+try (IUPAC): the 15 lanthanides, plus yttrium and scandium.
+Yttrium and scandium are classified as REEs because they are
+commonly found in the same ore deposits as lanthanides and
+share similar chemical properties. Although all REEs occur
+naturally, they are not found in pure metal form. Due to their
+distinctive magnetic, phosphorescent, and catalytic properties,
+REEs have become essential for modern technology. These
+elements are critical for a wide range of technologies, including
+cell phones, televisions, LED light bulbs, and wind turbines. The
+estimated average concentration of REEs in the Earth’s crust is
+between 130 and 240 mg/g, which is significantly higher than
+that of many other commonly used elements. REEs are crucial
+components in all high-tech devices. Nd is extensively used in
+super magnets for disk drives, Ce is vital in auto-catalysts, and all
+REEs are utilized in the production of flat-panel TVs. Various
+REE compounds are present in smart batteries that power every
+EV and HEV. Owing to their unique physical, chemical, mag-
+netic, and luminescent properties, these elements facilitate
+numerous technological advantages, such as reduced energy
+consumption, enhanced efficiency, increased speed, durability,
+and thermal stability. Recently, there has been a rising demand
+for energy-efficient devices (green technology), particularly those
+that are faster, lighter, smaller, and more efficient. These
+advancements are also contributing to the miniaturization and
+improved efficiency of analytical instruments [59].
+Considering the demand and supply gap for REEs, there is a need
+to adopt the sustainable approach of the circular economy
+system. To ensure the sustainable use of REEs, it is essential to
+develop recovery technology from secondary sources. Recycling
+of spent batteries can be achieved through pyrometallurgical and
+hydrometallurgical processes, but hydrometallurgy is preferred
+due to its lighter conditions, higher selectivity, and sensitivity
+[58].
+NiMH batteries are a significant secondary source of REEs, Co,
+and Ni. Recycling these batteries properly not only contributes to
+their economic value but also protects the environment. Various
+authors have described different recycling methods for extracting
+REEs and other valuable nonferrous metals from used NiMH
+batteries. The three primary methods employed are mechanical
+processing, pyrometallurgy, and hydrometallurgy. Mechanical
+processing typically includes steps such as grinding, screening,
+and bed elutriation to recover valuable materials. In pyrometal-
+lurgy, the thermal decomposition of REEs, such as La, Ce, Nd,
+and Pr, from spent NiMH batteries is performed in their oxidized
+forms [53].
+Pretreatment methods for the recovery of NiMH batteries,
+typically categorized as end of life and waste, aim to minimize the
+quantity of waste NiMH batteries, separate them into different
+fractions, and produce a black powder, known as battery powder,
+ready for further processing (Figure 13). Early research on
+NiMH battery recycling primarily focused on recovering Ni-
+based alloys through ore dressing techniques [53]. Pyromet-
+allurgical processes involve melting the battery material, either
+after pretreatment to reduce Fe content or as a whole unit,
+sometimes including plastic components. In the presence of slag
+(an oxide liquid phase), these processes result in the reduction of
+Ni and Co elements to form a liquid nickel–cobalt (Ni-Co) alloy,
+while the REEs are oxidized and dissolved in the slag (Figure 14)
+[53].
+Figure 13 • Flowchart of typical physically based pretreatment
+of used NiMH batteries (modified from [53]).
+ACADEMIA ENGINEERING 2024, 1 12 of 19
+https://www.academia.edu/journals/academia-engineering/about https://doi.org/10.20935/AcadEng7355
+Figure 14 • The principle of pyrometallurgical processing of end-of-life NiMH batteries (modified from [53]).
+Various hydrometallurgical processes, including leaching, sol-
+vent extraction, and precipitation, have been employed to extract
+metals from NiMH batteries, utilizing different binders,
+extractants, and precipitants [60]. Yang et al. [61] conducted
+leaching of REEs from waste NiMH batteries using hydrochloric
+acid (HCl), followed by impurity removal with an ammonia
+solution, achieving a 99% recovery of rare earth oxides. Bertuol
+et al. [62] reported H2SO4 leaching of REEs, followed by selective
+precipitation with NaOH at pH 1.2. Fernandes et al. [63] reported
+chloride leaching followed by selective extraction of REEs from
+NiMH batteries using PC88A. Innocenzi and Veglio [64] also
+examined H2SO4 leaching of REEs from spent NiMH batteries,
+followed by selective precipitation with NaOH at a pH below 2.
+Zhang et al. [65] investigated chloride leaching of REEs followed
+by solvent extraction using D2EHPA. Mei et al. [66] detailed the
+recovery of REEs via leaching with H2SO4, followed by solvent
+extraction with Cyanex 923, and ultimately obtaining rare earth
+oxides using oxalic acid. Two different extractants, D2EHPA
+diluted in kerosene and Cyanex 923, were employed for extract-
+ing REEs from spent NiMH batteries. Chemical precipitation is
+the most commonly used method for REE recovery due to its
+simplicity and low cost, with anhydrous sodium sulfate and
+sodium hydroxide being utilized for this purpose. Pietrelli et al.
+[67] studied H2SO4 leaching of REEs, Ni, Co, Cd, and Fe from Ni-
+Cd and NiMH batteries. Ahn et al. [68] reported the recovery of
+REEs as mixed oxides through a leaching and precipitation
+process [60]. Other studies on NiMH batteries, which are the
+most evaluated among secondary REE sources, are summarized
+in Table 3 [68–87].
+Table 3 • Studies on the recovery processes of rare earth elements from NiMH batteries [68–87]
+Process unit operations Leaching or *final recovery rates Ref.
+Metal Recovery %
+Y 97% → *54
+Ce 100 → *99
+[70]
+Leaching , precipitation
+La 100 → *99
+Nd 99.48
+Ce 96.43
+[71]
+Leaching
+La 99.14
+*Nd 85.97
+*Ce 90.75
+Leaching (2×),precipitation
+*La 82.59
+[72]
+Leaching , precipitation ,oxidation ,solvent extraction *Ce 84.7 [73]
+Leaching ,aqueous biphasic system (3×) *Ce 8.5 [74]
+ACADEMIA ENGINEERING 2024, 1 13 of 19
+https://www.academia.edu/journals/academia-engineering/about https://doi.org/10.20935/AcadEng7355
+*La 47
+*Nd 97.53
+Leaching, precipitation, heat treatment
+*Ce 99.6
+[68]
+*La 98.76
+*Ce 97–98
+Leaching, precipitation, hydroxide conversion +wet oxidation, selective dissolution
+La 95.8 → *99.49
+[75]
+Ce 89.9 → *99.14
+Pr 96.3 → *99.12
+Leaching, precipitation
+Y 97 → *41.79
+[76]
+Sm 98.6 → *95.71
+Mechanical treatment, leaching La 91.6 [77]
+La 99
+Mechanical treatment, leaching, evaporation and recirculation, precipitation
+[78]
+Ce 99
+La 68.08
+Ce 84.61
+Mechanical treatment, leaching
+Pr 32.36
+[79]
+Sm 61.07
+Nd 65.95
+Mechanical treatment, thermal oxidation, thermal reduction REEs separated in the oxide phase [80]
+La 66.4% → *98%
+Leaching, precipitation
+Ce 88.8% → *99%
+[81]
+Pr 59.3% → *99%
+Supercritical fluid extraction *REE 90 [82]
+Supercritical fluid extraction *REE 90 [83]
+Ce 97.7
+Leaching
+[84]
+La 88.7
+La 69.5
+Ce 89.4
+Mechanical treatment, leaching, precipitation
+Pr 95.5
+[85]
+Sm 98.4
+Nd 98.1
+Ce 96
+Leaching, electrochemical purification, precipitation
+La 96
+[86]
+Nd 96
+Mechanical treatment, washing with water, leaching, filtration, precipitation REEs 98 → *97 [87]
+*Final recovery rates. Source: Authors.
+5. Conclusions
+With the advancement of technology, vehicles powered by
+internal combustion engines are expected to be replaced by EVs.
+It is a fact that EVs, especially HEVs, are of crucial contribution
+to reducing the emission of greenhouse gases, which have long-
+term harmful effects on human life. Energy storage systems
+include batteries, fuel cells, solar collectors, and fuel cells. In the
+last decade, the prominence of energy storage systems, especially
+batteries, has led to positive effects on human life.
+Considering the increase in EVs and the types of batteries used,
+the demand for certain metals will rise in parallel. The growing
+demand for critical metals such as Cu, Ni, Co, and Li, used in EVs
+as part of the clean energy transformation policy, will create a
+supply problem. The supply problem will also have a direct
+impact on the rising prices of these metals. Within the scope of
+countries’ net zero emission targets, the concept of recycling
+comes to the fore. Within the scope of recycling, EV batteries
+attract attention due to the critical metals they contain.
+In this study, the literature on EVs and the types of batteries used
+is reviewed. In particular, NiMH batteries containing high
+amounts of REEs are discussed in detail, with an emphasis on the
+ACADEMIA ENGINEERING 2024, 1 14 of 19
+https://www.academia.edu/journals/academia-engineering/about https://doi.org/10.20935/AcadEng7355
+importance of recycling methods and processes of these batter-
+ies. The global supply of REEs has been steadily increasing. Due
+to their unique properties, REEs find extensive applications,
+particularly in the energy sector, catalysts, magnets, ceramics,
+and electronic devices. China, as the dominant nation with the
+largest reserves and production rates of REEs, has prompted
+other countries to seek alternative sources due to its export
+restrictions on these critical materials. Due to declining energy
+resources and the increasing need for storage systems, the
+demand for batteries is projected to increase to approximately 10
+times the current amount within the next ten years, driven by the
+anticipated rise in EV production. Recently, the recovery of
+critical and strategic metals from end-of-life EV batteries,
+referred to as potential waste, has been gaining importance in
+order to prevent negative environmental impacts and mitigate
+economic conditions caused by decreasing raw materials and
+increasing production costs. The processes applied in beneficia-
+tion are generally categorized into three main groups. These
+include physical (discharge, removal, size reduction and
+classification, gravity, magnetic, and electrostatic separation),
+physicochemical (flotation), and chemical (hydrometallurgical
+and pyrometallurgical) methods. The combination of physical
+and chemical processes is of absolute importance for the recovery
+of precious metals from secondary sources. The application of
+these processes reduces the risk of battery explosion during
+recycling processes, reduces by-products, avoids complexity in
+chemical processes, requires smaller capacity chemical beneficia-
+tion equipment as pre-concentrates are produced, reduces the
+need for reagents, and prevents the production of toxic gases
+from plastics and binders in thermal processes. As a result, a
+process with numerous economic and environmental advantages
+can be designed. After discharge, disassembly, size reduction and
+classification, the resulting coarse battery components can be
+separated based on their physical properties (conductivity,
+density, or magnetic susceptibility). Physical methods are a
+crucial step in the recycling process, as they lead to significant
+cost reductions and increased recovery rates. Producing a raw
+material for metal recovery is the primary objective in this case.
+NiMH batteries used in EVs, especially HEVs, contain high levels
+of REE and Ni and have much lower amounts of Co, graphite, and
+Li compared to Li-ion batteries. The recovery of REEs and Ni-Co
+alloy from NiMH batteries generally involves hydrometallurgical
+and pyrometallurgical methods following pretreatment
+processes. It is known that low-purity Ni-Co alloys are formed
+through pyrometallurgical methods, with REEs dissolving in
+slags. Further research is required for the recovery of REEs from
+these slags. For REE recovery using hydrometallurgical methods,
+battery leaching with H2SO4 followed by the selective precipita-
+tion of rare earth compounds is also proposed. Subsequently, the
+extraction of impurities through a combination of precipitation
+methods and solvent extraction is required. It has been reported
+that obtaining pure Ni-Co sulfate solutions, which can be further
+used in electrolysis cells to prepare valuable Ni-Co alloys, is
+essential [53]. Continued research is also important to determine
+the final form of the REE products.
+Author contributions
+Conceptualization, T.U. and F.B.; validation, F.B.; investigation,
+T.U.; writing—original draft preparation, T.U. and F.B.; writing—
+review and editing, T.U. and F.B.; visualization, T.U. and F.B.;
+and supervision, F.B. All authors have read and agreed to the
+published version of the manuscript.
+Conflict of interest
+The authors declare no conflict of interest.
+Data availability statement
+Data supporting these findings are available within the article, at
+https://doi.org/10.20935/AcadEng7355, or upon request.
+Institutional review board statement
+Not applicable.
+Informed consent statement
+Not applicable.
+Additional information
+Received: 2024-06-15
+Accepted: 2024-09-12
+Published: 2024-10-10
+Academia Engineering papers should be cited as Academia
+Engineering 2024, ISSN 2994-7065, https://doi.org/10.20935/
+AcadEng7355. The journal’s official abbreviation is Acad. Engg.
+Publisher’s note
+Academia.edu Journals stays neutral with regard to jurisdic-
+tional claims in published maps and institutional affiliations. All
+claims expressed in this article are solely those of the authors and
+do not necessarily represent those of their affiliated organiza-
+tions, or those of the publisher, the editors, and the reviewers.
+Any product that may be evaluated in this article, or claim that
+may be made by its manufacturer, is not guaranteed or endorsed
+by the publisher.
+Copyright
+© 2024 copyright by the authors. This article is an open access
+article distributed under the terms and conditions of the
+Creative Commons Attribution (CC BY) license (https://creative
+commons.org/licenses/by/4.0/).
+Funding
+The authors declare no financial support for the research,
+authorship, or publication of this article.
+References
+1. Jayaprabakar J, Kumar JA, Parthipan J, Karthikeyan A,
+Anish M, Joy N. Review on hybrid electro chemical energy
+storage techniques for electrical vehicles: technical insights
+on design, performance, energy management, operating
+ACADEMIA ENGINEERING 2024, 1 15 of 19
+https://www.academia.edu/journals/academia-engineering/about https://doi.org/10.20935/AcadEng7355
+issues & challenges. J Energy Storage. 2023;72:108689. doi:
+10.1016/j.est.2023.108689
+2. Olabi AG, Abdelkareem MA, Wilberforce T, Alkhalidi A,
+Salameh T, Abo-Khalil AG, et al. Battery electric vehicles: pro-
+gress, power electronic converters, strength (S), weakness (W),
+opportunity (O), and threats (T). Int J Thermofluids.2022;
+16:100212. https://doi.org/10.1016/j.ijft.2022.100212
+3. Abo-Khalil AG, Abdelkareem MA, Sayed ET, Maghrabie
+HM, Radwan A, Rezk H, et al. Electric vehicle impact on
+energy industry, policy, technical barriers, and power
+systems. Int J Thermofluids. 2022;13:100134. https://doi.
+org/10.1016/j.ijft.2022.100134
+4. Xu Y, Zheng Y, Yang Y. On the movement simulations of electric
+vehicles: a behavioral model-based approach. Appl Energy.
+2021;283:116356. https://doi.org/10.1016/j.apenergy.2020.
+116356
+5. International Energy Agency. Catching up with climate
+ambitions. Paris, France; 2003.
+6. Koech AK, Mwandila G, Mulolani F. A review of improve-
+ments on electric vehicle battery. Heliyon. 2024;10:e34806.
+https://doi.org/10.1016/j.heliyon.2024.e34806
+7. Lu M. Visualizing global electric vehicle sales in 2023, by
+market share. TrendForce, Automotive; 2024.
+8. King N. EV Volumes - Neil King EVs forecast to account for
+two thirds of global light-vehicle sales in 2035. 2023 [cited
+2024 July]. Available from: https://www.ev-volumes.com/
+9. Goldman Sachs. Electric vehicles are forecast to be half of
+global car sales by 2035. 2023 [cited July 2024]. Available
+from: https://www.goldmansachs.com/intelligence/pages/
+electric-vehicles-are-forecast-to-be-half-of-global-car-sales-
+by-2035.html
+10. Wang W, Menictas C, Skyllas-Kazacos M, Lim TM.
+Electrochemical cells for medium- and large-scale energy
+storage: fundamentals. In: Menictas C, Skyllas-Kazacos M,
+Lim TM, editors. Advances in batteries for medium and
+large-scale energy storage. Cambridge: Woodhead Publish-
+ing; 2015. p. 3–28.
+11. Tornow A, Raatz A, Dröder K. Battery system development–
+assembly planning between lightweight design and high
+volume production. Procedia CIRP. 2014;23:143–8. https://
+doi.org/10.1016/j.procir.2014.10.101
+12. Roland Berger Strategy Consultants. The lithium-ion battery
+value chain. In: F-Cell Conference; 2012 Oct 9; Stuttgart.
+[cited 2024 Jun 1]. Available from: http://www.messe-
+sauber.de/doc/files/e4_1_kruger_script.pdf
+13. Eckstein L, Schmitt F, Hartmann B. Leichtbau bei Elektrofa-
+hrzeugen. ATZ Automobiltech Z. 2010;112(11):788-95. doi:
+10.1007/BF03222207
+14. Gao Z, Xie H, Yang X, Zhang L, Yu H, Wang W, et al. Electric
+vehicle lifecycle carbon emission reduction: a review. Car-
+bon Neutraliz. 2023;2(5):528–50. https://doi.org/10.1002/
+cnl2.81
+15. IEA. Greenhouse gas emissions from energy data explorer;
+2021 [cited 2024 Apr]. Available from: https://www.iea.
+org/data-and-statistics/data-tools/greenhouse-gas-emissions-
+from-energy-data-explorer
+16. Wang Q. Energy data 2020. Beijing: Green Development
+and Innovation Center; 2021.
+17. Li P, Xia X, Guo J. A review of the life cycle carbon footprint
+of electric vehicle batteries. Sep Purif Technol. 2022;296:
+121389. https://doi.org/10.1016/j.seppur.2022.121389
+18. Kim HC, Wallington TJ, Arsenault R, Bae C, Ahn S, Lee J.
+Cradle-to-gate emissions from a commercial electric vehicle
+Li-ion battery: a comparative analysis. Environ Sci Technol.
+2016;50:7715. DOI: 10.1021/acs.est.6b00830
+19. Mehar D, Singh RK, Gupta AK. A review on battery
+technologies and its challenges in electrical vehicle. In: 2023
+IEEE International Students’ Conference on Electrical, Elec-
+tronics and Computer Science (SCEECS); 2023. p. 1–6.
+20. Veza I, Asy’ari MZ, Idris M, Epin V, Fattah IR, Spraggon M.
+Electric vehicle (EV) and driving towards sustainability:
+comparison between EV, HEV, PHEV, and ICE vehicles to
+achieve net zero emissions by 2050 from EV. Alexandria Eng
+J.2023;82:459–67. https://doi.org/10.1016/j.aej.2023.10.020
+21. Mohammadi F, Saif M. A comprehensive overview of electric
+vehicle batteries market. e-Prime Adv Electr Eng Electron
+Energy.2023;3:100127. https://doi.org/10.1016/j.prime.2023.
+100127
+22. Poullikkas A. Sustainable options for electric vehicle tech-
+nologies. Renew Sust Energ Rev. 2015;41:1277–87. https://
+doi.org/10.1016/j.rser.2014.09.016
+23. Pravallika G, Sujatha P, Kumar PB. Different traction motor
+topologies with lithium-air battery for electric vehicles: a
+review. Mater Today Proc. 2023. https://doi.org/
+10.1016/j.matpr.2023.03.400
+24. Grand View Research Inc. Battery market size, share,
+industry research report; 2024 [cited 2016 May 1]. Available
+from: http://www.grandviewresearch.com/industry-analysis/
+battery-market
+25. Dongguan Large Electronics Co., Ltd. Battery cost per kWh
+- materials and comparison; 2021 [cited 2024 May].
+Available from: https://www.large.net/news/90u43qa.html
+26. Global Market Insights. Lithium ion battery market to gain
+major traction with rising popularity for green technology,
+increasing demand for EVs and renewable power storage to
+augment the industry growth; 2018 [cited 2024 May].
+Available from: https://gminsights.wordpress.com/2017/
+03/02/lithium-ion-battery-market
+27. Assefi M, Maroufi S, Yamauchi Y, Sahajwalla V. Pyromet-
+allurgical recycling of Li-ion, Ni–Cd and Ni–MH batteries: a
+minireview. Curr Opin Green Sustain Chem. 2020;24:
+26–31. https://doi.org/10.1016/j.cogsc.2020.01.005
+28. de Castro RH, Romano Espinosa DC, Gobo LA, Kumoto EA,
+Botelho Junior AB, Tenorio JAS. Design of recycling pro-
+cesses for NCA-type Li-ion batteries from electric vehicles
+toward the circular economy. Energy Fuels. 2024;38(6):
+5545–57. https://doi.org/10.1021/acs.energyfuels.3c04904
+29. Kangal MO, Üçerler Z, Türk T, Gürkan OM, Çuhadar E,
+Eyüboğlu Ç. Maden rezervleri ve zenginleştirme yöntemleri.
+ACADEMIA ENGINEERING 2024, 1 16 of 19
+https://www.academia.edu/journals/academia-engineering/about https://doi.org/10.20935/AcadEng7355
+In: Keleş Ö, Karahan BD, Bayar KC. editors. Elektrikli
+araçlarda lityum iyon bataryalar. İstanbul: Otomotiv
+Teknoloji Platformu (OTEP); 2024. p. 18, 20.
+30. Hu J, Zhang J, Li H, Chen Y, Wang C. A promising approach
+for the recovery of high value-added metals from spent
+lithium-ion batteries. J Power Sources. 2017;351:192–9.
+https://doi.org/10.1016/j.jpowsour.2017.03.093
+31. Li J, Shi P, Wang Z, Chen Y, Chang CC. A combined recovery
+process of metals in spent lithium-ion batteries. Chemo-
+sphere.2009;77(8):1132–6. https://doi.org/10.1016/j.chemos
+phere.2009.08.040
+32. Shin SM, Kim NH, Sohn JS, Yang DH, Kim YH. Develop-
+ment of a metal recovery process from Li-ion battery wastes.
+Hydrometallurgy.2005;79(3–4):172–81. https://doi.org/
+10.1016/j.hydromet.2005.06.004
+33. Lain MJ. Recycling of lithium ion cells and batteries. J Power
+Sources. 2001;97:736–8. https://doi.org/10.1016/S0378-
+7753(01)00600-0
+34. Dorella G, Mansur MB. A study of the separation of cobalt from
+spent Li-ion battery residues. J Power Sources. 2007;170(1):
+210–5. https://doi.org/10.1016/j.jpowsour.2007.04.025
+35. Lee CK, Rhee KI. Preparation of LiCoO2 from spent lithium-
+ion batteries. J Power Sources. 2002;109(1):17–21.
+https://doi.org/10.1016/S0378-7753(02)00037-X
+36. Winslow KM, Laux SJ, Townsend TG. A review on the growing
+concern and potential management strategies of waste lithium-
+ion batteries. Resour Conserv Recycl. 2018;129:263–77.
+https://doi.org/10.1016/j.resconrec.2017.11.001
+37. Almadani M, Oni OE, Longe OM, Olatomiwa L. Comparison
+of battery chemistries for electric vehicle applications. 5th
+African International Conference on Industrial Engineering
+and Operations Management; 2024 Apr 23–25; Johannes-
+burg/Pretoria, South Africa. IEOM Society International;
+2024.
+38. Engineers_Garage. How rechargeable batteries, charging,
+and discharging cycles work; 2024 [cited 2024 Sep].
+Available from: https://www.engineersgarage.com/how-
+rechargeable-batteries-charging-and-discharging-cycles-
+work/
+39. Osnpower. Analysis of the reasons for the rising price of
+lithium batteries; 2024 [cited 2024 Sep]. Available from:
+https://osnpower.com/blogs/news/analysis-of-the-
+reasons-for-the-rising-price-of-lithium-batteries
+40. Kaya M. State-of-the-art lithium-ion battery recycling tech-
+nologies. Circ Econ. 2022;1(2):100015. Kaya M. State-of-
+the-art lithium-ion battery recycling technologies. Circ
+Econ. 2022;1(2):100015.
+41. Fan X, Liu B, Liu J, Ding J, Han X, Deng Y, et al. Battery
+technologies for grid-level large-scale electrical energy
+storage. Trans Tianjin Univ. 2020;26:92–103. https://
+doi.org/10.1007/s12209-019-00231-w
+42. Chen HS, Cong TN, Yang W, Tan C, Li Y, Ding Y. Progress in
+electrical energy storage system: a critical review. Prog Nat
+Sci.2009;19(3):291–312. https://doi.org/10.1016/j.pnsc. 2008.
+07.014
+43. Bukhari SMAS, Maqsood J, Baig MQ, Ashraf S, Khan TA.
+Comparison of characteristics: lead acid, nickel based, lead
+crystal and lithium based batteries. In: UKSim-AMSS
+International Conference on Computer Modelling and Sim-
+ulation. Cambridge; 2015. p. 444–50.
+44. Yao LZ, Yang B, Cui HF, Zhuang J, Ye J, Xue J. Challenges
+and progresses of energy storage technology and its applica-
+tion in power systems. J Mod Power Syst Clean Energy.
+2016;4(4):519–28. doi: 10.1007/s40565-016-0248-x
+45. Liu YF, Pan HG, Gao MX, Wang Q. Advanced hydrogen
+storage alloys for Ni/MH rechargeable batteries. J Mater
+Chem. 2011;21(13):4743–55. doi: 10.1039/c0jm01921f
+46. Perrin M, Malbranche P, Lemaire-Potteau E, Willer B, Soria
+ML, Jossen A, et al. Temperature behaviour: comparison for
+nine storage technologies: results from the INVESTIRE
+network. J Power Sour. 2006;154(2):545–9. https://doi.
+org/10.1016/j.jpowsour.2005.10.054
+47. Lailler P, Sarrau JF, Sarrazin C. Comparative study for “36
+V” vehicle applications: advantages of lead–acid batteries. J
+Power Sour. 2001;95(1–2):58–67. https://doi.org/10.
+1016/S0378-7753(00)00638-8
+48. Manla E, Nasiri A, Rentel CH, Hughes M. Modeling of zinc
+bromide energy storage for vehicular applications. IEEE
+Trans Ind Electron. 2010;57(2):624–32. doi: 10.1109/
+TIE.2009.2030765
+49. Rydh CJ. Environmental assessment of vanadium redox and
+lead–acid batteries for stationary energy storage. J Power
+Sour. 1999;80(1–2):21–9. https://doi.org/10.1016/S0378-
+7753(98)00249-3
+50. Dehghani-Sanij AR, Tharumalingam E, Dusseault MB, Fraser
+R. Study of energy storage systems and environmental
+challenges of batteries. Renew Sustain Energy Rev. 2019;
+104:192–208. https://doi.org/10.1016/j.rser.2019.01.023
+51. Leung P, Li XH, de Leon CP, Berlouis L, Low CJ, Walsh FC.
+Progress in redox flow batteries, remaining challenges and
+their applications in energy storage. RSC Adv. 2012;2(27):
+10125–56. doi: 10.1039/C2RA21342G
+52. Young KH. Research in nickel/metal hydride batteries 2016.
+Batteries. 2016;2(4):31. https://doi.org/10.3390/batteries
+2040031
+53. Cassayre L, Guzhov B, Zielinski M, Biscans B. Chemical
+processes for the recovery of valuable metals from spent
+nickel metal hydride batteries: a review. Renew Sust Energ
+Rev.2022;170:112983. https://doi.org/10.1016/j.rser.2022.
+112983
+54. Müller T, Friedrich B. Development of a recycling process for
+nickel-metal hydride batteries. J Power Sources. 2006;158(2):
+1498–509. https://doi.org/10.1016/j.jpowsour.2005.10.046
+55. Chen H, Shen Z, Pan Z, Kou Z, Liu X, Zhang H, et al.
+Hierarchical micro-nano sheet arrays of nickel–cobalt
+double hydroxides for high-rate Ni–Zn batteries. Adv Sci.
+2019;6(8):1802002. doi: 10.1002/advs.201802002
+56. Koohi-Fayegh S, Rosen MA. A review of energy storage types,
+applications and recent developments. J Energy Storage.
+2020;27:101047. https://doi.org/10.1016/j.est.2019.101047
+ACADEMIA ENGINEERING 2024, 1 17 of 19
+https://www.academia.edu/journals/academia-engineering/about https://doi.org/10.20935/AcadEng7355
+57. Long B, Balogun MS, Luo L, Qiu W, Luo Y, Song S, et al.
+Phase boundary derived pseudocapacitance enhanced
+nickel-based composites for electrochemical energy storage
+devices. Adv Energy Mater. 2018;8(5):1701681. doi: 10.
+1002/aenm.201701681
+58. Constantine J, Lie J, Liu JC. Recovery of rare earth elements
+from spent NiMH batteries using subcritical water extrac-
+tion with citric acid. J Environ Chem Eng. 2022;10(3):
+108000. https://doi.org/10.1016/j.jece.2022.108000
+59. Balaram V. Rare earth elements: a review of applications,
+occurrence, exploration, analysis, recycling, and environ-
+mental impact. Geosci Front. 2019;10(4):1285–303.
+https://doi.org/10.1016/j.gsf.2018.12.005
+60. Jha MK, Choubey PK, Dinkar OS, Panda R, Jyothi RK, Yoo
+K, et al. Recovery of rare earth metals (REMs) from nickel
+metal hydride batteries of electric vehicles. Minerals. 2021;
+12(1):34. https://doi.org/10.3390/min12010034
+61. Yang X, Zhang J, Fang X. Rare earth element recycling from
+waste nickel-metal hydride batteries. J Hazard Mater. 2014;
+279:384–8. https://doi.org/10.1016/j.jhazmat.2014.07.027
+62. Bertuol DA, Bernardes AM, Tenório JA. Spent NiMH
+batteries—the role of selective precipitation in the recovery
+of valuable metals. J Power Sources. 2009;193(2):914–23.
+https://doi.org/10.1016/j.jpowsour.2009.05.014
+63. Fernandes A, Afonso JC, Dutra AJ. Separation of nickel (II),
+cobalt (II) and lanthanides from spent Ni-MH batteries by
+hydrochloric acid leaching, solvent extraction and precipita-
+tion. Hydrometallurgy. 2013;133:37–43. https://doi.org/10.
+1016/j.hydromet.2012.11.017
+64. Innocenzi V, Veglio F. Recovery of rare earths and base
+metals from spent nickel-metal hydride batteries by
+sequential sulphuric acid leaching and selective precipita-
+tions. J Power Sources. 2012;211:184–91. https://doi.org/
+10.1016/j.jpowsour.2012.03.064
+65. Zhang P, Yokoyama T, Itabashi O, Wakui Y, Suzuki TM, Inoue
+K. Hydrometallurgical process for recovery of metal values from
+spent nickel-metal hydride secondary batteries. Hydro-
+metallurgy.1998;50(1):61–75. https://doi.org/10.1016/S0304-
+386X(98)00046-2
+66. Mei GJ, Xia Y, Shi W, Liu B. Recovery of rare earth from
+spent MH-Ni battery negative electrode. Environ Prot Chem
+Ind. 2008;28:70–3.
+67. Pietrelli L, Bellomo B, Fontana D, Montereali M. Charac-
+terization and leaching of NiCd and NiMH spent batteries
+for the recovery of metals. Waste Manag. 2005;25(2):221–6.
+https://doi.org/10.1016/j.wasman.2004.12.013
+68. Ahn NK, Shim HW, Kim DW, Swain B. Valorization of waste
+NiMH battery through recovery of critical rare earth metal: a
+simple recycling process for the circular economy. Waste
+Manag. 2020;104:254–61. https://doi.org/10.1016/j.wasman.
+2020.01.014
+69. Pimassoni YS, Lima MTWDC, Yamane LH, Siman RR. The
+recovery of rare earth elements from waste electrical and
+electronic equipment: a review. Hydrometallurgy. 2023;222:
+106156. https://doi.org/10.1016/j.hydromet.2023.106156
+70. Takano M, Asano S, Goto M. Recovery of nickel, cobalt and
+rare-earth elements from spent nickel–metal-hydride battery:
+laboratory tests and pilot trials. Hydrometallurgy. 2022;209:
+105826. https://doi.org/10.1016/j.hydromet.2022.105826
+71. Lie J, Lin YC, Liu JC. Process intensification for valuable
+metals leaching from spent NiMH batteries. Chem Eng
+Process Process Intensif. 2021;167:108507. https://doi.org/
+10.1016/j.cep.2021.108507
+72. Lie J, Liu JC. Selective recovery of rare earth elements
+(REEs) from spent NiMH batteries by two-stage acid
+leaching. J Environ Chem Eng. 2021;9.5:106084. https://
+doi.org/10.1016/j.jece.2021.106084
+73. Schaeffer N, Vargas SJR, Passos H, Brandão P, Nogueira
+HIS, Svecova L, et al. A HNO3-responsive aqueous biphasic
+system for metal separation: application towards CeIV
+recovery. ChemSusChem. 2021;14:3018–26. doi: 10.1002/
+cssc.202101149
+74. Vargas SJR, Schaeffer N, Souza JC, da Silva LHM, Hespanhol
+MC. Green separation of lanthanum, cerium and nickel from
+waste nickel metal hydride battery. Waste Manag. 2021;
+125:154–62. https://doi.org/10.1016/j.wasman.2021.02.038
+75. Porvali A, Agarwal V, Lundström M. REE(III) recovery from
+spent NiMH batteries as REE double sulfates and their simul-
+taneous hydrolysis and wet-oxidation. Waste Manag. 2020;
+107:66–73. https://doi.org/10.1016/j.wasman.2020.03.042
+76. Porvali A, Ojanen S, Wilson BP, Serna-Guerrero R, Lund-
+ström M. Nickel metal hydride battery waste: mechano-
+hydrometallurgical experimental study on recycling aspects.
+J Sustain Metal. 2020;6:78–90. https://doi.org/
+10.1007/s40831-019-00258-2
+77. Zielinski M, Cassayre L, Destrac P, Coppey N, Garin G,
+Biscans B. Leaching mechanisms of industrial powders of
+spent nickel metal hydride batteries in a pilot-scale reactor.
+ChemSusChem. 2020;13:616–28. doi: 10.1002/cssc.
+201902640
+78. Zhang Y, Chu W, Chen X, Wang M, Cui H, Wang J. Recovery
+of rare earth metals and synthesis of Ni0.6Co0.2Mn0.
+2(OH)2 from spent asymmetric-capacitance power batter-
+ies. J Clean Prod. 2019;235:1295–303. https://doi.org/
+10.1016/j.jclepro.2019.07.072
+79. Díaz-López JC, Angarita J, Vargas-Angarita CY, Blanco S,
+Delvasto P. Electrolytic recovery of nickel and cobalt as
+multi-elemental coatings: an option for the recycling of
+spent Ni-MH batteries. J Phys Conf Ser. 2018;1119:012003.
+doi :10.1088/1742-6596/1119/1/012003
+80. Maroufi S, Nekouei RK, Hossain R, Assefi M, Sahajwalla V.
+Recovery of rare earth (i.e., La, Ce, Nd, and Pr) oxides from
+end-of-life Ni-MH battery via thermal isolation. ACS Sustain
+Chem Eng. 2018;6(9):11811–8. doi: 10.1021/acssus
+chemeng.8b02097
+81. Porvali A, Wilson BP, Lundström M. Lanthanide-alkali
+double sulfate precipitation from strong sulfuric acid NiMH
+battery waste leachate. Waste Manag. 2018;71:381–9.
+https://doi.org/10.1016/j.wasman.2017.10.031
+82. Yao Y, Farac NF, Azimi G. Recycling of rare earth element
+from nickel metal hydride battery utilizing supercritical fluid
+ACADEMIA ENGINEERING 2024, 1 18 of 19
+https://www.academia.edu/journals/academia-engineering/about https://doi.org/10.20935/AcadEng7355
+extraction. ECS Trans. 2018;85:405–15. doi: 10.1149/
+08513.0405ecst
+83. Yao Y, Farac NF, Azimi G. Supercritical fluid extraction of
+rare earth elements from nickel metal hydride battery.ACS
+Sustain Chem Eng. 2018;6(1):1417–26. doi: 10.1021/
+acssuschemeng.7b03803
+84. Sobianowska-Turek A. Hydrometallurgical recovery of
+metals: Ce, La, Co, Fe, Mn, Ni and Zn from the stream of
+used Ni-MH cells. Waste Manag. 2018;77:213–9. https://
+doi.org/10.1016/j.wasman.2018.03.046
+85. Meshram P, Pandey BD, Mankhand TR. Process optimiza-
+tion and kinetics for leaching of rare earth metals from the
+spent Ni-metal hydride batteries. Waste Manag. 2016;
+51:196–203. https://doi.org/10.1016/j.wasman.2015.12.018
+86. Alonso AR, Pérez EA, Lapidus GT, Luna-Sánchez RM.
+Hydrometallurgical process for rare earth elements recovery
+from spent Ni-HM batteries. Can Metall Q. 2015;54:310–7.
+https://doi.org/10.1179/1879139515Y.0000000013
+87. Liu F, Peng C, Porvali A, Wang Z, Wilson BP, Lundström M.
+Synergistic recovery of valuable metals from spent nickel-
+metal hydride batteries and lithium-ion batteries. ACS
+Sustain Chem Eng. 2019;7:16103–11. doi: 10.1021/
+acssuschemeng.9b02863
+ACADEMIA ENGINEERING 2024, 1 19 of 19
