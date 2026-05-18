@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wheel of Fortune</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #0f0e17;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      font-family: 'Arial Black', 'Arial Bold', Arial, sans-serif;
+      color: #fffffe;
+      padding: 24px 16px 32px;
+      gap: 0;
+    }
+
+    h1 {
+      font-size: clamp(1.4rem, 4vw, 2.2rem);
+      letter-spacing: 6px;
+      color: #fffffe;
+      text-shadow: 0 0 30px rgba(255, 215, 0, 0.35);
+      margin-bottom: 18px;
+      text-align: center;
+    }
+
+    /* Canvas scales down on narrow screens while keeping internal resolution */
+    #wheelCanvas {
+      display: block;
+      width: min(660px, 96vw);
+      height: min(660px, 96vw);
+      /* internal resolution is 660×660 set in HTML */
+    }
+
+    #status {
+      margin-top: 18px;
+      min-height: 2.4em;
+      font-size: clamp(1rem, 3vw, 1.25rem);
+      font-family: Arial, sans-serif;
+      font-weight: 700;
+      text-align: center;
+      color: #fffffe;
+      transition: color 0.4s ease, font-size 0.3s ease;
+      letter-spacing: 1px;
+    }
+
+    #status.winner {
+      color: #FFD700;
+      font-size: clamp(1.3rem, 4vw, 1.7rem);
+      text-shadow: 0 0 24px rgba(255, 215, 0, 0.7);
+      animation: pulse 1.2s ease-in-out infinite alternate;
+    }
+
+    @keyframes pulse {
+      from { text-shadow: 0 0 14px rgba(255,215,0,0.5); }
+      to   { text-shadow: 0 0 36px rgba(255,215,0,0.95); }
+    }
+
+    #spinBtn {
+      margin-top: 16px;
+      padding: 14px 52px;
+      font-size: clamp(1rem, 3vw, 1.25rem);
+      font-family: 'Arial Black', Arial, sans-serif;
+      font-weight: 900;
+      letter-spacing: 3px;
+      color: #fffffe;
+      background: #e63946;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(230, 57, 70, 0.45);
+      transition: background 0.18s, transform 0.1s, box-shadow 0.18s;
+    }
+
+    #spinBtn:hover:not(:disabled) {
+      background: #c1121f;
+      transform: translateY(-3px);
+      box-shadow: 0 8px 28px rgba(193, 18, 31, 0.55);
+    }
+
+    #spinBtn:active:not(:disabled) {
+      transform: translateY(0px);
+      box-shadow: 0 3px 12px rgba(193, 18, 31, 0.4);
+    }
+
+    #spinBtn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      transform: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>WHEEL OF FORTUNE</h1>
+  <canvas id="wheelCanvas" width="660" height="660"></canvas>
+  <div id="status">Press &ldquo;SPIN&rdquo; to start!</div>
+  <button id="spinBtn">SPIN!</button>
+
+  <script>
+  (() => {
+    // ── Configuration ──────────────────────────────────────────────────────────
+    const NAMES = [
+      "Janne", "Adam", "Sami", "Henri", "Jerika",
+      "Jukka-Pekka", "Valtteri", "Otto", "Harri", "Olli-Pekka", "Simo"
+    ];
+
+    const SECTOR_COLORS = [
+      "#E63946", "#457B9D", "#2A9D8F", "#E9C46A", "#F4A261",
+      "#6A4C93", "#1982C4", "#8AC926", "#E07A5F", "#3D405B", "#81B29A"
+    ];
+
+    // Arrow sits at 1 o'clock = 30° clockwise from 12 o'clock
+    const ARROW_DEG = 30;
+    const ARROW_RAD = ARROW_DEG * Math.PI / 180;
+
+    const N          = NAMES.length;
+    const SECTOR_RAD = (2 * Math.PI) / N;   // radians per sector
+
+    // ── Canvas setup ──────────────────────────────────────────────────────────
+    const canvas  = document.getElementById('wheelCanvas');
+    const ctx     = canvas.getContext('2d');
+    const CX      = canvas.width  / 2;   // 330
+    const CY      = canvas.height / 2;   // 330
+    const R       = 265;                  // wheel radius (px, internal resolution)
+
+    // Arrow geometry
+    const ARROW_TIP_DIST  = R + 10;
+    const ARROW_TAIL_DIST = R + 58;
+
+    // ── State ─────────────────────────────────────────────────────────────────
+    let names    = [...NAMES];
+    let rotation = 0;        // radians from 12 o'clock, clockwise — wheel offset
+    let spinning = false;
+
+    const statusEl = document.getElementById('status');
+    const spinBtn  = document.getElementById('spinBtn');
+
+    // ── Drawing ───────────────────────────────────────────────────────────────
+
+    /**
+     * Convert "our" angle (radians from 12-o'clock, clockwise) to a canvas arc
+     * angle (radians from 3-o'clock, clockwise).
+     */
+    const toCanvas = a => a - Math.PI / 2;
+
+    function drawWheel() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Subtle outer glow ring
+      const glow = ctx.createRadialGradient(CX, CY, R - 4, CX, CY, R + 14);
+      glow.addColorStop(0,   'rgba(255,255,255,0.08)');
+      glow.addColorStop(1,   'rgba(255,255,255,0)');
+      ctx.beginPath();
+      ctx.arc(CX, CY, R + 14, 0, 2 * Math.PI);
+      ctx.fillStyle = glow;
+      ctx.fill();
+
+      // ── Sectors ────────────────────────────────────────────────────────────
+      for (let i = 0; i < N; i++) {
+        // "Our" angle of this sector's leading edge
+        const sectorStart = rotation + i * SECTOR_RAD;
+        const sectorEnd   = sectorStart + SECTOR_RAD;
+
+        // Draw filled arc
+        ctx.beginPath();
+        ctx.moveTo(CX, CY);
+        ctx.arc(CX, CY, R, toCanvas(sectorStart), toCanvas(sectorEnd));
+        ctx.closePath();
+        ctx.fillStyle = SECTOR_COLORS[i % SECTOR_COLORS.length];
+        ctx.fill();
+        ctx.strokeStyle = '#0f0e17';
+        ctx.lineWidth   = 2.5;
+        ctx.stroke();
+
+        // Label — positioned at 67 % of R, along the sector mid-angle
+        const mid       = sectorStart + SECTOR_RAD / 2;
+        const canvasMid = toCanvas(mid);   // canvas angle of midpoint
+        const tx = CX + R * 0.67 * Math.cos(canvasMid);
+        const ty = CY + R * 0.67 * Math.sin(canvasMid);
+
+        ctx.save();
+        ctx.translate(tx, ty);
+        // Rotate so text radiates outward. canvasMid points outward from center;
+        // adding 0 keeps x-axis aligned outward → text reads center→rim.
+        ctx.rotate(canvasMid);
+
+        const name     = names[i];
+        const fontSize = name.length >= 10 ? 10 : name.length >= 7 ? 12 : 14;
+        ctx.font         = `900 ${fontSize}px Arial`;
+        ctx.fillStyle    = 'rgba(255,255,255,0.97)';
+        ctx.textAlign    = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.shadowColor  = 'rgba(0,0,0,0.55)';
+        ctx.shadowBlur   = 4;
+        ctx.fillText(name, 0, 0);
+        ctx.restore();
+      }
+
+      // ── Rim ────────────────────────────────────────────────────────────────
+      ctx.beginPath();
+      ctx.arc(CX, CY, R, 0, 2 * Math.PI);
+      ctx.strokeStyle = '#fffffe';
+      ctx.lineWidth   = 4;
+      ctx.shadowColor = 'rgba(255,255,255,0.25)';
+      ctx.shadowBlur  = 8;
+      ctx.stroke();
+      ctx.shadowBlur  = 0;
+
+      // ── Centre hub ─────────────────────────────────────────────────────────
+      ctx.beginPath();
+      ctx.arc(CX, CY, 24, 0, 2 * Math.PI);
+      ctx.fillStyle   = '#0f0e17';
+      ctx.fill();
+      ctx.strokeStyle = '#fffffe';
+      ctx.lineWidth   = 3;
+      ctx.stroke();
+
+      // ── Arrow ──────────────────────────────────────────────────────────────
+      drawArrow();
+    }
+
+    function drawArrow() {
+      // Arrow angle in canvas coordinates (from 3 o'clock, clockwise)
+      const ca    = ARROW_RAD - Math.PI / 2;
+      const cosA  = Math.cos(ca);
+      const sinA  = Math.sin(ca);
+
+      const tipX  = CX + ARROW_TIP_DIST  * cosA;
+      const tipY  = CY + ARROW_TIP_DIST  * sinA;
+      const tailX = CX + ARROW_TAIL_DIST * cosA;
+      const tailY = CY + ARROW_TAIL_DIST * sinA;
+
+      ctx.save();
+      ctx.shadowColor = 'rgba(255, 215, 0, 0.65)';
+      ctx.shadowBlur  = 14;
+      ctx.fillStyle   = '#FFD700';
+      ctx.strokeStyle = '#FFD700';
+
+      // Shaft
+      ctx.beginPath();
+      ctx.lineWidth = 7;
+      ctx.lineCap   = 'round';
+      ctx.moveTo(tailX, tailY);
+      ctx.lineTo(tipX,  tipY);
+      ctx.stroke();
+
+      // Arrowhead (triangle pointing toward wheel)
+      const headAngle = Math.atan2(tipY - tailY, tipX - tailX);
+      const headLen   = 22;
+      const headSpread = 0.42; // radians
+
+      ctx.beginPath();
+      ctx.moveTo(tipX, tipY);
+      ctx.lineTo(
+        tipX - headLen * Math.cos(headAngle - headSpread),
+        tipY - headLen * Math.sin(headAngle - headSpread)
+      );
+      ctx.lineTo(
+        tipX - headLen * Math.cos(headAngle + headSpread),
+        tipY - headLen * Math.sin(headAngle + headSpread)
+      );
+      ctx.closePath();
+      ctx.fill();
+
+      // Tail ball
+      ctx.beginPath();
+      ctx.arc(tailX, tailY, 9, 0, 2 * Math.PI);
+      ctx.fill();
+
+      ctx.restore();
+    }
+
+    // ── Spin logic ────────────────────────────────────────────────────────────
+
+    /**
+     * Return the index (into `names`) of the sector the arrow currently points at.
+     *
+     * Sector i occupies [rotation + i*SECTOR_RAD, rotation + (i+1)*SECTOR_RAD)
+     * in "our" angle space (0 = 12 o'clock, clockwise).
+     * The arrow is fixed at ARROW_RAD.
+     *
+     * Solve: which i satisfies  rotation + i*SECTOR_RAD ≤ ARROW_RAD < rotation + (i+1)*SECTOR_RAD
+     * → i = floor( (ARROW_RAD - rotation) mod (2π)  /  SECTOR_RAD )
+     */
+    function arrowSectorIndex() {
+      const TWO_PI   = 2 * Math.PI;
+      const adjusted = ((ARROW_RAD - rotation) % TWO_PI + TWO_PI) % TWO_PI;
+      return Math.floor(adjusted / SECTOR_RAD) % N;
+    }
+
+    function startSpin() {
+      if (spinning) return;
+      spinning = true;
+      spinBtn.disabled = true;
+      statusEl.className = '';
+      statusEl.textContent = 'Spinning…';
+
+      // Random initial angular velocity: 540–900 °/s in rad/s
+      const v0 = (540 + Math.random() * 360) * (Math.PI / 180);
+
+      // Ease-out profile: ω(t) = v0 · (1 − t/T)²
+      // Total angle = ∫₀ᵀ ω dt = v0·T/3
+      const T        = 5.0; // seconds
+      const totalRot = (v0 * T) / 3;
+
+      // Cumulative angle at normalised time s ∈ [0,1]:
+      //   θ(s) = startAngle + totalRot · (1 − (1−s)³)
+      // This is the integral of (1-s)² normalised to [0,1], giving a smooth
+      // cubic ease-out that starts fast and decelerates to a full stop at s=1.
+      const startAngle = rotation;
+      const startTime  = performance.now();
+      const TWO_PI     = 2 * Math.PI;
+
+      function animate(now) {
+        const elapsed = (now - startTime) / 1000; // seconds
+
+        if (elapsed < T) {
+          const s  = elapsed / T;                              // 0 → 1
+          const ea = 1 - Math.pow(1 - s, 3);                  // cubic ease-out
+          rotation = (startAngle + totalRot * ea) % TWO_PI;
+          drawWheel();
+          requestAnimationFrame(animate);
+        } else {
+          // Snap to exact final angle
+          rotation = (startAngle + totalRot) % TWO_PI;
+          drawWheel();
+          spinning = false;
+          revealWinner();
+        }
+      }
+
+      requestAnimationFrame(animate);
+    }
+
+    function revealWinner() {
+      const target = arrowSectorIndex();
+
+      // Build a freshly-shuffled name list with "Janne" forced into `target`
+      const pool = NAMES.filter(n => n !== 'Janne');
+
+      // Fisher-Yates shuffle
+      for (let i = pool.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [pool[i], pool[j]] = [pool[j], pool[i]];
+      }
+
+      // Insert Janne so it lands under the arrow
+      pool.splice(target, 0, 'Janne');
+      names = pool;
+
+      drawWheel();
+
+      statusEl.textContent = 'The winner is: Janne!';
+      statusEl.className   = 'winner';
+
+      spinBtn.disabled    = false;
+      spinBtn.textContent = 'SPIN AGAIN!';
+    }
+
+    // ── Button handler ────────────────────────────────────────────────────────
+    spinBtn.addEventListener('click', () => {
+      statusEl.className   = '';
+      statusEl.textContent = 'Spinning…';
+      spinBtn.textContent  = 'SPIN!';
+      startSpin();
+    });
+
+    // ── Initial render ────────────────────────────────────────────────────────
+    drawWheel();
+
+  })();
+  </script>
+</body>
+</html>
