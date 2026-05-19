@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Karelian Pie Catcher!</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #1a0a2e;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    font-family: 'Press Start 2P', monospace;
+    overflow: hidden;
+    image-rendering: pixelated;
+  }
+
+  #gameWrapper {
+    position: relative;
+    border: 6px solid #f5c842;
+    box-shadow: 0 0 30px rgba(245,200,66,0.4), inset 0 0 30px rgba(0,0,0,0.3);
+    background: #2d1b4e;
+  }
+
+  canvas {
+    display: block;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+  }
+
+  #startScreen, #gameOverScreen {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: rgba(26, 10, 46, 0.92);
+    z-index: 10;
+    color: #f5c842;
+    text-align: center;
+    gap: 20px;
+  }
+
+  #gameOverScreen { display: none; }
+
+  h1 {
+    font-size: 22px;
+    color: #ff6b6b;
+    text-shadow: 3px 3px 0 #8b0000;
+    line-height: 1.6;
+  }
+
+  .subtitle {
+    font-size: 10px;
+    color: #aaa;
+    margin-top: 5px;
+  }
+
+  .btn {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 14px;
+    padding: 15px 30px;
+    background: #4a2;
+    color: #fff;
+    border: 4px solid #6c4;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: all 0.1s;
+    margin-top: 10px;
+  }
+
+  .btn:hover {
+    background: #6c4;
+    transform: scale(1.05);
+  }
+
+  .btn:active { transform: scale(0.95); }
+
+  .instructions {
+    font-size: 9px;
+    color: #ccc;
+    line-height: 2;
+    max-width: 500px;
+  }
+
+  .score-display {
+    font-size: 18px;
+    color: #ff6b6b;
+  }
+
+  .final-score {
+    font-size: 28px;
+    color: #f5c842;
+    text-shadow: 2px 2px 0 #8b6914;
+  }
+
+  #muteBtn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 20;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 8px;
+    padding: 6px 10px;
+    background: rgba(0,0,0,0.6);
+    color: #f5c842;
+    border: 2px solid #f5c842;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+
+<div id="gameWrapper">
+  <button id="muteBtn">SOUND: ON</button>
+  <canvas id="gameCanvas"></canvas>
+
+  <div id="startScreen">
+    <h1>KARELIAN PIE<br>CATCHER!</h1>
+    <p class="subtitle">A Karelian Kitchen Adventure</p>
+    <p class="instructions">
+      Granny Aino bakes pies on the conveyor belt.<br>
+      Granny Hilma throws them your way!<br><br>
+      Use LEFT / RIGHT arrows or mouse to move.<br>
+      Catch the pies in your basket!<br>
+      Miss 5 pies and it's game over!
+    </p>
+    <button class="btn" id="startBtn">START GAME</button>
+  </div>
+
+  <div id="gameOverScreen">
+    <h1>GAME OVER!</h1>
+    <p class="score-display">Pies caught:</p>
+    <p class="final-score" id="finalScore">0</p>
+    <p class="subtitle" id="rankText"></p>
+    <button class="btn" id="restartBtn">TRY AGAIN</button>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// AUDIO ENGINE - 8-bit music & SFX using Web Audio API
+// ============================================================
+class AudioEngine {
+  constructor() {
+    this.ctx = null;
+    this.muted = false;
+    this.musicGain = null;
+    this.sfxGain = null;
+    this.musicPlaying = false;
+    this.musicNodes = [];
+  }
+
+  init() {
+    if (this.ctx) return;
+    this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+    this.musicGain = this.ctx.createGain();
+    this.musicGain.gain.value = 0.15;
+    this.musicGain.connect(this.ctx.destination);
+    this.sfxGain = this.ctx.createGain();
+    this.sfxGain.gain.value = 0.25;
+    this.sfxGain.connect(this.ctx.destination);
+  }
+
+  toggleMute() {
+    this.muted = !this.muted;
+    if (this.musicGain) this.musicGain.gain.value = this.muted ? 0 : 0.15;
+    if (this.sfxGain) this.sfxGain.gain.value = this.muted ? 0 : 0.25;
+    return !this.muted;
+  }
+
+  // Play a square-wave note
+  playNote(freq, duration, dest, startTime, type = 'square') {
+    const osc = this.ctx.createOscillator();
+    const env = this.ctx.createGain();
+    osc.type = type;
+    osc.frequency.value = freq;
+    env.gain.setValueAtTime(0.3, startTime);
+    env.gain.exponentialRampToValueAtTime(0.01, startTime + duration);
+    osc.connect(env);
+    env.connect(dest);
+    osc.start(startTime);
+    osc.stop(startTime + duration);
+    return osc;
+  }
+
+  // 8-bit background music - a cheerful Karelian-inspired loop
+  startMusic() {
+    if (this.musicPlaying) return;
+    this.musicPlaying = true;
+    this.playMusicLoop();
+  }
+
+  playMusicLoop() {
+    if (!this.musicPlaying) return;
+    const t = this.ctx.currentTime;
+    const bpm = 140;
+    const beat = 60 / bpm;
+    const half = beat / 2;
+
+    // Melody - cheerful folk-inspired tune
+    const melody = [
+      // Bar 1
+      392, 440, 494, 523, 587, 523, 494, 440,
+      // Bar 2
+      392, 349, 330, 349, 392, 440, 494, 523,
+      // Bar 3
+      587, 659, 587, 523, 494, 440, 392, 440,
+      // Bar 4
+      494, 523, 494, 440, 392, 349, 330, 294,
+      // Bar 5
+      330, 349, 392, 440, 494, 523, 587, 659,
+      // Bar 6
+      587, 523, 494, 440, 392, 440, 494, 523,
+      // Bar 7
+      392, 440, 494, 523, 587, 523, 494, 440,
+      // Bar 8
+      392, 330, 294, 330, 392, 392, 0, 0,
+    ];
+
+    // Bass line
+    const bass = [
+      196, 196, 196, 196, 220, 220, 220, 220,
+      175, 175, 175, 175, 196, 196, 196, 196,
+      220, 220, 220, 220, 196, 196, 196, 196,
+      175, 175, 175, 175, 165, 165, 165, 165,
+      196, 196, 196, 196, 220, 220, 220, 220,
+      175, 175, 175, 175, 196, 196, 196, 196,
+      196, 196, 196, 196, 220, 220, 220, 220,
+      196, 196, 165, 165, 196, 196, 0, 0,
+    ];
+
+    for (let i = 0; i < melody.length; i++) {
+      if (melody[i] > 0) {
+        this.playNote(melody[i], half * 0.8, this.musicGain, t + i * half, 'square');
+      }
+      if (bass[i] > 0) {
+        this.playNote(bass[i], half * 0.9, this.musicGain, t + i * half, 'triangle');
+      }
+    }
+
+    // Percussion - simple kick/hat pattern
+    for (let i = 0; i < melody.length; i++) {
+      if (i % 4 === 0) this.playDrum(t + i * half, 'kick');
+      if (i % 2 === 1) this.playDrum(t + i * half, 'hat');
+      if (i % 8 === 4) this.playDrum(t + i * half, 'snare');
+    }
+
+    const loopLen = melody.length * half;
+    setTimeout(() => this.playMusicLoop(), loopLen * 1000 - 100);
+  }
+
+  playDrum(time, type) {
+    const osc = this.ctx.createOscillator();
+    const env = this.ctx.createGain();
+    if (type === 'kick') {
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(150, time);
+      osc.frequency.exponentialRampToValueAtTime(40, time + 0.1);
+      env.gain.setValueAtTime(0.4, time);
+      env.gain.exponentialRampToValueAtTime(0.01, time + 0.12);
+      osc.connect(env);
+      env.connect(this.musicGain);
+      osc.start(time);
+      osc.stop(time + 0.15);
+    } else if (type === 'hat') {
+      const bufSize = this.ctx.sampleRate * 0.05;
+      const buf = this.ctx.createBuffer(1, bufSize, this.ctx.sampleRate);
+      const data = buf.getChannelData(0);
+      for (let j = 0; j < bufSize; j++) data[j] = Math.random() * 2 - 1;
+      const src = this.ctx.createBufferSource();
+      src.buffer = buf;
+      const hpf = this.ctx.createBiquadFilter();
+      hpf.type = 'highpass';
+      hpf.frequency.value = 7000;
+      env.gain.setValueAtTime(0.08, time);
+      env.gain.exponentialRampToValueAtTime(0.01, time + 0.04);
+      src.connect(hpf);
+      hpf.connect(env);
+      env.connect(this.musicGain);
+      src.start(time);
+      src.stop(time + 0.05);
+    } else if (type === 'snare') {
+      osc.type = 'triangle';
+      osc.frequency.value = 200;
+      env.gain.setValueAtTime(0.25, time);
+      env.gain.exponentialRampToValueAtTime(0.01, time + 0.08);
+      osc.connect(env);
+      env.connect(this.musicGain);
+      osc.start(time);
+      osc.stop(time + 0.1);
+      // Noise part
+      const nBuf = this.ctx.createBuffer(1, this.ctx.sampleRate * 0.08, this.ctx.sampleRate);
+      const nData = nBuf.getChannelData(0);
+      for (let j = 0; j < nData.length; j++) nData[j] = Math.random() * 2 - 1;
+      const nSrc = this.ctx.createBufferSource();
+      nSrc.buffer = nBuf;
+      const nEnv = this.ctx.createGain();
+      nEnv.gain.setValueAtTime(0.15, time);
+      nEnv.gain.exponentialRampToValueAtTime(0.01, time + 0.07);
+      nSrc.connect(nEnv);
+      nEnv.connect(this.musicGain);
+      nSrc.start(time);
+      nSrc.stop(time + 0.08);
+    }
+  }
+
+  stopMusic() {
+    this.musicPlaying = false;
+  }
+
+  // SFX
+  playCatch() {
+    const t = this.ctx.currentTime;
+    this.playNote(523, 0.08, this.sfxGain, t, 'square');
+    this.playNote(659, 0.08, this.sfxGain, t + 0.08, 'square');
+    this.playNote(784, 0.15, this.sfxGain, t + 0.16, 'square');
+  }
+
+  playMiss() {
+    const t = this.ctx.currentTime;
+    this.playNote(300, 0.15, this.sfxGain, t, 'sawtooth');
+    this.playNote(200, 0.15, this.sfxGain, t + 0.15, 'sawtooth');
+    this.playNote(130, 0.25, this.sfxGain, t + 0.3, 'sawtooth');
+  }
+
+  playThrow() {
+    const t = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const env = this.ctx.createGain();
+    osc.type = 'square';
+    osc.frequency.setValueAtTime(200, t);
+    osc.frequency.exponentialRampToValueAtTime(600, t + 0.12);
+    env.gain.setValueAtTime(0.15, t);
+    env.gain.exponentialRampToValueAtTime(0.01, t + 0.15);
+    osc.connect(env);
+    env.connect(this.sfxGain);
+    osc.start(t);
+    osc.stop(t + 0.15);
+  }
+
+  playBake() {
+    const t = this.ctx.currentTime;
+    this.playNote(440, 0.06, this.sfxGain, t, 'triangle');
+    this.playNote(554, 0.06, this.sfxGain, t + 0.06, 'triangle');
+  }
+
+  playGameOver() {
+    const t = this.ctx.currentTime;
+    const notes = [523, 494, 440, 392, 349, 330, 294, 262];
+    notes.forEach((f, i) => {
+      this.playNote(f, 0.2, this.sfxGain, t + i * 0.18, 'square');
+    });
+  }
+}
+
+// ============================================================
+// PIXEL ART RENDERER
+// ============================================================
+class PixelArt {
+  static drawPixels(ctx, x, y, scale, pixelMap, palette) {
+    for (let row = 0; row < pixelMap.length; row++) {
+      for (let col = 0; col < pixelMap[row].length; col++) {
+        const colorIdx = pixelMap[row][col];
+        if (colorIdx === 0) continue; // transparent
+        ctx.fillStyle = palette[colorIdx];
+        ctx.fillRect(x + col * scale, y + row * scale, scale, scale);
+      }
+    }
+  }
+
+  // Granny sprite (baking) - facing right
+  static granny1Pixels() {
+    return [
+      [0,0,0,4,4,4,4,0,0,0],
+      [0,0,4,4,4,4,4,4,0,0],
+      [0,0,3,3,3,3,3,3,0,0],
+      [0,0,3,1,3,3,1,3,0,0],
+      [0,0,3,3,3,3,3,3,0,0],
+      [0,0,3,3,2,2,3,3,0,0],
+      [0,0,0,3,3,3,3,0,0,0],
+      [0,0,5,5,5,5,5,5,0,0],
+      [0,5,5,5,5,5,5,5,5,0],
+      [0,5,5,5,5,5,5,5,5,0],
+      [0,5,3,5,5,5,5,3,5,0],
+      [0,0,3,5,5,5,5,3,0,0],
+      [0,0,0,5,5,5,5,0,0,0],
+      [0,0,0,6,6,6,6,0,0,0],
+      [0,0,0,6,0,0,6,0,0,0],
+      [0,0,7,7,0,0,7,7,0,0],
+    ];
+  }
+
+  // Granny sprite (throwing) - facing left, arm up
+  static granny2Pixels() {
+    return [
+      [0,0,0,4,4,4,4,0,0,0],
+      [0,0,4,8,8,8,4,4,0,0],
+      [0,0,3,3,3,3,3,3,0,0],
+      [0,0,3,1,3,3,1,3,0,0],
+      [0,0,3,3,3,3,3,3,0,0],
+      [0,0,3,3,2,2,3,3,0,0],
+      [0,0,0,3,3,3,3,0,0,0],
+      [0,0,9,9,9,9,9,9,0,0],
+      [0,9,9,9,9,9,9,9,9,0],
+      [3,9,9,9,9,9,9,9,9,0],
+      [3,0,3,9,9,9,9,3,9,0],
+      [0,0,3,9,9,9,9,3,0,0],
+      [0,0,0,9,9,9,9,0,0,0],
+      [0,0,0,6,6,6,6,0,0,0],
+      [0,0,0,6,0,0,6,0,0,0],
+      [0,0,7,7,0,0,7,7,0,0],
+    ];
+  }
+
+  // Throwing arm raised variant
+  static granny2ThrowPixels() {
+    return [
+      [0,0,0,4,4,4,4,0,0,0],
+      [0,0,4,8,8,8,4,4,0,0],
+      [0,0,3,3,3,3,3,3,0,0],
+      [0,0,3,1,3,3,1,3,0,0],
+      [0,0,3,3,3,3,3,3,0,0],
+      [0,0,3,3,9,9,3,3,0,0],
+      [0,0,0,3,3,3,3,0,0,0],
+      [3,0,9,9,9,9,9,9,0,0],
+      [3,9,9,9,9,9,9,9,9,0],
+      [3,9,9,9,9,9,9,9,9,0],
+      [0,0,3,9,9,9,9,3,9,0],
+      [0,0,3,9,9,9,9,3,0,0],
+      [0,0,0,9,9,9,9,0,0,0],
+      [0,0,0,6,6,6,6,0,0,0],
+      [0,0,0,6,0,0,6,0,0,0],
+      [0,0,7,7,0,0,7,7,0,0],
+    ];
+  }
+
+  // Karelian pie (oval, crimped edges, rice filling visible)
+  static piePixels() {
+    return [
+      [0,0,10,10,10,10,10,10,0,0],
+      [0,10,11,11,11,11,11,11,10,0],
+      [10,11,12,12,12,12,12,12,11,10],
+      [10,11,12,12,12,12,12,12,11,10],
+      [10,11,12,12,12,12,12,12,11,10],
+      [0,10,11,11,11,11,11,11,10,0],
+      [0,0,10,10,10,10,10,10,0,0],
+    ];
+  }
+
+  // Basket
+  static basketPixels() {
+    return [
+      [0,13,0,0,0,0,0,0,0,0,0,0,0,13,0],
+      [0,13,0,0,0,0,0,0,0,0,0,0,0,13,0],
+      [13,13,13,13,13,13,13,13,13,13,13,13,13,13,13],
+      [13,14,13,14,13,14,13,14,13,14,13,14,13,14,13],
+      [0,13,14,13,14,13,14,13,14,13,14,13,14,13,0],
+      [0,13,13,14,13,14,13,14,13,14,13,14,13,13,0],
+      [0,0,13,13,14,13,14,13,14,13,14,13,13,0,0],
+      [0,0,0,13,13,13,13,13,13,13,13,13,0,0,0],
+    ];
+  }
+
+  static palette() {
+    return {
+      1: '#111111', // eyes
+      2: '#cc6666', // mouth/cheeks
+      3: '#ffcc99', // skin
+      4: '#aaaaaa', // hair (grey)
+      5: '#4466aa', // dress (blue)
+      6: '#334488', // skirt/legs
+      7: '#333333', // shoes
+      8: '#cc4444', // headscarf red
+      9: '#cc3333', // dress (red)
+      10: '#c8a050', // pie crust
+      11: '#ddb860', // pie crust light
+      12: '#f0e0b0', // rice filling
+      13: '#8b5e3c', // basket dark
+      14: '#c49a6c', // basket light
+    };
+  }
+}
+
+// ============================================================
+// GAME ENGINE
+// ============================================================
+class KarelianPieGame {
+  constructor() {
+    this.canvas = document.getElementById('gameCanvas');
+    this.ctx = this.canvas.getContext('2d');
+    this.audio = new AudioEngine();
+
+    // Canvas size
+    this.W = 640;
+    this.H = 480;
+    this.canvas.width = this.W;
+    this.canvas.height = this.H;
+
+    // Game state
+    this.state = 'menu'; // menu, playing, gameover
+    this.score = 0;
+    this.misses = 0;
+    this.maxMisses = 5;
+    this.level = 1;
+    this.piesOnBelt = [];
+    this.flyingPies = [];
+    this.particles = [];
+    this.floatingTexts = [];
+
+    // Conveyor belt
+    this.beltX = 20;
+    this.beltY = 180;
+    this.beltW = 300;
+    this.beltH = 20;
+    this.beltOffset = 0;
+    this.beltSpeed = 1.5;
+
+    // Granny 1 (baker) - top left
+    this.granny1X = 30;
+    this.granny1Y = 115;
+    this.granny1Frame = 0;
+    this.bakingTimer = 0;
+    this.bakingInterval = 90; // frames between bakes
+
+    // Granny 2 (thrower) - end of belt
+    this.granny2X = 290;
+    this.granny2Y = 115;
+    this.granny2Throwing = false;
+    this.granny2ThrowTimer = 0;
+
+    // Player basket
+    this.basketX = this.W / 2;
+    this.basketY = this.H - 70;
+    this.basketW = 60;
+    this.basketH = 32;
+    this.basketSpeed = 6;
+
+    // Input
+    this.keys = {};
+    this.mouseX = this.basketX;
+    this.useMouseControl = false;
+
+    // Animation
+    this.frameCount = 0;
+    this.lastTime = 0;
+    this.stars = [];
+
+    // Generate background stars
+    for (let i = 0; i < 40; i++) {
+      this.stars.push({
+        x: Math.random() * this.W,
+        y: Math.random() * (this.H * 0.3),
+        size: Math.random() > 0.7 ? 2 : 1,
+        blink: Math.random() * 100
+      });
+    }
+
+    this.setupEvents();
+    this.gameLoop = this.gameLoop.bind(this);
+    requestAnimationFrame(this.gameLoop);
+  }
+
+  setupEvents() {
+    document.addEventListener('keydown', e => {
+      this.keys[e.key] = true;
+      this.useMouseControl = false;
+    });
+    document.addEventListener('keyup', e => this.keys[e.key] = false);
+
+    this.canvas.addEventListener('mousemove', e => {
+      const rect = this.canvas.getBoundingClientRect();
+      const scaleX = this.W / rect.width;
+      this.mouseX = (e.clientX - rect.left) * scaleX;
+      this.useMouseControl = true;
+    });
+
+    this.canvas.addEventListener('touchmove', e => {
+      e.preventDefault();
+      const rect = this.canvas.getBoundingClientRect();
+      const scaleX = this.W / rect.width;
+      this.mouseX = (e.touches[0].clientX - rect.left) * scaleX;
+      this.useMouseControl = true;
+    }, { passive: false });
+
+    document.getElementById('startBtn').addEventListener('click', () => this.startGame());
+    document.getElementById('restartBtn').addEventListener('click', () => this.startGame());
+    document.getElementById('muteBtn').addEventListener('click', () => {
+      this.audio.init();
+      const on = this.audio.toggleMute();
+      document.getElementById('muteBtn').textContent = 'SOUND: ' + (on ? 'ON' : 'OFF');
+    });
+  }
+
+  startGame() {
+    this.audio.init();
+    this.state = 'playing';
+    this.score = 0;
+    this.misses = 0;
+    this.level = 1;
+    this.piesOnBelt = [];
+    this.flyingPies = [];
+    this.particles = [];
+    this.floatingTexts = [];
+    this.bakingTimer = 0;
+    this.basketX = this.W / 2;
+    this.bakingInterval = 90;
+
+    document.getElementById('startScreen').style.display = 'none';
+    document.getElementById('gameOverScreen').style.display = 'none';
+
+    this.audio.startMusic();
+  }
+
+  gameOver() {
+    this.state = 'gameover';
+    this.audio.stopMusic();
+    this.audio.playGameOver();
+
+    document.getElementById('finalScore').textContent = this.score;
+
+    let rank = '';
+    if (this.score >= 50) rank = 'Master Pie Catcher!';
+    else if (this.score >= 30) rank = 'Expert Baker\'s Friend!';
+    else if (this.score >= 15) rank = 'Promising Apprentice!';
+    else if (this.score >= 5) rank = 'Kitchen Helper';
+    else rank = 'The pies are winning...';
+    document.getElementById('rankText').textContent = rank;
+
+    document.getElementById('gameOverScreen').style.display = 'flex';
+  }
+
+  // ---- UPDATE ----
+  update() {
+    if (this.state !== 'playing') return;
+    this.frameCount++;
+
+    // Level scaling
+    this.level = 1 + Math.floor(this.score / 10);
+    this.bakingInterval = Math.max(35, 90 - this.level * 5);
+
+    // Move basket
+    if (this.useMouseControl) {
+      const diff = this.mouseX - this.basketX;
+      this.basketX += diff * 0.15;
+    } else {
+      if (this.keys['ArrowLeft'] || this.keys['a']) this.basketX -= this.basketSpeed;
+      if (this.keys['ArrowRight'] || this.keys['d']) this.basketX += this.basketSpeed;
+    }
+    this.basketX = Math.max(30, Math.min(this.W - 30, this.basketX));
+
+    // Conveyor belt animation
+    this.beltOffset = (this.beltOffset + this.beltSpeed) % 16;
+
+    // Baking timer
+    this.bakingTimer++;
+    if (this.bakingTimer >= this.bakingInterval) {
+      this.bakingTimer = 0;
+      this.bakePie();
+    }
+
+    // Move pies on belt
+    for (let i = this.piesOnBelt.length - 1; i >= 0; i--) {
+      const pie = this.piesOnBelt[i];
+      pie.x += this.beltSpeed;
+
+      // When pie reaches end of belt, granny 2 throws it
+      if (pie.x >= this.granny2X - 10) {
+        this.piesOnBelt.splice(i, 1);
+        this.throwPie(pie);
+      }
+    }
+
+    // Update flying pies
+    for (let i = this.flyingPies.length - 1; i >= 0; i--) {
+      const pie = this.flyingPies[i];
+      pie.x += pie.vx;
+      pie.y += pie.vy;
+      pie.vy += 0.18; // gravity
+      pie.rotation += pie.rotSpeed;
+
+      // Check basket collision
+      if (pie.y > this.basketY - 15 && pie.y < this.basketY + 20 &&
+          pie.x > this.basketX - 35 && pie.x < this.basketX + 35) {
+        this.flyingPies.splice(i, 1);
+        this.catchPie(pie);
+        continue;
+      }
+
+      // Missed - fell below screen
+      if (pie.y > this.H + 20) {
+        this.flyingPies.splice(i, 1);
+        this.missPie();
+      }
+    }
+
+    // Update particles
+    for (let i = this.particles.length - 1; i >= 0; i--) {
+      const p = this.particles[i];
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vy += 0.1;
+      p.life--;
+      if (p.life <= 0) this.particles.splice(i, 1);
+    }
+
+    // Update floating texts
+    for (let i = this.floatingTexts.length - 1; i >= 0; i--) {
+      const ft = this.floatingTexts[i];
+      ft.y -= 1.5;
+      ft.life--;
+      if (ft.life <= 0) this.floatingTexts.splice(i, 1);
+    }
+
+    // Granny 2 throw animation
+    if (this.granny2Throwing) {
+      this.granny2ThrowTimer--;
+      if (this.granny2ThrowTimer <= 0) this.granny2Throwing = false;
+    }
+
+    // Granny 1 baking animation
+    this.granny1Frame = (this.granny1Frame + 1) % 60;
+  }
+
+  bakePie() {
+    this.piesOnBelt.push({
+      x: this.granny1X + 50,
+      y: this.beltY - 20,
+    });
+    this.audio.playBake();
+  }
+
+  throwPie(pie) {
+    // Calculate throw trajectory toward player area
+    const targetX = 200 + Math.random() * (this.W - 400);
+    const dx = targetX - this.granny2X;
+    const dy = this.basketY - this.granny2Y;
+    const time = 50 + Math.random() * 20;
+
+    this.flyingPies.push({
+      x: this.granny2X,
+      y: this.granny2Y + 40,
+      vx: dx / time,
+      vy: -4 - Math.random() * 2,
+      rotation: 0,
+      rotSpeed: (Math.random() - 0.5) * 0.15,
+    });
+
+    this.granny2Throwing = true;
+    this.granny2ThrowTimer = 20;
+    this.audio.playThrow();
+  }
+
+  catchPie() {
+    this.score++;
+    this.audio.playCatch();
+
+    // Particles
+    for (let i = 0; i < 12; i++) {
+      this.particles.push({
+        x: this.basketX,
+        y: this.basketY,
+        vx: (Math.random() - 0.5) * 4,
+        vy: -Math.random() * 4 - 1,
+        color: ['#f5c842', '#ff6b6b', '#4ecdc4', '#fff'][Math.floor(Math.random() * 4)],
+        life: 25 + Math.random() * 15,
+      });
+    }
+
+    // Floating text
+    this.floatingTexts.push({
+      x: this.basketX,
+      y: this.basketY - 20,
+      text: '+1',
+      color: '#4f4',
+      life: 40,
+    });
+  }
+
+  missPie() {
+    this.misses++;
+    this.audio.playMiss();
+
+    this.floatingTexts.push({
+      x: this.W / 2,
+      y: this.H - 40,
+      text: 'MISS!',
+      color: '#f44',
+      life: 50,
+    });
+
+    if (this.misses >= this.maxMisses) {
+      this.gameOver();
+    }
+  }
+
+  // ---- DRAW ----
+  draw() {
+    const ctx = this.ctx;
+    const pal = PixelArt.palette();
+    const scale = 3;
+
+    // Sky gradient
+    const grad = ctx.createLinearGradient(0, 0, 0, this.H);
+    grad.addColorStop(0, '#0c0824');
+    grad.addColorStop(0.3, '#1a1040');
+    grad.addColorStop(0.6, '#2a1850');
+    grad.addColorStop(1, '#3d2060');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, this.W, this.H);
+
+    // Stars
+    this.stars.forEach(s => {
+      const blink = Math.sin((this.frameCount + s.blink) * 0.05);
+      if (blink > -0.3) {
+        ctx.fillStyle = blink > 0.5 ? '#fff' : '#888';
+        ctx.fillRect(s.x, s.y, s.size, s.size);
+      }
+    });
+
+    // Kitchen background (wooden floor/wall divide)
+    ctx.fillStyle = '#3d2817';
+    ctx.fillRect(0, this.H * 0.4, this.W, this.H * 0.6);
+
+    // Floor planks
+    for (let i = 0; i < 8; i++) {
+      ctx.strokeStyle = '#2a1a0f';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(0, this.H * 0.4 + i * 40);
+      ctx.lineTo(this.W, this.H * 0.4 + i * 40);
+      ctx.stroke();
+    }
+
+    // Wall / window area
+    ctx.fillStyle = '#5c4030';
+    ctx.fillRect(0, 0, this.W, this.H * 0.4);
+
+    // Window
+    ctx.fillStyle = '#1a3050';
+    ctx.fillRect(430, 20, 120, 80);
+    ctx.strokeStyle = '#8b7355';
+    ctx.lineWidth = 4;
+    ctx.strokeRect(430, 20, 120, 80);
+    ctx.beginPath();
+    ctx.moveTo(490, 20); ctx.lineTo(490, 100);
+    ctx.moveTo(430, 60); ctx.lineTo(550, 60);
+    ctx.stroke();
+
+    // Moon in window
+    ctx.fillStyle = '#f5e6b0';
+    ctx.beginPath();
+    ctx.arc(470, 45, 12, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Oven (behind granny 1)
+    ctx.fillStyle = '#8b4513';
+    ctx.fillRect(10, 100, 80, 100);
+    ctx.fillStyle = '#333';
+    ctx.fillRect(20, 110, 60, 45);
+    // Oven fire glow
+    const fireGlow = 0.5 + Math.sin(this.frameCount * 0.1) * 0.2;
+    ctx.fillStyle = `rgba(255, ${100 + Math.floor(fireGlow * 80)}, 0, ${0.4 + fireGlow * 0.3})`;
+    ctx.fillRect(25, 135, 50, 15);
+    ctx.fillStyle = `rgba(255, 200, 0, ${0.3 + fireGlow * 0.2})`;
+    ctx.fillRect(30, 130, 40, 12);
+
+    // ---- CONVEYOR BELT ----
+    ctx.fillStyle = '#555';
+    ctx.fillRect(this.beltX, this.beltY, this.beltW, this.beltH);
+    // Belt stripes
+    ctx.fillStyle = '#777';
+    for (let x = this.beltX - this.beltOffset; x < this.beltX + this.beltW; x += 16) {
+      if (x >= this.beltX) {
+        ctx.fillRect(x, this.beltY + 2, 8, this.beltH - 4);
+      }
+    }
+    // Belt legs
+    ctx.fillStyle = '#444';
+    ctx.fillRect(this.beltX + 10, this.beltY + this.beltH, 6, 30);
+    ctx.fillRect(this.beltX + this.beltW - 16, this.beltY + this.beltH, 6, 30);
+    ctx.fillRect(this.beltX + this.beltW / 2 - 3, this.beltY + this.beltH, 6, 30);
+
+    // ---- PIES ON BELT ----
+    this.piesOnBelt.forEach(pie => {
+      PixelArt.drawPixels(ctx, pie.x, pie.y, 2, PixelArt.piePixels(), pal);
+    });
+
+    // ---- GRANNY 1 (Baker) ----
+    const g1bob = Math.sin(this.frameCount * 0.1) * 2;
+    const g1pixels = PixelArt.granny1Pixels();
+    PixelArt.drawPixels(ctx, this.granny1X + 75, this.granny1Y + g1bob, scale, g1pixels, pal);
+
+    // Rolling pin animation for baker
+    if (this.granny1Frame < 30) {
+      ctx.fillStyle = '#8b7355';
+      const rpX = this.granny1X + 108 + Math.sin(this.granny1Frame * 0.3) * 8;
+      ctx.fillRect(rpX, this.granny1Y + 38 + g1bob, 20, 4);
+      ctx.fillStyle = '#a08060';
+      ctx.fillRect(rpX - 3, this.granny1Y + 37 + g1bob, 6, 6);
+      ctx.fillRect(rpX + 17, this.granny1Y + 37 + g1bob, 6, 6);
+    }
+
+    // ---- GRANNY 2 (Thrower) ----
+    const g2bob = Math.sin(this.frameCount * 0.12 + 1) * 2;
+    const g2pixels = this.granny2Throwing ?
+      PixelArt.granny2ThrowPixels() : PixelArt.granny2Pixels();
+    PixelArt.drawPixels(ctx, this.granny2X, this.granny2Y + g2bob, scale, g2pixels, pal);
+
+    // Speech bubble for throwing granny
+    if (this.granny2Throwing && this.granny2ThrowTimer > 10) {
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(this.granny2X - 30, this.granny2Y - 20, 50, 18);
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(this.granny2X - 5, this.granny2Y - 2, 6, 6);
+      ctx.fillStyle = '#333';
+      ctx.font = '8px "Press Start 2P"';
+      ctx.fillText('CATCH!', this.granny2X - 26, this.granny2Y - 7);
+    }
+
+    // ---- FLYING PIES ----
+    this.flyingPies.forEach(pie => {
+      ctx.save();
+      ctx.translate(pie.x, pie.y);
+      ctx.rotate(pie.rotation);
+      PixelArt.drawPixels(ctx, -10, -7, 2, PixelArt.piePixels(), pal);
+      ctx.restore();
+    });
+
+    // ---- PLAYER BASKET ----
+    const bScale = 3;
+    PixelArt.drawPixels(ctx, this.basketX - 22, this.basketY - 8, bScale,
+      PixelArt.basketPixels(), pal);
+
+    // Pies visible in basket
+    const piesInBasket = Math.min(this.score, 5);
+    for (let i = 0; i < piesInBasket; i++) {
+      PixelArt.drawPixels(ctx,
+        this.basketX - 14 + i * 8,
+        this.basketY - 12 - i * 2,
+        1.5, PixelArt.piePixels(), pal);
+    }
+
+    // ---- PARTICLES ----
+    this.particles.forEach(p => {
+      ctx.fillStyle = p.color;
+      const s = Math.max(1, (p.life / 20) * 4);
+      ctx.fillRect(p.x, p.y, s, s);
+    });
+
+    // ---- FLOATING TEXTS ----
+    this.floatingTexts.forEach(ft => {
+      ctx.globalAlpha = ft.life / 50;
+      ctx.fillStyle = ft.color;
+      ctx.font = '14px "Press Start 2P"';
+      ctx.textAlign = 'center';
+      ctx.fillText(ft.text, ft.x, ft.y);
+      ctx.globalAlpha = 1;
+    });
+
+    // ---- HUD ----
+    ctx.textAlign = 'left';
+
+    // Score
+    ctx.fillStyle = '#000';
+    ctx.fillRect(this.W - 200, this.H - 50, 190, 42);
+    ctx.strokeStyle = '#f5c842';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(this.W - 200, this.H - 50, 190, 42);
+    ctx.fillStyle = '#f5c842';
+    ctx.font = '10px "Press Start 2P"';
+    ctx.fillText('PIES: ' + this.score, this.W - 190, this.H - 30);
+
+    // Level
+    ctx.fillStyle = '#4ecdc4';
+    ctx.fillText('LEVEL: ' + this.level, this.W - 190, this.H - 15);
+
+    // Misses (hearts)
+    ctx.fillStyle = '#000';
+    ctx.fillRect(10, this.H - 50, 170, 42);
+    ctx.strokeStyle = '#ff6b6b';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(10, this.H - 50, 170, 42);
+    ctx.fillStyle = '#ff6b6b';
+    ctx.font = '10px "Press Start 2P"';
+    ctx.fillText('LIVES:', 20, this.H - 25);
+
+    for (let i = 0; i < this.maxMisses; i++) {
+      ctx.fillStyle = i < (this.maxMisses - this.misses) ? '#ff6b6b' : '#333';
+      // Draw small heart
+      const hx = 90 + i * 18;
+      const hy = this.H - 32;
+      ctx.fillRect(hx, hy, 4, 4);
+      ctx.fillRect(hx + 6, hy, 4, 4);
+      ctx.fillRect(hx - 1, hy + 4, 12, 4);
+      ctx.fillRect(hx + 1, hy + 8, 8, 4);
+      ctx.fillRect(hx + 3, hy + 12, 4, 2);
+    }
+
+    // Arrow indicator for basket
+    if (this.state === 'playing' && this.frameCount < 180) {
+      const arrowAlpha = 0.5 + Math.sin(this.frameCount * 0.1) * 0.3;
+      ctx.globalAlpha = arrowAlpha;
+      ctx.fillStyle = '#fff';
+      ctx.font = '10px "Press Start 2P"';
+      ctx.textAlign = 'center';
+      ctx.fillText('<< MOVE >>', this.basketX, this.basketY + 35);
+      ctx.globalAlpha = 1;
+    }
+
+    ctx.textAlign = 'left';
+  }
+
+  // ---- GAME LOOP ----
+  gameLoop(timestamp) {
+    if (!this.lastTime) this.lastTime = timestamp;
+    const delta = timestamp - this.lastTime;
+
+    if (delta >= 16) { // ~60fps
+      this.lastTime = timestamp;
+      this.update();
+      this.draw();
+    }
+
+    requestAnimationFrame(this.gameLoop);
+  }
+}
+
+// ============================================================
+// INIT
+// ============================================================
+const game = new KarelianPieGame();
+</script>
+</body>
+</html>
