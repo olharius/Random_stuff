@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slots of (mis)fortune</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;600;700&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(ellipse at 30% 20%, #1a0a2e 0%, #0d0015 50%, #000 100%);
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+        }
+
+        /* Ambient particles */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                radial-gradient(2px 2px at 20% 30%, rgba(255,215,0,0.3), transparent),
+                radial-gradient(2px 2px at 40% 70%, rgba(255,215,0,0.2), transparent),
+                radial-gradient(1px 1px at 60% 20%, rgba(255,215,0,0.3), transparent),
+                radial-gradient(2px 2px at 80% 50%, rgba(255,215,0,0.2), transparent),
+                radial-gradient(1px 1px at 10% 80%, rgba(255,215,0,0.3), transparent),
+                radial-gradient(1px 1px at 90% 10%, rgba(255,215,0,0.2), transparent);
+            animation: twinkle 4s ease-in-out infinite alternate;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes twinkle {
+            0% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .scene {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* ── Top sign with lights ── */
+        .top-sign {
+            position: relative;
+            background: linear-gradient(180deg, #b8860b 0%, #daa520 30%, #ffd700 50%, #daa520 70%, #b8860b 100%);
+            padding: 18px 50px;
+            border-radius: 18px 18px 6px 6px;
+            margin-bottom: -8px;
+            z-index: 3;
+            box-shadow:
+                0 0 20px rgba(255,215,0,0.4),
+                inset 0 2px 4px rgba(255,255,255,0.4),
+                inset 0 -2px 4px rgba(0,0,0,0.3);
+            border: 3px solid #8B6914;
+        }
+
+        .top-sign h1 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 900;
+            font-size: 2rem;
+            color: #1a0a2e;
+            text-shadow: 0 1px 0 rgba(255,255,255,0.4);
+            text-align: center;
+            letter-spacing: 2px;
+        }
+
+        .top-sign h1 span {
+            color: #8b0000;
+            font-style: italic;
+        }
+
+        /* Bulb row */
+        .bulbs {
+            display: flex;
+            justify-content: center;
+            gap: 14px;
+            margin-top: 8px;
+        }
+
+        .bulb {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            animation: bulbFlash 1.2s ease-in-out infinite alternate;
+        }
+
+        .bulb:nth-child(odd) { background: #ff4444; box-shadow: 0 0 8px #ff4444; }
+        .bulb:nth-child(even) { background: #ffdd44; box-shadow: 0 0 8px #ffdd44; animation-delay: 0.6s; }
+
+        @keyframes bulbFlash {
+            0% { opacity: 0.4; transform: scale(0.9); }
+            100% { opacity: 1; transform: scale(1.1); }
+        }
+
+        /* ── Machine body ── */
+        .machine {
+            position: relative;
+            display: flex;
+            align-items: stretch;
+            gap: 0;
+        }
+
+        .machine-body {
+            background: linear-gradient(145deg, #2a1040 0%, #1a0a2e 40%, #120822 100%);
+            border: 4px solid;
+            border-image: linear-gradient(180deg, #ffd700, #b8860b, #8B6914, #b8860b, #ffd700) 1;
+            border-radius: 12px;
+            padding: 30px 35px 40px;
+            position: relative;
+            box-shadow:
+                0 20px 60px rgba(0,0,0,0.7),
+                0 0 40px rgba(138,43,226,0.15),
+                inset 0 0 80px rgba(138,43,226,0.05);
+        }
+
+        /* Gold corner rivets */
+        .machine-body::before,
+        .machine-body::after {
+            content: '';
+            position: absolute;
+            width: 16px; height: 16px;
+            background: radial-gradient(circle at 35% 35%, #ffd700, #b8860b);
+            border-radius: 50%;
+            border: 2px solid #8B6914;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+        .machine-body::before { top: 12px; left: 12px; }
+        .machine-body::after { top: 12px; right: 12px; }
+
+        /* ── Reel window ── */
+        .reel-window {
+            display: flex;
+            gap: 12px;
+            background: #000;
+            padding: 8px;
+            border-radius: 10px;
+            border: 3px solid #b8860b;
+            box-shadow:
+                inset 0 0 30px rgba(0,0,0,0.8),
+                0 0 15px rgba(255,215,0,0.15);
+            position: relative;
+        }
+
+        /* Glass shine overlay */
+        .reel-window::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 8px;
+            background: linear-gradient(
+                105deg,
+                transparent 40%,
+                rgba(255,255,255,0.03) 42%,
+                rgba(255,255,255,0.06) 50%,
+                rgba(255,255,255,0.03) 58%,
+                transparent 60%
+            );
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .reel-container {
+            width: 140px;
+            height: 180px;
+            overflow: hidden;
+            position: relative;
+            background: linear-gradient(180deg, #0a0a1a, #111128, #0a0a1a);
+            border-radius: 6px;
+            border: 2px solid #333;
+        }
+
+        /* Top & bottom fade */
+        .reel-container::before,
+        .reel-container::after {
+            content: '';
+            position: absolute;
+            left: 0; right: 0;
+            height: 50px;
+            z-index: 3;
+            pointer-events: none;
+        }
+        .reel-container::before {
+            top: 0;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent);
+        }
+        .reel-container::after {
+            bottom: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+        }
+
+        .reel-strip {
+            display: flex;
+            flex-direction: column;
+            transition: none;
+        }
+
+        .reel-item {
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            font-weight: 700;
+            color: #e0d0ff;
+            text-shadow: 0 0 8px rgba(180,140,255,0.5);
+            flex-shrink: 0;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+        }
+
+        /* Center payline indicator */
+        .payline {
+            position: absolute;
+            top: 50%;
+            left: -2px;
+            right: -2px;
+            height: 62px;
+            transform: translateY(-50%);
+            border-top: 2px solid rgba(255,50,50,0.7);
+            border-bottom: 2px solid rgba(255,50,50,0.7);
+            background: rgba(255,50,50,0.05);
+            z-index: 4;
+            pointer-events: none;
+        }
+
+        .payline::before,
+        .payline::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0; height: 0;
+        }
+        .payline::before {
+            left: -1px;
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+            border-left: 12px solid #ff3333;
+        }
+        .payline::after {
+            right: -1px;
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+            border-right: 12px solid #ff3333;
+        }
+
+        /* ── Bottom panel ── */
+        .bottom-panel {
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .credit-display {
+            background: #000;
+            border: 2px solid #b8860b;
+            border-radius: 6px;
+            padding: 8px 20px;
+            text-align: center;
+            min-width: 100px;
+        }
+
+        .credit-label {
+            font-size: 0.6rem;
+            color: #b8860b;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .credit-value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #ffd700;
+            font-family: 'Courier New', monospace;
+            text-shadow: 0 0 10px rgba(255,215,0,0.5);
+        }
+
+        .spin-btn {
+            background: linear-gradient(180deg, #ff4444 0%, #cc0000 50%, #990000 100%);
+            color: #fff;
+            border: 3px solid #ffd700;
+            border-radius: 50%;
+            width: 70px;
+            height: 70px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            box-shadow:
+                0 4px 15px rgba(255,0,0,0.4),
+                inset 0 2px 4px rgba(255,255,255,0.3),
+                inset 0 -2px 4px rgba(0,0,0,0.4);
+            transition: all 0.15s;
+            position: relative;
+        }
+
+        .spin-btn:hover {
+            transform: scale(1.05);
+            box-shadow:
+                0 6px 25px rgba(255,0,0,0.6),
+                inset 0 2px 4px rgba(255,255,255,0.3),
+                inset 0 -2px 4px rgba(0,0,0,0.4);
+        }
+
+        .spin-btn:active {
+            transform: scale(0.95);
+        }
+
+        .spin-btn.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* ── Lever (arm) ── */
+        .lever-wrapper {
+            position: relative;
+            width: 60px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            align-self: stretch;
+            cursor: pointer;
+            z-index: 2;
+        }
+
+        .lever-track {
+            width: 20px;
+            flex: 1;
+            background: linear-gradient(90deg, #666, #999, #888, #666);
+            border-radius: 4px;
+            position: relative;
+            border: 1px solid #555;
+            box-shadow: inset -2px 0 4px rgba(0,0,0,0.4);
+        }
+
+        .lever-handle {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            transition: top 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 2;
+        }
+
+        .lever-ball {
+            width: 44px;
+            height: 44px;
+            background: radial-gradient(circle at 35% 30%, #ff6666, #cc0000 40%, #880000 100%);
+            border-radius: 50%;
+            border: 3px solid #ffd700;
+            box-shadow:
+                0 4px 12px rgba(0,0,0,0.5),
+                inset 0 -3px 6px rgba(0,0,0,0.3),
+                inset 0 3px 8px rgba(255,255,255,0.2);
+        }
+
+        .lever-shaft {
+            width: 10px;
+            height: 40px;
+            background: linear-gradient(90deg, #aaa, #ddd, #ccc, #999);
+            border-radius: 0 0 3px 3px;
+            box-shadow: 2px 0 4px rgba(0,0,0,0.3);
+        }
+
+        .lever-wrapper:hover .lever-ball {
+            box-shadow:
+                0 4px 20px rgba(255,0,0,0.5),
+                inset 0 -3px 6px rgba(0,0,0,0.3),
+                inset 0 3px 8px rgba(255,255,255,0.2);
+        }
+
+        .lever-handle.pulled {
+            top: calc(100% - 90px) !important;
+        }
+
+        .lever-base {
+            width: 30px;
+            height: 12px;
+            background: linear-gradient(180deg, #888, #555);
+            border-radius: 0 0 6px 6px;
+            margin-top: -1px;
+        }
+
+        /* ── Win overlay ── */
+        .win-overlay {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .win-overlay.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .win-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 4rem;
+            font-weight: 900;
+            color: #ffd700;
+            text-shadow:
+                0 0 20px rgba(255,215,0,0.8),
+                0 0 40px rgba(255,215,0,0.4),
+                0 0 80px rgba(255,215,0,0.2),
+                3px 3px 0 #8b0000;
+            animation: winPulse 0.6s ease-in-out infinite alternate;
+        }
+
+        @keyframes winPulse {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.08); }
+        }
+
+        /* Win confetti */
+        .confetti-piece {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            top: -20px;
+            z-index: 99;
+            animation: confettiFall linear forwards;
+        }
+
+        @keyframes confettiFall {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+        }
+
+        /* ── Machine base/feet ── */
+        .machine-base {
+            width: calc(100% + 30px);
+            height: 18px;
+            background: linear-gradient(180deg, #b8860b, #8B6914, #6b4f10);
+            border-radius: 0 0 10px 10px;
+            margin-top: -4px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Responsive */
+        @media (max-width: 650px) {
+            .reel-container { width: 100px; height: 140px; }
+            .reel-item { font-size: 0.8rem; height: 50px; }
+            .top-sign h1 { font-size: 1.4rem; }
+            .top-sign { padding: 12px 25px; }
+            .payline { height: 52px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="scene">
+    <!-- Top Sign -->
+    <div class="top-sign">
+        <h1>Slots of <span>(mis)</span>fortune</h1>
+        <div class="bulbs">
+            <div class="bulb"></div>
+            <div class="bulb"></div>
+            <div class="bulb"></div>
+            <div class="bulb"></div>
+            <div class="bulb"></div>
+            <div class="bulb"></div>
+            <div class="bulb"></div>
+            <div class="bulb"></div>
+            <div class="bulb"></div>
+        </div>
+    </div>
+
+    <!-- Machine -->
+    <div class="machine">
+        <div class="machine-body">
+            <!-- Reel Window -->
+            <div class="reel-window">
+                <div class="reel-container">
+                    <div class="reel-strip" id="reel1"></div>
+                </div>
+                <div class="reel-container">
+                    <div class="reel-strip" id="reel2"></div>
+                </div>
+                <div class="reel-container">
+                    <div class="reel-strip" id="reel3"></div>
+                </div>
+                <div class="payline"></div>
+            </div>
+
+            <!-- Bottom panel -->
+            <div class="bottom-panel">
+                <div class="credit-display">
+                    <div class="credit-label">Credits</div>
+                    <div class="credit-value" id="credits">100</div>
+                </div>
+                <button class="spin-btn" id="spinBtn" onclick="pullLever()">SPIN</button>
+                <div class="credit-display">
+                    <div class="credit-label">Win</div>
+                    <div class="credit-value" id="winAmount">0</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lever / Arm -->
+        <div class="lever-wrapper" id="leverWrapper" onclick="pullLever()">
+            <div class="lever-track">
+                <div class="lever-handle" id="leverHandle">
+                    <div class="lever-ball"></div>
+                    <div class="lever-shaft"></div>
+                </div>
+            </div>
+            <div class="lever-base"></div>
+        </div>
+    </div>
+
+    <!-- Base -->
+    <div class="machine-base"></div>
+</div>
+
+<!-- Win overlay -->
+<div class="win-overlay" id="winOverlay">
+    <div class="win-text">ADAM WINS!</div>
+</div>
+
+<script>
+    const NAMES = [
+        'Adam', 'Jerika', 'Henri', 'Janne', 'Otto',
+        'Sami', 'Simo', 'Harri', 'Valtteri', 'Jukka-Pekka',
+        'Olli-Pekka'
+    ];
+
+    // Adam is always index 0 in NAMES
+    const ADAM_INDEX = 0;
+    const ITEM_HEIGHT = 60;
+    let spinning = false;
+    let credits = 100;
+
+    // Build repeated strips for each reel so we have plenty to scroll through
+    function buildReel(reelEl) {
+        // We'll create many copies so the spin looks natural
+        const repeats = 30;
+        let html = '';
+        for (let r = 0; r < repeats; r++) {
+            for (let i = 0; i < NAMES.length; i++) {
+                html += `<div class="reel-item">${NAMES[i]}</div>`;
+            }
+        }
+        reelEl.innerHTML = html;
+    }
+
+    // Position reel so a specific name index is centered in the view
+    // The view shows 3 items (180px), center is at item index 1 (offset 60px)
+    function setReelPosition(reelEl, nameIndex) {
+        // We want the name at nameIndex to be in the center row
+        // Center of the container = 90px, item at position p starts at p*60, center of item = p*60 + 30
+        // So we need: translateY = -(p * 60) + 60  (to put it in the middle slot)
+        // Pick a position far enough in so it doesn't look weird
+        const baseRepeat = 5; // use the 5th repeat as "home"
+        const pos = baseRepeat * NAMES.length + nameIndex;
+        const offset = -(pos * ITEM_HEIGHT) + ITEM_HEIGHT; // +60 to center
+        reelEl.style.transition = 'none';
+        reelEl.style.transform = `translateY(${offset}px)`;
+        return offset;
+    }
+
+    // Initialize reels
+    const reel1 = document.getElementById('reel1');
+    const reel2 = document.getElementById('reel2');
+    const reel3 = document.getElementById('reel3');
+
+    buildReel(reel1);
+    buildReel(reel2);
+    buildReel(reel3);
+
+    // Start with a random visible position
+    function randomIndex() {
+        return Math.floor(Math.random() * NAMES.length);
+    }
+
+    setReelPosition(reel1, randomIndex());
+    setReelPosition(reel2, randomIndex());
+    setReelPosition(reel3, randomIndex());
+
+    function pullLever() {
+        if (spinning) return;
+        spinning = true;
+
+        const btn = document.getElementById('spinBtn');
+        btn.classList.add('disabled');
+
+        // Hide any previous win
+        document.getElementById('winOverlay').classList.remove('show');
+        document.getElementById('winAmount').textContent = '0';
+
+        // Deduct credit
+        credits = Math.max(0, credits - 10);
+        document.getElementById('credits').textContent = credits;
+
+        // Pull lever animation
+        const lever = document.getElementById('leverHandle');
+        lever.classList.add('pulled');
+
+        setTimeout(() => {
+            lever.classList.remove('pulled');
+        }, 500);
+
+        // Spin all three reels
+        // Each reel will spin for a different duration, all landing on Adam
+        spinReel(reel1, ADAM_INDEX, 2000, 0);
+        spinReel(reel2, ADAM_INDEX, 2800, 200);
+        spinReel(reel3, ADAM_INDEX, 3600, 400, () => {
+            // All done — it's always Adam!
+            setTimeout(() => showWin(), 300);
+        });
+    }
+
+    function spinReel(reelEl, targetIndex, duration, delay, onDone) {
+        setTimeout(() => {
+            // Calculate where Adam is — we'll land on a repeat far down the strip
+            const targetRepeat = 20; // land on the 20th repeat
+            const targetPos = targetRepeat * NAMES.length + targetIndex;
+            const targetOffset = -(targetPos * ITEM_HEIGHT) + ITEM_HEIGHT;
+
+            // First, do the fast spin phase via CSS animation
+            // We use a custom easing for a realistic deceleration
+            reelEl.style.transition = `transform ${duration}ms cubic-bezier(0.15, 0.80, 0.30, 1.00)`;
+            reelEl.style.transform = `translateY(${targetOffset}px)`;
+
+            // Wait for animation end
+            setTimeout(() => {
+                // Reset position to a closer repeat (to avoid huge offsets building up)
+                setReelPosition(reelEl, targetIndex);
+                if (onDone) onDone();
+            }, duration + 50);
+        }, delay);
+    }
+
+    function showWin() {
+        // Award credits
+        credits += 50;
+        document.getElementById('credits').textContent = credits;
+        document.getElementById('winAmount').textContent = '50';
+
+        // Show win overlay
+        const overlay = document.getElementById('winOverlay');
+        overlay.classList.add('show');
+
+        // Confetti!
+        launchConfetti();
+
+        // Hide after a while
+        setTimeout(() => {
+            overlay.classList.remove('show');
+            spinning = false;
+            document.getElementById('spinBtn').classList.remove('disabled');
+        }, 3000);
+    }
+
+    function launchConfetti() {
+        const colors = ['#ffd700', '#ff4444', '#44ff44', '#4488ff', '#ff44ff', '#ff8800', '#00ffcc'];
+        const container = document.body;
+
+        for (let i = 0; i < 60; i++) {
+            const piece = document.createElement('div');
+            piece.classList.add('confetti-piece');
+            piece.style.left = Math.random() * 100 + 'vw';
+            piece.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            piece.style.width = (Math.random() * 8 + 5) + 'px';
+            piece.style.height = (Math.random() * 8 + 5) + 'px';
+            piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+            piece.style.animationDuration = (Math.random() * 2 + 2) + 's';
+            piece.style.animationDelay = (Math.random() * 1) + 's';
+            container.appendChild(piece);
+
+            // Clean up
+            setTimeout(() => piece.remove(), 5000);
+        }
+    }
+</script>
+
+</body>
+</html>
