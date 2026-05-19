@@ -340,8 +340,8 @@
     function revealWinner() {
       const target = arrowSectorIndex();
 
-      // Build a freshly-shuffled name list with "Janne" forced into `target`
-      const pool = NAMES.filter(n => n !== 'Janne');
+      // Build a freshly-shuffled name list with "Adam" forced into `target`
+      const pool = NAMES.filter(n => n !== 'Adam');
 
       // Fisher-Yates shuffle
       for (let i = pool.length - 1; i > 0; i--) {
@@ -350,12 +350,12 @@
       }
 
       // Insert Janne so it lands under the arrow
-      pool.splice(target, 0, 'Janne');
+      pool.splice(target, 0, 'Adam');
       names = pool;
 
       drawWheel();
 
-      statusEl.textContent = 'The winner is: Janne!';
+      statusEl.textContent = 'The winner is: Adam!';
       statusEl.className   = 'winner';
 
       spinBtn.disabled    = false;
