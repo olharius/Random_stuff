@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flappy Cybertruck — Tesla Edition</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #0a0a0a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            overflow: hidden;
+        }
+        canvas {
+            display: block;
+            border: 2px solid #333;
+            border-radius: 4px;
+            cursor: pointer;
+            max-width: 100vw;
+            max-height: 100vh;
+        }
+    </style>
+</head>
+<body>
+
+<canvas id="game"></canvas>
+
+<script>
+// ─── Canvas Setup ───
+const canvas = document.getElementById('game');
+const ctx = canvas.getContext('2d');
+
+const W = 480;
+const H = 720;
+canvas.width = W;
+canvas.height = H;
+
+// ─── Game Constants ───
+const GRAVITY = 0.45;
+const FLAP_FORCE = -7.5;
+const PIPE_WIDTH = 72;
+const PIPE_GAP = 175;
+const PIPE_SPEED = 2.8;
+const PIPE_INTERVAL = 1700; // ms
+const GROUND_HEIGHT = 70;
+const ROAD_Y = H - GROUND_HEIGHT;
+
+// ─── Game State ───
+let state = 'start'; // start | playing | gameover
+let score = 0;
+let highScore = parseInt(localStorage.getItem('flappyCybertruckHigh') || '0');
+let truck = null;
+let pipes = [];
+let particles = [];
+let sparks = [];
+let lastPipeTime = 0;
+let frameCount = 0;
+let stars = [];
+let buildings = [];
+let groundOffset = 0;
+let screenShake = 0;
+let flashAlpha = 0;
+
+// ─── Stars (background) ───
+function initStars() {
+    stars = [];
+    for (let i = 0; i < 80; i++) {
+        stars.push({
+            x: Math.random() * W,
+            y: Math.random() * (ROAD_Y - 100),
+            r: Math.random() * 1.5 + 0.3,
+            twinkle: Math.random() * Math.PI * 2
+        });
+    }
+}
+
+// ─── Buildings (background skyline) ───
+function initBuildings() {
+    buildings = [];
+    let x = 0;
+    while (x < W + 100) {
+        const w = 30 + Math.random() * 50;
+        const h = 60 + Math.random() * 200;
+        buildings.push({
+            x, w, h,
+            windows: Math.random() > 0.3,
+            color: `hsl(220, ${5 + Math.random() * 10}%, ${8 + Math.random() * 8}%)`
+        });
+        x += w + Math.random() * 15;
+    }
+}
+
+// ─── Truck (player) ───
+function initTruck() {
+    return {
+        x: 90,
+        y: H / 2 - 30,
+        vy: 0,
+        rotation: 0,
+        width: 64,
+        height: 34,
+        boosting: false,
+        boostTimer: 0,
+        alive: true
+    };
+}
+
+// ─── Drawing Functions ───
+
+function drawSky() {
+    const grad = ctx.createLinearGradient(0, 0, 0, ROAD_Y);
+    grad.addColorStop(0, '#05050f');
+    grad.addColorStop(0.5, '#0c0c24');
+    grad.addColorStop(1, '#141432');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, W, ROAD_Y);
+}
+
+function drawStars() {
+    stars.forEach(s => {
+        const alpha = 0.4 + 0.6 * Math.abs(Math.sin(s.twinkle + frameCount * 0.02));
+        ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx.fill();
+    });
+}
+
+function drawMoon() {
+    const mx = W - 80, my = 80, mr = 35;
+    ctx.save();
+    ctx.shadowColor = 'rgba(200, 200, 255, 0.3)';
+    ctx.shadowBlur = 40;
+    const moonGrad = ctx.createRadialGradient(mx - 5, my - 5, 0, mx, my, mr);
+    moonGrad.addColorStop(0, '#f0f0ff');
+    moonGrad.addColorStop(0.7, '#d0d0e8');
+    moonGrad.addColorStop(1, '#aaaacc');
+    ctx.fillStyle = moonGrad;
+    ctx.beginPath();
+    ctx.arc(mx, my, mr, 0, Math.PI * 2);
+    ctx.fill();
+    // Craters
+    ctx.fillStyle = 'rgba(0,0,0,0.08)';
+    ctx.beginPath(); ctx.arc(mx - 10, my - 8, 6, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(mx + 8, my + 5, 4, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(mx - 3, my + 12, 5, 0, Math.PI * 2); ctx.fill();
+    ctx.restore();
+}
+
+function drawBuildings() {
+    buildings.forEach(b => {
+        ctx.fillStyle = b.color;
+        ctx.fillRect(b.x, ROAD_Y - b.h, b.w, b.h);
+        // Windows
+        if (b.windows) {
+            for (let wy = ROAD_Y - b.h + 10; wy < ROAD_Y - 10; wy += 18) {
+                for (let wx = b.x + 6; wx < b.x + b.w - 6; wx += 12) {
+                    const lit = Math.sin(wx * 13.7 + wy * 7.3) > 0.2;
+                    ctx.fillStyle = lit ? 'rgba(255, 220, 100, 0.6)' : 'rgba(50, 50, 80, 0.4)';
+                    ctx.fillRect(wx, wy, 6, 10);
+                }
+            }
+        }
+        // Rooftop antenna
+        if (b.h > 150 && b.w > 35) {
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.moveTo(b.x + b.w / 2, ROAD_Y - b.h);
+            ctx.lineTo(b.x + b.w / 2, ROAD_Y - b.h - 20);
+            ctx.stroke();
+            // Red blink
+            if (Math.sin(frameCount * 0.05 + b.x) > 0.3) {
+                ctx.fillStyle = '#ff3333';
+                ctx.shadowColor = '#ff3333';
+                ctx.shadowBlur = 6;
+                ctx.beginPath();
+                ctx.arc(b.x + b.w / 2, ROAD_Y - b.h - 20, 2, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.shadowBlur = 0;
+            }
+        }
+    });
+}
+
+function drawRoad() {
+    // Asphalt
+    const roadGrad = ctx.createLinearGradient(0, ROAD_Y, 0, H);
+    roadGrad.addColorStop(0, '#2a2a2a');
+    roadGrad.addColorStop(0.15, '#222');
+    roadGrad.addColorStop(1, '#1a1a1a');
+    ctx.fillStyle = roadGrad;
+    ctx.fillRect(0, ROAD_Y, W, GROUND_HEIGHT);
+
+    // Road edge line
+    ctx.fillStyle = '#cc0000';
+    ctx.fillRect(0, ROAD_Y, W, 3);
+
+    // Dashed center line
+    ctx.strokeStyle = '#ffcc00';
+    ctx.lineWidth = 2;
+    ctx.setLineDash([30, 20]);
+    ctx.lineDashOffset = -groundOffset;
+    ctx.beginPath();
+    ctx.moveTo(0, ROAD_Y + GROUND_HEIGHT / 2);
+    ctx.lineTo(W, ROAD_Y + GROUND_HEIGHT / 2);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Bottom curb
+    ctx.fillStyle = '#333';
+    ctx.fillRect(0, H - 4, W, 4);
+}
+
+// ─── Draw Cybertruck ───
+function drawCybertruck(t) {
+    ctx.save();
+    ctx.translate(t.x + t.width / 2, t.y + t.height / 2);
+
+    // Rotation based on velocity
+    const targetRot = Math.max(-0.4, Math.min(0.5, t.vy * 0.06));
+    t.rotation += (targetRot - t.rotation) * 0.15;
+    ctx.rotate(t.rotation);
+
+    const hw = t.width / 2;
+    const hh = t.height / 2;
+
+    // ── Boost flame / thruster ──
+    if (t.boostTimer > 0) {
+        const flameLen = 15 + Math.random() * 20;
+        const flameGrad = ctx.createLinearGradient(-hw - flameLen, 0, -hw, 0);
+        flameGrad.addColorStop(0, 'rgba(255, 50, 0, 0)');
+        flameGrad.addColorStop(0.4, 'rgba(255, 120, 0, 0.7)');
+        flameGrad.addColorStop(0.7, 'rgba(0, 150, 255, 0.9)');
+        flameGrad.addColorStop(1, 'rgba(100, 200, 255, 1)');
+        ctx.fillStyle = flameGrad;
+        ctx.beginPath();
+        ctx.moveTo(-hw, -hh * 0.4);
+        ctx.lineTo(-hw - flameLen, 0);
+        ctx.lineTo(-hw, hh * 0.4);
+        ctx.closePath();
+        ctx.fill();
+    }
+
+    // ── Body (angular Cybertruck profile) ──
+    ctx.fillStyle = '#b0b0b0';
+    ctx.strokeStyle = '#888';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    // Start from front nose
+    ctx.moveTo(hw, hh * 0.1);                    // front tip (slightly above center)
+    ctx.lineTo(hw - 8, -hh * 0.3);              // front hood rise
+    ctx.lineTo(hw - 20, -hh * 0.75);            // windshield base
+    ctx.lineTo(-hw * 0.1, -hh);                 // roof front
+    ctx.lineTo(-hw * 0.7, -hh * 0.9);           // roof back
+    ctx.lineTo(-hw, -hh * 0.4);                 // tail top
+    ctx.lineTo(-hw, hh * 0.5);                  // tail bottom
+    ctx.lineTo(-hw * 0.5, hh);                  // underbody back
+    ctx.lineTo(hw * 0.4, hh);                   // underbody front
+    ctx.lineTo(hw, hh * 0.5);                   // front lower
+    ctx.closePath();
+    // Metallic gradient fill
+    const bodyGrad = ctx.createLinearGradient(0, -hh, 0, hh);
+    bodyGrad.addColorStop(0, '#c8c8c8');
+    bodyGrad.addColorStop(0.3, '#a0a0a0');
+    bodyGrad.addColorStop(0.6, '#b8b8b8');
+    bodyGrad.addColorStop(1, '#808080');
+    ctx.fillStyle = bodyGrad;
+    ctx.fill();
+    ctx.stroke();
+
+    // ── Windshield ──
+    ctx.fillStyle = 'rgba(60, 80, 120, 0.7)';
+    ctx.beginPath();
+    ctx.moveTo(hw - 20, -hh * 0.70);
+    ctx.lineTo(-hw * 0.05, -hh * 0.92);
+    ctx.lineTo(-hw * 0.15, -hh * 0.35);
+    ctx.lineTo(hw - 14, -hh * 0.22);
+    ctx.closePath();
+    ctx.fill();
+
+    // ── Rear window ──
+    ctx.fillStyle = 'rgba(50, 65, 100, 0.6)';
+    ctx.beginPath();
+    ctx.moveTo(-hw * 0.1, -hh * 0.92);
+    ctx.lineTo(-hw * 0.65, -hh * 0.82);
+    ctx.lineTo(-hw * 0.55, -hh * 0.38);
+    ctx.lineTo(-hw * 0.18, -hh * 0.37);
+    ctx.closePath();
+    ctx.fill();
+
+    // ── LED light bar (front) ──
+    ctx.shadowColor = '#ffffff';
+    ctx.shadowBlur = 12;
+    ctx.strokeStyle = '#fff';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(hw - 1, hh * 0.08);
+    ctx.lineTo(hw - 6, -hh * 0.25);
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+
+    // ── Tail lights ──
+    ctx.shadowColor = '#ff2200';
+    ctx.shadowBlur = 8;
+    ctx.fillStyle = '#ff3300';
+    ctx.fillRect(-hw, -hh * 0.35, 3, hh * 0.8);
+    ctx.shadowBlur = 0;
+
+    // ── Wheels ──
+    const wheelR = 6;
+    // Front wheel
+    ctx.fillStyle = '#222';
+    ctx.beginPath();
+    ctx.arc(hw * 0.3, hh + 1, wheelR, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#444';
+    ctx.beginPath();
+    ctx.arc(hw * 0.3, hh + 1, wheelR - 2, 0, Math.PI * 2);
+    ctx.fill();
+    // Rear wheel
+    ctx.fillStyle = '#222';
+    ctx.beginPath();
+    ctx.arc(-hw * 0.5, hh + 1, wheelR, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#444';
+    ctx.beginPath();
+    ctx.arc(-hw * 0.5, hh + 1, wheelR - 2, 0, Math.PI * 2);
+    ctx.fill();
+
+    // ── Tesla "T" badge ──
+    ctx.fillStyle = '#cc0000';
+    ctx.font = 'bold 8px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('T', hw * 0.1, hh * 0.15);
+
+    ctx.restore();
+}
+
+// ─── Draw Supercharger Pipe ───
+function drawPipe(p) {
+    const topPipeBottom = p.gapY;
+    const botPipeTop = p.gapY + PIPE_GAP;
+
+    // ── Top pipe (Supercharger column hanging down) ──
+    drawChargerColumn(p.x, 0, PIPE_WIDTH, topPipeBottom, false);
+
+    // ── Bottom pipe (Supercharger column rising up) ──
+    drawChargerColumn(p.x, botPipeTop, PIPE_WIDTH, ROAD_Y - botPipeTop, true);
+
+    // ── Connector nozzle tips ──
+    drawChargerNozzle(p.x, topPipeBottom, false);
+    drawChargerNozzle(p.x, botPipeTop, true);
+}
+
+function drawChargerColumn(x, y, w, h, isBottom) {
+    if (h <= 0) return;
+
+    // Main column
+    const colGrad = ctx.createLinearGradient(x, y, x + w, y);
+    colGrad.addColorStop(0, '#1a1a1a');
+    colGrad.addColorStop(0.2, '#2a2a2a');
+    colGrad.addColorStop(0.5, '#3a3a3a');
+    colGrad.addColorStop(0.8, '#2a2a2a');
+    colGrad.addColorStop(1, '#1a1a1a');
+    ctx.fillStyle = colGrad;
+    ctx.fillRect(x, y, w, h);
+
+    // Tesla red accent stripe
+    ctx.fillStyle = '#cc0000';
+    const stripeX = x + w / 2 - 3;
+    ctx.fillRect(stripeX, y, 6, h);
+
+    // Subtle glow on stripe
+    ctx.fillStyle = 'rgba(255, 0, 0, 0.1)';
+    ctx.fillRect(stripeX - 4, y, 14, h);
+
+    // Side trim lines
+    ctx.strokeStyle = '#444';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(x + 6, y);
+    ctx.lineTo(x + 6, y + h);
+    ctx.moveTo(x + w - 6, y);
+    ctx.lineTo(x + w - 6, y + h);
+    ctx.stroke();
+
+    // "TESLA" text on column (repeating)
+    ctx.save();
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.12)';
+    ctx.font = 'bold 10px sans-serif';
+    ctx.textAlign = 'center';
+    const textX = x + w / 2;
+    const startY = isBottom ? y + 50 : y + h - 50;
+    const step = isBottom ? 80 : -80;
+    for (let i = 0; i < 5; i++) {
+        const ty = startY + step * i;
+        if (ty > y && ty < y + h) {
+            ctx.save();
+            ctx.translate(textX, ty);
+            ctx.rotate(-Math.PI / 2);
+            ctx.fillText('SUPERCHARGER', 0, 0);
+            ctx.restore();
+        }
+    }
+    ctx.restore();
+
+    // Pulse energy line
+    const pulseY = y + ((frameCount * 2 + x * 3) % Math.max(h, 1));
+    if (pulseY > y && pulseY < y + h) {
+        ctx.fillStyle = 'rgba(0, 180, 255, 0.3)';
+        ctx.fillRect(x, pulseY, w, 2);
+    }
+}
+
+function drawChargerNozzle(x, y, isTop) {
+    const nw = PIPE_WIDTH + 16;
+    const nh = 22;
+    const nx = x - 8;
+    const ny = isTop ? y - 2 : y - nh + 2;
+
+    // Nozzle body
+    const nozGrad = ctx.createLinearGradient(nx, ny, nx, ny + nh);
+    nozGrad.addColorStop(0, '#444');
+    nozGrad.addColorStop(0.5, '#555');
+    nozGrad.addColorStop(1, '#333');
+    ctx.fillStyle = nozGrad;
+
+    // Rounded rect
+    const r = 4;
+    ctx.beginPath();
+    ctx.moveTo(nx + r, ny);
+    ctx.lineTo(nx + nw - r, ny);
+    ctx.quadraticCurveTo(nx + nw, ny, nx + nw, ny + r);
+    ctx.lineTo(nx + nw, ny + nh - r);
+    ctx.quadraticCurveTo(nx + nw, ny + nh, nx + nw - r, ny + nh);
+    ctx.lineTo(nx + r, ny + nh);
+    ctx.quadraticCurveTo(nx, ny + nh, nx, ny + nh - r);
+    ctx.lineTo(nx, ny + r);
+    ctx.quadraticCurveTo(nx, ny, nx + r, ny);
+    ctx.closePath();
+    ctx.fill();
+
+    // Tesla "T" emblem on nozzle
+    ctx.fillStyle = '#cc0000';
+    ctx.font = 'bold 13px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('T', nx + nw / 2, ny + nh / 2 + 5);
+
+    // Green charging LEDs
+    const ledY = ny + nh / 2;
+    for (let i = 0; i < 3; i++) {
+        const alpha = Math.sin(frameCount * 0.1 + i * 1.2) * 0.5 + 0.5;
+        ctx.fillStyle = `rgba(0, 255, 100, ${0.4 + alpha * 0.6})`;
+        ctx.shadowColor = '#00ff66';
+        ctx.shadowBlur = 4;
+        ctx.beginPath();
+        ctx.arc(nx + 12 + i * 8, ledY, 2, 0, Math.PI * 2);
+        ctx.fill();
+    }
+    ctx.shadowBlur = 0;
+}
+
+// ─── Particles (boost exhaust) ───
+function spawnBoostParticles(t) {
+    for (let i = 0; i < 3; i++) {
+        particles.push({
+            x: t.x - 5,
+            y: t.y + t.height / 2 + (Math.random() - 0.5) * 10,
+            vx: -2 - Math.random() * 3,
+            vy: (Math.random() - 0.5) * 2,
+            life: 1,
+            size: 3 + Math.random() * 4,
+            color: Math.random() > 0.5 ? '0, 150, 255' : '100, 200, 255'
+        });
+    }
+}
+
+function spawnCrashSparks(x, y) {
+    for (let i = 0; i < 30; i++) {
+        sparks.push({
+            x, y,
+            vx: (Math.random() - 0.5) * 10,
+            vy: (Math.random() - 0.5) * 10,
+            life: 1,
+            size: 2 + Math.random() * 3,
+            color: Math.random() > 0.4 ? '255, 200, 50' : '255, 100, 30'
+        });
+    }
+}
+
+function updateParticles(arr) {
+    for (let i = arr.length - 1; i >= 0; i--) {
+        const p = arr[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.life -= 0.03;
+        if (p.life <= 0) arr.splice(i, 1);
+    }
+}
+
+function drawParticles(arr) {
+    arr.forEach(p => {
+        ctx.fillStyle = `rgba(${p.color}, ${p.life})`;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2);
+        ctx.fill();
+    });
+}
+
+// ─── Score Display ───
+function drawScore() {
+    // Score
+    ctx.save();
+    ctx.fillStyle = '#fff';
+    ctx.strokeStyle = 'rgba(0,0,0,0.5)';
+    ctx.lineWidth = 4;
+    ctx.font = 'bold 48px "Segoe UI", Arial, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.strokeText(score, W / 2, 65);
+    ctx.fillText(score, W / 2, 65);
+
+    // "miles" label
+    ctx.font = '14px "Segoe UI", Arial, sans-serif';
+    ctx.fillStyle = 'rgba(255,255,255,0.5)';
+    ctx.fillText('MILES', W / 2, 85);
+    ctx.restore();
+}
+
+// ─── HUD: Battery indicator ───
+function drawBattery() {
+    const bx = 15, by = 15, bw = 55, bh = 22;
+    // Battery outline
+    ctx.strokeStyle = 'rgba(255,255,255,0.4)';
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(bx, by, bw, bh);
+    // Battery tip
+    ctx.fillStyle = 'rgba(255,255,255,0.4)';
+    ctx.fillRect(bx + bw, by + 6, 4, 10);
+    // Fill level (always looks kinda full)
+    const fill = 0.7 + 0.3 * Math.sin(frameCount * 0.02);
+    const fillGrad = ctx.createLinearGradient(bx, by, bx + bw * fill, by);
+    fillGrad.addColorStop(0, '#00cc44');
+    fillGrad.addColorStop(1, '#44ff88');
+    ctx.fillStyle = fillGrad;
+    ctx.fillRect(bx + 2, by + 2, (bw - 4) * fill, bh - 4);
+    // Percentage text
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 11px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(Math.round(fill * 100) + '%', bx + bw / 2, by + 16);
+}
+
+// ─── Start Screen ───
+function drawStartScreen() {
+    // Dim overlay
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.save();
+    ctx.textAlign = 'center';
+
+    // "FLAPPY" text
+    ctx.font = 'bold 52px "Segoe UI", Arial, sans-serif';
+    ctx.fillStyle = '#cc0000';
+    ctx.strokeStyle = '#000';
+    ctx.lineWidth = 4;
+    ctx.strokeText('FLAPPY', W / 2, H / 2 - 120);
+    ctx.fillText('FLAPPY', W / 2, H / 2 - 120);
+
+    // "CYBERTRUCK" text
+    ctx.font = 'bold 40px "Segoe UI", Arial, sans-serif';
+    const cyberGrad = ctx.createLinearGradient(W / 2 - 120, 0, W / 2 + 120, 0);
+    cyberGrad.addColorStop(0, '#999');
+    cyberGrad.addColorStop(0.5, '#e0e0e0');
+    cyberGrad.addColorStop(1, '#999');
+    ctx.fillStyle = cyberGrad;
+    ctx.strokeText('CYBERTRUCK', W / 2, H / 2 - 75);
+    ctx.fillText('CYBERTRUCK', W / 2, H / 2 - 75);
+
+    // Tesla logo area
+    ctx.fillStyle = '#cc0000';
+    ctx.font = 'bold 60px sans-serif';
+    ctx.fillText('T', W / 2, H / 2 - 10);
+
+    // Draw a mini truck
+    const demoTruck = { x: W / 2 - 32, y: H / 2 + 30, width: 64, height: 34, rotation: 0, vy: 0, boostTimer: 5 };
+    drawCybertruck(demoTruck);
+
+    // Instructions
+    ctx.fillStyle = 'rgba(255,255,255,0.7)';
+    ctx.font = '18px "Segoe UI", Arial, sans-serif';
+    ctx.fillText('Tap / Click / Space to boost', W / 2, H / 2 + 110);
+
+    // Blinking "start" prompt
+    const blink = Math.sin(frameCount * 0.06) * 0.5 + 0.5;
+    ctx.fillStyle = `rgba(255, 255, 255, ${0.4 + blink * 0.6})`;
+    ctx.font = 'bold 22px "Segoe UI", Arial, sans-serif';
+    ctx.fillText('— PRESS TO START —', W / 2, H / 2 + 160);
+
+    // High score
+    if (highScore > 0) {
+        ctx.fillStyle = 'rgba(255, 215, 0, 0.6)';
+        ctx.font = '16px "Segoe UI", Arial, sans-serif';
+        ctx.fillText(`Best: ${highScore} miles`, W / 2, H / 2 + 200);
+    }
+
+    ctx.restore();
+}
+
+// ─── Game Over Screen ───
+function drawGameOver() {
+    // Dim
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.65)';
+    ctx.fillRect(0, 0, W, H);
+
+    ctx.save();
+    ctx.textAlign = 'center';
+
+    // "RANGE EXCEEDED"
+    ctx.font = 'bold 36px "Segoe UI", Arial, sans-serif';
+    ctx.fillStyle = '#cc0000';
+    ctx.strokeStyle = '#000';
+    ctx.lineWidth = 3;
+    ctx.strokeText('RANGE EXCEEDED', W / 2, H / 2 - 80);
+    ctx.fillText('RANGE EXCEEDED', W / 2, H / 2 - 80);
+
+    // Score
+    ctx.font = 'bold 64px "Segoe UI", Arial, sans-serif';
+    ctx.fillStyle = '#fff';
+    ctx.strokeText(score, W / 2, H / 2);
+    ctx.fillText(score, W / 2, H / 2);
+
+    ctx.font = '16px "Segoe UI", Arial, sans-serif';
+    ctx.fillStyle = 'rgba(255,255,255,0.5)';
+    ctx.fillText('MILES TRAVELED', W / 2, H / 2 + 25);
+
+    // High score
+    if (score >= highScore) {
+        ctx.fillStyle = '#ffd700';
+        ctx.font = 'bold 20px "Segoe UI", Arial, sans-serif';
+        ctx.fillText('★ NEW RECORD! ★', W / 2, H / 2 + 65);
+    } else {
+        ctx.fillStyle = 'rgba(255, 215, 0, 0.5)';
+        ctx.font = '16px "Segoe UI", Arial, sans-serif';
+        ctx.fillText(`Best: ${highScore} miles`, W / 2, H / 2 + 65);
+    }
+
+    // Restart prompt
+    const blink = Math.sin(frameCount * 0.06) * 0.5 + 0.5;
+    ctx.fillStyle = `rgba(255, 255, 255, ${0.3 + blink * 0.7})`;
+    ctx.font = '18px "Segoe UI", Arial, sans-serif';
+    ctx.fillText('Tap to retry', W / 2, H / 2 + 120);
+
+    ctx.restore();
+}
+
+// ─── Collision Detection ───
+function checkCollision() {
+    const t = truck;
+    // Shrink hitbox slightly for fairness
+    const margin = 6;
+    const tx1 = t.x + margin;
+    const ty1 = t.y + margin;
+    const tx2 = t.x + t.width - margin;
+    const ty2 = t.y + t.height - margin;
+
+    // Ground / ceiling
+    if (ty2 >= ROAD_Y || ty1 <= 0) return true;
+
+    // Pipes
+    for (const p of pipes) {
+        const px1 = p.x - 8; // nozzle extends beyond pipe
+        const px2 = p.x + PIPE_WIDTH + 8;
+        const topBottom = p.gapY;
+        const botTop = p.gapY + PIPE_GAP;
+
+        if (tx2 > px1 && tx1 < px2) {
+            if (ty1 < topBottom + 5 || ty2 > botTop - 5) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+// ─── Score Check ───
+function checkScore() {
+    for (const p of pipes) {
+        if (!p.scored && p.x + PIPE_WIDTH < truck.x) {
+            p.scored = true;
+            score++;
+        }
+    }
+}
+
+// ─── Game Reset ───
+function resetGame() {
+    truck = initTruck();
+    pipes = [];
+    particles = [];
+    sparks = [];
+    score = 0;
+    lastPipeTime = 0;
+    screenShake = 0;
+    flashAlpha = 0;
+}
+
+// ─── Input Handling ───
+function handleInput() {
+    if (state === 'start') {
+        state = 'playing';
+        resetGame();
+        lastPipeTime = performance.now() + 800; // delay first pipe
+        return;
+    }
+    if (state === 'gameover') {
+        state = 'start';
+        return;
+    }
+    if (state === 'playing' && truck.alive) {
+        truck.vy = FLAP_FORCE;
+        truck.boostTimer = 10;
+    }
+}
+
+canvas.addEventListener('click', handleInput);
+canvas.addEventListener('touchstart', (e) => { e.preventDefault(); handleInput(); }, { passive: false });
+document.addEventListener('keydown', (e) => {
+    if (e.code === 'Space' || e.code === 'ArrowUp' || e.code === 'KeyW') {
+        e.preventDefault();
+        handleInput();
+    }
+});
+
+// ─── Main Game Loop ───
+let lastTime = 0;
+
+function gameLoop(timestamp) {
+    if (!lastTime) lastTime = timestamp;
+    const dt = Math.min(timestamp - lastTime, 30);
+    lastTime = timestamp;
+    frameCount++;
+
+    // ── Screen shake ──
+    ctx.save();
+    if (screenShake > 0) {
+        const sx = (Math.random() - 0.5) * screenShake;
+        const sy = (Math.random() - 0.5) * screenShake;
+        ctx.translate(sx, sy);
+        screenShake *= 0.9;
+        if (screenShake < 0.5) screenShake = 0;
+    }
+
+    // ── Draw background ──
+    drawSky();
+    drawStars();
+    drawMoon();
+    drawBuildings();
+
+    // ── Update & Draw game elements ──
+    if (state === 'playing') {
+        const now = performance.now();
+
+        // Truck physics
+        truck.vy += GRAVITY;
+        truck.y += truck.vy;
+        truck.boostTimer = Math.max(0, truck.boostTimer - 1);
+
+        // Boost particles
+        if (truck.boostTimer > 0) {
+            spawnBoostParticles(truck);
+        }
+
+        // Spawn pipes
+        if (now - lastPipeTime > PIPE_INTERVAL) {
+            const minGapY = 80;
+            const maxGapY = ROAD_Y - PIPE_GAP - 80;
+            const gapY = minGapY + Math.random() * (maxGapY - minGapY);
+            pipes.push({ x: W, gapY, scored: false });
+            lastPipeTime = now;
+        }
+
+        // Move pipes
+        pipes.forEach(p => p.x -= PIPE_SPEED);
+        pipes = pipes.filter(p => p.x + PIPE_WIDTH > -20);
+
+        // Move ground
+        groundOffset = (groundOffset + PIPE_SPEED) % 50;
+
+        // Check scoring
+        checkScore();
+
+        // Check collision
+        if (checkCollision()) {
+            truck.alive = false;
+            state = 'gameover';
+            screenShake = 15;
+            flashAlpha = 0.8;
+            spawnCrashSparks(truck.x + truck.width / 2, truck.y + truck.height / 2);
+            if (score > highScore) {
+                highScore = score;
+                localStorage.setItem('flappyCybertruckHigh', highScore.toString());
+            }
+        }
+    }
+
+    // Draw pipes
+    pipes.forEach(drawPipe);
+
+    // Draw road (on top of pipes)
+    drawRoad();
+
+    // Draw particles
+    updateParticles(particles);
+    drawParticles(particles);
+    updateParticles(sparks);
+    drawParticles(sparks);
+
+    // Draw truck
+    if (truck) {
+        drawCybertruck(truck);
+    }
+
+    // Draw HUD
+    if (state === 'playing') {
+        drawScore();
+        drawBattery();
+    }
+
+    // ── Flash effect ──
+    if (flashAlpha > 0) {
+        ctx.fillStyle = `rgba(255, 100, 50, ${flashAlpha})`;
+        ctx.fillRect(0, 0, W, H);
+        flashAlpha *= 0.92;
+        if (flashAlpha < 0.01) flashAlpha = 0;
+    }
+
+    ctx.restore(); // end shake transform
+
+    // ── Overlay screens ──
+    if (state === 'start') drawStartScreen();
+    if (state === 'gameover') drawGameOver();
+
+    requestAnimationFrame(gameLoop);
+}
+
+// ─── Init ───
+initStars();
+initBuildings();
+truck = initTruck();
+
+requestAnimationFrame(gameLoop);
+</script>
+
+</body>
+</html>
