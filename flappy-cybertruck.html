@@ -65,6 +65,516 @@ let groundOffset = 0;
 let screenShake = 0;
 let flashAlpha = 0;
 
+// ═══════════════════════════════════════════════════════
+// ─── 8-BIT SYNTHWAVE AUDIO ENGINE (Web Audio API) ───
+// ═══════════════════════════════════════════════════════
+let audioCtx = null;
+let masterGain = null;
+let musicGain = null;
+let sfxGain = null;
+let musicPlaying = false;
+let musicTimers = [];
+
+function initAudio() {
+    if (audioCtx) return;
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+    // Master output
+    masterGain = audioCtx.createGain();
+    masterGain.gain.value = 0.7;
+    masterGain.connect(audioCtx.destination);
+
+    // Music bus
+    musicGain = audioCtx.createGain();
+    musicGain.gain.value = 0.55;
+    musicGain.connect(masterGain);
+
+    // SFX bus
+    sfxGain = audioCtx.createGain();
+    sfxGain.gain.value = 0.8;
+    sfxGain.connect(masterGain);
+}
+
+// ─── Utility: play a single tone ───
+function playTone(freq, type, gainVal, start, duration, destination, detune) {
+    if (!audioCtx) return;
+    const osc = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    osc.type = type;
+    osc.frequency.value = freq;
+    if (detune) osc.detune.value = detune;
+    g.gain.setValueAtTime(0.001, start);
+    g.gain.linearRampToValueAtTime(gainVal, start + 0.01);
+    g.gain.setValueAtTime(gainVal, start + duration - 0.03);
+    g.gain.exponentialRampToValueAtTime(0.001, start + duration);
+    osc.connect(g);
+    g.connect(destination || musicGain);
+    osc.start(start);
+    osc.stop(start + duration + 0.05);
+}
+
+// ─── Utility: noise burst (for drums) ───
+function playNoise(gainVal, start, duration, filterFreq, destination) {
+    if (!audioCtx) return;
+    const bufSize = audioCtx.sampleRate * duration;
+    const buf = audioCtx.createBuffer(1, bufSize, audioCtx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < bufSize; i++) data[i] = Math.random() * 2 - 1;
+    const src = audioCtx.createBufferSource();
+    src.buffer = buf;
+    const filt = audioCtx.createBiquadFilter();
+    filt.type = 'highpass';
+    filt.frequency.value = filterFreq || 7000;
+    const g = audioCtx.createGain();
+    g.gain.setValueAtTime(gainVal, start);
+    g.gain.exponentialRampToValueAtTime(0.001, start + duration);
+    src.connect(filt);
+    filt.connect(g);
+    g.connect(destination || musicGain);
+    src.start(start);
+    src.stop(start + duration + 0.05);
+}
+
+// ─── Drum: Kick ───
+function playKick(start) {
+    if (!audioCtx) return;
+    const osc = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(150, start);
+    osc.frequency.exponentialRampToValueAtTime(30, start + 0.12);
+    g.gain.setValueAtTime(0.7, start);
+    g.gain.exponentialRampToValueAtTime(0.001, start + 0.2);
+    osc.connect(g);
+    g.connect(musicGain);
+    osc.start(start);
+    osc.stop(start + 0.25);
+}
+
+// ─── Drum: Snare ───
+function playSnare(start) {
+    if (!audioCtx) return;
+    // Tone body
+    const osc = audioCtx.createOscillator();
+    const g1 = audioCtx.createGain();
+    osc.type = 'triangle';
+    osc.frequency.value = 180;
+    g1.gain.setValueAtTime(0.35, start);
+    g1.gain.exponentialRampToValueAtTime(0.001, start + 0.1);
+    osc.connect(g1);
+    g1.connect(musicGain);
+    osc.start(start);
+    osc.stop(start + 0.15);
+    // Noise
+    playNoise(0.3, start, 0.12, 3000);
+}
+
+// ─── Drum: Hi-hat ───
+function playHihat(start, open) {
+    playNoise(open ? 0.12 : 0.08, start, open ? 0.15 : 0.05, 9000);
+}
+
+// ════════════════════════════════════════
+// ─── SYNTHWAVE MUSIC SEQUENCER ───
+// ════════════════════════════════════════
+const BPM = 128;
+const BEAT = 60 / BPM; // seconds per beat
+const BAR = BEAT * 4;   // seconds per bar
+
+// Key of A minor / C major — moody synthwave
+// Note frequencies
+const NOTE = {
+    'A2': 110.00, 'B2': 123.47, 'C3': 130.81, 'D3': 146.83, 'E3': 164.81,
+    'F3': 174.61, 'G3': 196.00, 'A3': 220.00, 'B3': 246.94,
+    'C4': 261.63, 'D4': 293.66, 'E4': 329.63, 'F4': 349.23,
+    'G4': 392.00, 'A4': 440.00, 'B4': 493.88,
+    'C5': 523.25, 'D5': 587.33, 'E5': 659.26, 'F5': 698.46,
+    'G5': 783.99, 'A5': 880.00
+};
+
+// Bass line pattern (per bar) — driving 8th note synth bass
+const bassPatterns = [
+    // Bar 1: Am
+    ['A2','A2','A2','A2','A2','A2','E3','E3'],
+    // Bar 2: F
+    ['F3','F3','F3','F3','F3','F3','C3','C3'],
+    // Bar 3: C
+    ['C3','C3','C3','C3','C3','C3','G3','G3'],
+    // Bar 4: G -> Am
+    ['G3','G3','G3','G3','E3','E3','A2','A2']
+];
+
+// Arpeggio patterns (16th notes per bar)
+const arpPatterns = [
+    // Bar 1: Am arp
+    ['A4','C5','E5','C5', 'A4','C5','E5','C5', 'A4','C5','E5','C5', 'A4','E5','C5','A4'],
+    // Bar 2: F maj arp
+    ['F4','A4','C5','A4', 'F4','A4','C5','A4', 'F4','A4','C5','F5', 'C5','A4','F4','A4'],
+    // Bar 3: C maj arp
+    ['C4','E4','G4','E4', 'C4','E4','G4','C5', 'E4','G4','C5','G4', 'E4','C4','G4','E4'],
+    // Bar 4: G -> Am
+    ['G4','B4','D5','B4', 'G4','B4','D5','G5', 'A4','C5','E5','C5', 'A4','E5','A5','E5']
+];
+
+// Pad chords (whole notes, layered)
+const padChords = [
+    ['A3', 'C4', 'E4'],     // Am
+    ['F3', 'A3', 'C4'],     // F
+    ['C3', 'E3', 'G3'],     // C
+    ['G3', 'B3', 'D4']      // G
+];
+
+// Lead melody (plays every other 4-bar cycle) - quarter + 8th notes
+const leadMelody = [
+    // Bar 1
+    { note: 'E5', pos: 0, dur: 1.5 },
+    { note: 'D5', pos: 1.5, dur: 0.5 },
+    { note: 'C5', pos: 2, dur: 1 },
+    { note: 'A4', pos: 3, dur: 1 },
+    // Bar 2
+    { note: 'A4', pos: 4, dur: 1.5 },
+    { note: 'G4', pos: 5.5, dur: 0.5 },
+    { note: 'F4', pos: 6, dur: 1.5 },
+    { note: 'E4', pos: 7.5, dur: 0.5 },
+    // Bar 3
+    { note: 'E4', pos: 8, dur: 1 },
+    { note: 'G4', pos: 9, dur: 1 },
+    { note: 'C5', pos: 10, dur: 1.5 },
+    { note: 'B4', pos: 11.5, dur: 0.5 },
+    // Bar 4
+    { note: 'A4', pos: 12, dur: 2 },
+    { note: 'G4', pos: 14, dur: 1 },
+    { note: 'A4', pos: 15, dur: 1 }
+];
+
+let scheduleAhead = 0.15; // seconds to schedule ahead
+let musicStartTime = 0;
+let currentBeat = 0;
+let nextBeatTime = 0;
+let cycleCount = 0;
+
+function startMusic() {
+    if (!audioCtx || musicPlaying) return;
+    musicPlaying = true;
+    musicStartTime = audioCtx.currentTime + 0.1;
+    currentBeat = 0;
+    nextBeatTime = musicStartTime;
+    cycleCount = 0;
+    scheduleMusicLoop();
+}
+
+function stopMusic() {
+    musicPlaying = false;
+    musicTimers.forEach(t => clearTimeout(t));
+    musicTimers = [];
+    // Fade out
+    if (musicGain) {
+        musicGain.gain.linearRampToValueAtTime(0.0, audioCtx.currentTime + 0.5);
+        setTimeout(() => {
+            if (musicGain) musicGain.gain.value = 0.55;
+        }, 600);
+    }
+}
+
+function scheduleMusicLoop() {
+    if (!musicPlaying) return;
+
+    while (nextBeatTime < audioCtx.currentTime + scheduleAhead) {
+        scheduleBar(nextBeatTime, currentBeat);
+        currentBeat++;
+        if (currentBeat % 4 === 0) cycleCount++;
+        nextBeatTime += BAR;
+    }
+
+    const timer = setTimeout(scheduleMusicLoop, 50);
+    musicTimers.push(timer);
+}
+
+function scheduleBar(barStart, barIndex) {
+    const patIdx = barIndex % 4;
+
+    // ── Bass (8th notes — 8 per bar) ──
+    const bassNotes = bassPatterns[patIdx];
+    for (let i = 0; i < 8; i++) {
+        const t = barStart + i * (BEAT / 2);
+        const freq = NOTE[bassNotes[i]];
+        playTone(freq, 'sawtooth', 0.18, t, BEAT / 2 - 0.02, musicGain, 0);
+        // Sub octave layer
+        playTone(freq / 2, 'square', 0.08, t, BEAT / 2 - 0.02, musicGain, 0);
+    }
+
+    // ── Arpeggios (16th notes — 16 per bar) ──
+    const arpNotes = arpPatterns[patIdx];
+    for (let i = 0; i < 16; i++) {
+        const t = barStart + i * (BEAT / 4);
+        const freq = NOTE[arpNotes[i]];
+        playTone(freq, 'square', 0.06, t, BEAT / 4 - 0.01, musicGain, 8);
+        // Slight detuned layer for richness
+        playTone(freq, 'square', 0.04, t, BEAT / 4 - 0.01, musicGain, -8);
+    }
+
+    // ── Pad (whole bar sustain) ──
+    const chord = padChords[patIdx];
+    chord.forEach(n => {
+        const freq = NOTE[n];
+        // Warm triangle pad
+        playTone(freq, 'triangle', 0.05, barStart, BAR - 0.05, musicGain, 5);
+        playTone(freq, 'sine', 0.03, barStart, BAR - 0.05, musicGain, -3);
+    });
+
+    // ── Drums ──
+    for (let beat = 0; beat < 4; beat++) {
+        const t = barStart + beat * BEAT;
+        // Kick on every beat
+        playKick(t);
+        // Snare on beats 2 & 4
+        if (beat === 1 || beat === 3) {
+            playSnare(t);
+        }
+        // Hi-hats on 8th notes
+        playHihat(t, false);
+        playHihat(t + BEAT / 2, beat === 3); // open hat at end
+    }
+
+    // ── Lead melody (every other 4-bar cycle) ──
+    if (cycleCount % 2 === 1) {
+        leadMelody.forEach(m => {
+            // Only play notes that belong to this bar
+            const noteBarIndex = Math.floor(m.pos / 4);
+            if (noteBarIndex === patIdx) {
+                const posInBar = m.pos - noteBarIndex * 4;
+                const t = barStart + posInBar * BEAT;
+                const dur = m.dur * BEAT;
+                const freq = NOTE[m.note];
+                // 8-bit lead with pulse-like sound
+                playTone(freq, 'square', 0.09, t, dur - 0.02, musicGain, 0);
+                // Octave shimmer
+                playTone(freq * 2, 'sine', 0.025, t, dur - 0.02, musicGain, 0);
+            }
+        });
+    }
+}
+
+// ════════════════════════════════════════
+// ─── SOUND EFFECTS ───
+// ════════════════════════════════════════
+
+function sfxBoost() {
+    if (!audioCtx) return;
+    const now = audioCtx.currentTime;
+
+    // Punchy 8-bit thrust: quick pitch sweep up
+    const osc1 = audioCtx.createOscillator();
+    const g1 = audioCtx.createGain();
+    osc1.type = 'square';
+    osc1.frequency.setValueAtTime(180, now);
+    osc1.frequency.exponentialRampToValueAtTime(600, now + 0.06);
+    osc1.frequency.exponentialRampToValueAtTime(350, now + 0.12);
+    g1.gain.setValueAtTime(0.2, now);
+    g1.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+    osc1.connect(g1);
+    g1.connect(sfxGain);
+    osc1.start(now);
+    osc1.stop(now + 0.18);
+
+    // Secondary whoosh layer
+    const osc2 = audioCtx.createOscillator();
+    const g2 = audioCtx.createGain();
+    osc2.type = 'sawtooth';
+    osc2.frequency.setValueAtTime(120, now);
+    osc2.frequency.exponentialRampToValueAtTime(280, now + 0.04);
+    osc2.frequency.exponentialRampToValueAtTime(80, now + 0.12);
+    g2.gain.setValueAtTime(0.1, now);
+    g2.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+    osc2.connect(g2);
+    g2.connect(sfxGain);
+    osc2.start(now);
+    osc2.stop(now + 0.15);
+}
+
+function sfxScore() {
+    if (!audioCtx) return;
+    const now = audioCtx.currentTime;
+
+    // Cheerful 8-bit coin / point jingle: ascending arpeggio
+    const notes = [523.25, 659.26, 783.99, 1046.50]; // C5, E5, G5, C6
+    notes.forEach((freq, i) => {
+        const osc = audioCtx.createOscillator();
+        const g = audioCtx.createGain();
+        osc.type = 'square';
+        osc.frequency.value = freq;
+        const t = now + i * 0.05;
+        g.gain.setValueAtTime(0.001, t);
+        g.gain.linearRampToValueAtTime(0.15, t + 0.01);
+        g.gain.setValueAtTime(0.15, t + 0.06);
+        g.gain.exponentialRampToValueAtTime(0.001, t + 0.18);
+        osc.connect(g);
+        g.connect(sfxGain);
+        osc.start(t);
+        osc.stop(t + 0.22);
+    });
+
+    // Shimmer overlay
+    const shimmer = audioCtx.createOscillator();
+    const sg = audioCtx.createGain();
+    shimmer.type = 'sine';
+    shimmer.frequency.value = 1567.98; // G6
+    sg.gain.setValueAtTime(0.06, now);
+    sg.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+    shimmer.connect(sg);
+    sg.connect(sfxGain);
+    shimmer.start(now);
+    shimmer.stop(now + 0.35);
+}
+
+function sfxCrash() {
+    if (!audioCtx) return;
+    const now = audioCtx.currentTime;
+
+    // Heavy 8-bit explosion: descending noise + tone
+    // Tone crunch
+    const osc1 = audioCtx.createOscillator();
+    const g1 = audioCtx.createGain();
+    osc1.type = 'sawtooth';
+    osc1.frequency.setValueAtTime(300, now);
+    osc1.frequency.exponentialRampToValueAtTime(40, now + 0.4);
+    g1.gain.setValueAtTime(0.35, now);
+    g1.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+    osc1.connect(g1);
+    g1.connect(sfxGain);
+    osc1.start(now);
+    osc1.stop(now + 0.55);
+
+    // Distorted square crunch
+    const osc2 = audioCtx.createOscillator();
+    const g2 = audioCtx.createGain();
+    osc2.type = 'square';
+    osc2.frequency.setValueAtTime(200, now);
+    osc2.frequency.exponentialRampToValueAtTime(25, now + 0.35);
+    g2.gain.setValueAtTime(0.25, now);
+    g2.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+    osc2.connect(g2);
+    g2.connect(sfxGain);
+    osc2.start(now);
+    osc2.stop(now + 0.45);
+
+    // Noise burst (debris)
+    const bufSize = audioCtx.sampleRate * 0.5;
+    const buf = audioCtx.createBuffer(1, bufSize, audioCtx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < bufSize; i++) data[i] = Math.random() * 2 - 1;
+    const noiseSrc = audioCtx.createBufferSource();
+    noiseSrc.buffer = buf;
+    const nf = audioCtx.createBiquadFilter();
+    nf.type = 'lowpass';
+    nf.frequency.setValueAtTime(4000, now);
+    nf.frequency.exponentialRampToValueAtTime(200, now + 0.4);
+    const ng = audioCtx.createGain();
+    ng.gain.setValueAtTime(0.3, now);
+    ng.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+    noiseSrc.connect(nf);
+    nf.connect(ng);
+    ng.connect(sfxGain);
+    noiseSrc.start(now);
+    noiseSrc.stop(now + 0.55);
+
+    // Low sub-boom
+    const sub = audioCtx.createOscillator();
+    const sg = audioCtx.createGain();
+    sub.type = 'sine';
+    sub.frequency.setValueAtTime(80, now);
+    sub.frequency.exponentialRampToValueAtTime(20, now + 0.3);
+    sg.gain.setValueAtTime(0.4, now);
+    sg.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+    sub.connect(sg);
+    sg.connect(sfxGain);
+    sub.start(now);
+    sub.stop(now + 0.45);
+}
+
+function sfxStartGame() {
+    if (!audioCtx) return;
+    const now = audioCtx.currentTime;
+
+    // Power-up sweep: ascending 8-bit fanfare
+    const fanfare = [
+        { freq: 261.63, t: 0, dur: 0.1 },       // C4
+        { freq: 329.63, t: 0.08, dur: 0.1 },     // E4
+        { freq: 392.00, t: 0.16, dur: 0.1 },     // G4
+        { freq: 523.25, t: 0.24, dur: 0.25 },    // C5 (sustain)
+    ];
+    fanfare.forEach(n => {
+        const osc = audioCtx.createOscillator();
+        const g = audioCtx.createGain();
+        osc.type = 'square';
+        osc.frequency.value = n.freq;
+        const t = now + n.t;
+        g.gain.setValueAtTime(0.001, t);
+        g.gain.linearRampToValueAtTime(0.14, t + 0.01);
+        g.gain.setValueAtTime(0.14, t + n.dur - 0.03);
+        g.gain.exponentialRampToValueAtTime(0.001, t + n.dur);
+        osc.connect(g);
+        g.connect(sfxGain);
+        osc.start(t);
+        osc.stop(t + n.dur + 0.05);
+    });
+}
+
+function sfxGameOver() {
+    if (!audioCtx) return;
+    const now = audioCtx.currentTime;
+
+    // Sad descending 8-bit melody
+    const notes = [
+        { freq: 440.00, t: 0.15, dur: 0.2 },      // A4
+        { freq: 392.00, t: 0.35, dur: 0.2 },       // G4
+        { freq: 329.63, t: 0.55, dur: 0.2 },       // E4
+        { freq: 261.63, t: 0.75, dur: 0.45 },      // C4 (long)
+    ];
+    notes.forEach(n => {
+        const osc = audioCtx.createOscillator();
+        const g = audioCtx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.value = n.freq;
+        const t = now + n.t;
+        g.gain.setValueAtTime(0.001, t);
+        g.gain.linearRampToValueAtTime(0.18, t + 0.02);
+        g.gain.setValueAtTime(0.18, t + n.dur * 0.7);
+        g.gain.exponentialRampToValueAtTime(0.001, t + n.dur);
+        osc.connect(g);
+        g.connect(sfxGain);
+        osc.start(t);
+        osc.stop(t + n.dur + 0.05);
+    });
+}
+
+function sfxHighScore() {
+    if (!audioCtx) return;
+    const now = audioCtx.currentTime;
+
+    // Triumphant rapid arpeggio cascade
+    const cascade = [
+        523.25, 659.26, 783.99, 1046.50,
+        659.26, 783.99, 1046.50, 1318.51,
+        783.99, 1046.50, 1318.51, 1567.98
+    ];
+    cascade.forEach((freq, i) => {
+        const osc = audioCtx.createOscillator();
+        const g = audioCtx.createGain();
+        osc.type = 'square';
+        osc.frequency.value = freq;
+        const t = now + 0.6 + i * 0.04;
+        g.gain.setValueAtTime(0.001, t);
+        g.gain.linearRampToValueAtTime(0.1, t + 0.01);
+        g.gain.exponentialRampToValueAtTime(0.001, t + 0.15);
+        osc.connect(g);
+        g.connect(sfxGain);
+        osc.start(t);
+        osc.stop(t + 0.2);
+    });
+}
+// ═══════════════════ END AUDIO ENGINE ═══════════════════
+
 // ─── Stars (background) ───
 function initStars() {
     stars = [];
@@ -555,6 +1065,20 @@ function drawBattery() {
     ctx.fillText(Math.round(fill * 100) + '%', bx + bw / 2, by + 16);
 }
 
+// ─── HUD: Mute icon ───
+function drawMuteIcon() {
+    const mx = W - 38, my = 18;
+    ctx.save();
+    ctx.fillStyle = 'rgba(255,255,255,0.4)';
+    ctx.font = '16px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(muted ? '🔇' : '🔊', mx, my + 14);
+    ctx.fillStyle = 'rgba(255,255,255,0.2)';
+    ctx.font = '8px sans-serif';
+    ctx.fillText('[M]', mx, my + 26);
+    ctx.restore();
+}
+
 // ─── Start Screen ───
 function drawStartScreen() {
     // Dim overlay
@@ -596,6 +1120,11 @@ function drawStartScreen() {
     ctx.fillStyle = 'rgba(255,255,255,0.7)';
     ctx.font = '18px "Segoe UI", Arial, sans-serif';
     ctx.fillText('Tap / Click / Space to boost', W / 2, H / 2 + 110);
+
+    // Audio hint
+    ctx.fillStyle = 'rgba(255,255,255,0.35)';
+    ctx.font = '13px "Segoe UI", Arial, sans-serif';
+    ctx.fillText('♪ 8-bit synthwave soundtrack  •  [M] mute', W / 2, H / 2 + 135);
 
     // Blinking "start" prompt
     const blink = Math.sin(frameCount * 0.06) * 0.5 + 0.5;
@@ -695,6 +1224,7 @@ function checkScore() {
         if (!p.scored && p.x + PIPE_WIDTH < truck.x) {
             p.scored = true;
             score++;
+            sfxScore();
         }
     }
 }
@@ -712,11 +1242,19 @@ function resetGame() {
 }
 
 // ─── Input Handling ───
+let muted = false;
+
 function handleInput() {
+    // Always ensure audio context is initialized on first user gesture
+    initAudio();
+    if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+
     if (state === 'start') {
         state = 'playing';
         resetGame();
         lastPipeTime = performance.now() + 800; // delay first pipe
+        sfxStartGame();
+        setTimeout(() => startMusic(), 400);
         return;
     }
     if (state === 'gameover') {
@@ -726,7 +1264,13 @@ function handleInput() {
     if (state === 'playing' && truck.alive) {
         truck.vy = FLAP_FORCE;
         truck.boostTimer = 10;
+        sfxBoost();
     }
+}
+
+function toggleMute() {
+    muted = !muted;
+    if (masterGain) masterGain.gain.value = muted ? 0 : 0.7;
 }
 
 canvas.addEventListener('click', handleInput);
@@ -735,6 +1279,9 @@ document.addEventListener('keydown', (e) => {
     if (e.code === 'Space' || e.code === 'ArrowUp' || e.code === 'KeyW') {
         e.preventDefault();
         handleInput();
+    }
+    if (e.code === 'KeyM') {
+        toggleMute();
     }
 });
 
@@ -803,9 +1350,13 @@ function gameLoop(timestamp) {
             screenShake = 15;
             flashAlpha = 0.8;
             spawnCrashSparks(truck.x + truck.width / 2, truck.y + truck.height / 2);
+            stopMusic();
+            sfxCrash();
+            sfxGameOver();
             if (score > highScore) {
                 highScore = score;
                 localStorage.setItem('flappyCybertruckHigh', highScore.toString());
+                sfxHighScore();
             }
         }
     }
@@ -831,6 +1382,7 @@ function gameLoop(timestamp) {
     if (state === 'playing') {
         drawScore();
         drawBattery();
+        drawMuteIcon();
     }
 
     // ── Flash effect ──
