@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Arcade</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            min-height: 100vh;
+            background: #0a0a0f;
+            font-family: 'Inter', sans-serif;
+            color: #e0e0e0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* ── Ambient background ── */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 60% 50% at 20% 20%, rgba(100, 40, 200, 0.08), transparent),
+                radial-gradient(ellipse 50% 40% at 80% 70%, rgba(200, 40, 80, 0.06), transparent);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        header {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            padding: 60px 20px 30px;
+        }
+
+        header h1 {
+            font-weight: 900;
+            font-size: clamp(2.2rem, 5vw, 3.2rem);
+            letter-spacing: -1px;
+            background: linear-gradient(135deg, #fff 0%, #aaa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        header p {
+            margin-top: 10px;
+            font-size: 1rem;
+            color: #666;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        /* ── Game grid ── */
+        .games {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+            width: 100%;
+            max-width: 960px;
+            padding: 30px 24px 80px;
+        }
+
+        /* ── Card ── */
+        .card {
+            background: linear-gradient(145deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01));
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 16px;
+            padding: 32px 28px;
+            text-decoration: none;
+            color: inherit;
+            transition: transform 0.2s, border-color 0.3s, box-shadow 0.3s;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(255,255,255,0.12);
+            box-shadow: 0 16px 40px rgba(0,0,0,0.35);
+        }
+
+        /* Accent stripe at top of card — color set via CSS variable */
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--accent, #555);
+            opacity: 0.6;
+            transition: opacity 0.3s;
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card-icon {
+            font-size: 2.4rem;
+            line-height: 1;
+        }
+
+        .card-title {
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: #fff;
+        }
+
+        .card-desc {
+            font-size: 0.88rem;
+            color: #777;
+            line-height: 1.5;
+        }
+
+        .card-play {
+            margin-top: auto;
+            padding-top: 10px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--accent, #888);
+            transition: letter-spacing 0.2s;
+        }
+
+        .card:hover .card-play {
+            letter-spacing: 3px;
+        }
+
+        /* ── Footer ── */
+        footer {
+            position: relative;
+            z-index: 1;
+            padding: 20px;
+            text-align: center;
+            color: #333;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Game Arcade</h1>
+    <p>Pick a game &amp; play</p>
+</header>
+
+<main class="games">
+
+    <!--
+        ╔═══════════════════════════════════════════════════╗
+        ║  HOW TO ADD A NEW GAME                           ║
+        ║  Copy a <a class="card"> block below and edit:   ║
+        ║   • href        → path to the html file          ║
+        ║   • --accent    → brand color for the card       ║
+        ║   • card-icon   → any emoji                      ║
+        ║   • card-title  → game name                      ║
+        ║   • card-desc   → one-line description           ║
+        ╚═══════════════════════════════════════════════════╝
+    -->
+
+    <a class="card" href="slot-machine.html" style="--accent:#ffd700">
+        <div class="card-icon">🎰</div>
+        <div class="card-title">Slots of (mis)fortune</div>
+        <div class="card-desc">Pull the lever and watch the reels spin. Will fortune favour you?</div>
+        <div class="card-play">Play →</div>
+    </a>
+
+    <a class="card" href="flappy-cybertruck.html" style="--accent:#cc0000">
+        <div class="card-icon">🚀</div>
+        <div class="card-title">Flappy Cybertruck</div>
+        <div class="card-desc">Boost a Cybertruck through Supercharger pillars to an 8-bit synthwave beat.</div>
+        <div class="card-play">Play →</div>
+    </a>
+
+    <a class="card" href="wheel_of_nakkikone.html" style="--accent:#ff6600">
+        <div class="card-icon">🎡</div>
+        <div class="card-title">Wheel of Nakkikone</div>
+        <div class="card-desc">Give the wheel a spin and see where fate lands.</div>
+        <div class="card-play">Play →</div>
+    </a>
+
+</main>
+
+<footer>&copy; 2026 Game Arcade</footer>
+
+</body>
+</html>
