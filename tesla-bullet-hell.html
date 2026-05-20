@@ -757,6 +757,7 @@ function initStars() {
 function drawTeslaShip(x, y, focused) {
   ctx.save();
   ctx.translate(x, y);
+  ctx.beginPath();
 
   // Engine glow
   const glowSize = 8 + Math.sin(frameCount * 0.15) * 3;
@@ -1032,6 +1033,7 @@ function drawEnemy(e) {
 }
 
 function drawBossICE(e) {
+  ctx.beginPath();
   // Giant diesel truck
   const hpR = e.hp/e.maxHp;
   ctx.fillStyle = hpR < 0.3 ? '#660000' : '#444';
@@ -1076,6 +1078,7 @@ function drawBossICE(e) {
 }
 
 function drawBossMech(e) {
+  ctx.beginPath();
   const hpR = e.hp/e.maxHp;
   const pulse = Math.sin(frameCount * 0.08) * 0.3 + 0.7;
   // Body
@@ -1117,6 +1120,7 @@ function drawBossMech(e) {
 }
 
 function drawBossMothership(e) {
+  ctx.beginPath();
   const hpR = e.hp/e.maxHp;
   const t = frameCount;
   // Main saucer body
@@ -1169,6 +1173,7 @@ function drawBossMothership(e) {
 }
 
 function drawBossHPBar(boss) {
+  ctx.beginPath();
   const barW = 400;
   const barH = 12;
   const bx = W/2 - barW/2;
@@ -1196,6 +1201,7 @@ function drawBossHPBar(boss) {
 function drawPowerup(p) {
   ctx.save();
   ctx.translate(p.x, p.y);
+  ctx.beginPath();
   const bob = Math.sin(p.timer * 0.1) * 3;
   ctx.translate(0, bob);
 
@@ -1357,6 +1363,7 @@ function drawSpaceBG() {
 
 // ─── HUD ───
 function drawHUD() {
+  ctx.beginPath();
   // Score
   ctx.fillStyle = '#fff';
   ctx.font = 'bold 18px Courier New';
@@ -1881,9 +1888,11 @@ function render() {
   drawBackground();
 
   // Powerups
+  ctx.beginPath();
   for (const p of powerups) drawPowerup(p);
 
   // Player bullets
+  ctx.beginPath();
   for (const b of playerBullets) {
     ctx.fillStyle = b.color;
     ctx.beginPath();
@@ -1897,12 +1906,14 @@ function render() {
   }
 
   // Enemies
+  ctx.beginPath();
   for (const e of enemies) {
     drawEnemy(e);
     if (e.isBoss) drawBossHPBar(e);
   }
 
   // Enemy bullets
+  ctx.beginPath();
   for (const b of enemyBullets) {
     // Glow
     const grad = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, b.r + 3);
@@ -1924,6 +1935,7 @@ function render() {
   }
 
   // Player
+  ctx.beginPath();
   if (player.alive) {
     if (invincTimer > 0 && invincTimer % 6 < 3) {
       // Blink during invincibility
@@ -1934,6 +1946,7 @@ function render() {
   }
 
   // Particles
+  ctx.beginPath();
   for (const p of particles) {
     const alpha = p.life / p.maxLife;
     ctx.globalAlpha = alpha;
