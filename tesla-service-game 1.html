@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tesla Service Quest - 8-Bit Adventure</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:#111;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;font-family:'Press Start 2P',monospace;overflow:hidden;image-rendering:pixelated}
+  #wrap{position:relative;border:4px solid #e82127;box-shadow:0 0 40px rgba(232,33,39,0.5);border-radius:4px}
+  canvas{display:block}
+  #hud{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;padding:10px 16px;color:#fff;font-size:10px;text-shadow:2px 2px 0 #000;pointer-events:none;z-index:10}
+  #hud div{line-height:1.8}
+  #musicBtn{position:absolute;bottom:10px;right:10px;background:rgba(0,0,0,.7);color:#0f0;border:2px solid #0f0;padding:6px 10px;font-family:'Press Start 2P',monospace;font-size:8px;cursor:pointer;z-index:20;border-radius:2px}
+  #musicBtn:hover{background:rgba(0,80,0,.7)}
+  #mob{display:none;position:fixed;bottom:10px;left:0;right:0;z-index:30;justify-content:space-between;padding:0 20px}
+  .mb{width:60px;height:60px;border-radius:50%;background:rgba(232,33,39,.7);color:#fff;border:3px solid #fff;font-size:24px;display:flex;align-items:center;justify-content:center;user-select:none;-webkit-user-select:none;cursor:pointer}
+  @media(max-width:820px){#mob{display:flex}canvas{width:100vw!important;height:auto!important}#wrap{border-width:2px}}
+</style>
+</head>
+<body>
+<div id="wrap">
+  <canvas id="c" width="800" height="500"></canvas>
+  <div id="hud">
+    <div id="sc">SCORE: 0</div>
+    <div id="lv">LIVES: &#x2764;&#x2764;&#x2764;</div>
+    <div id="lbl">LEVEL 1</div>
+  </div>
+  <button id="musicBtn" onclick="toggleMusic()">&#9834; MUSIC: OFF</button>
+</div>
+<div id="mob">
+  <div style="display:flex;gap:10px"><div class="mb" id="bL">&#9664;</div><div class="mb" id="bR">&#9654;</div></div>
+  <div class="mb" id="bJ">&#9650;</div>
+</div>
+
+<script>
+// =============================================================
+//  TESLA SERVICE QUEST  -  The Coffee Break Adventure
+//  Infinite procedural levels + Boss every 3 levels
+// =============================================================
+const cv=document.getElementById('c'),cx=cv.getContext('2d'),W=800,H=500;
+
+// =================== AUDIO ENGINE ===================
+let ac=null,mg=null,musicOn=false;
+function initA(){if(ac)return;ac=new(window.AudioContext||window.webkitAudioContext)();mg=ac.createGain();mg.gain.value=0.25;mg.connect(ac.destination)}
+function tone(f,d,t='square',v=0.13){if(!ac||!f)return;const o=ac.createOscillator(),g=ac.createGain();o.type=t;o.frequency.value=f;g.gain.setValueAtTime(v,ac.currentTime);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+d);o.connect(g);g.connect(mg);o.start();o.stop(ac.currentTime+d)}
+
+// --- Sound Effects ---
+function sfxJump(){tone(280,.08);setTimeout(()=>tone(420,.08),40);setTimeout(()=>tone(560,.12),80)}
+function sfxDoubleJump(){tone(440,.06);setTimeout(()=>tone(660,.06),30);setTimeout(()=>tone(880,.06),60);setTimeout(()=>tone(1100,.1),90)}
+function sfxCoin(){tone(988,.07);setTimeout(()=>tone(1319,.25),70)}
+function sfxStomp(){tone(400,.05);setTimeout(()=>tone(700,.1),50)}
+function sfxHit(){tone(180,.15,'sawtooth',.15);setTimeout(()=>tone(100,.25,'sawtooth',.12),100)}
+function sfxDie(){[392,349,311,294,262,233,220,196].forEach((f,i)=>setTimeout(()=>tone(f,.22,'sawtooth',.1),i*130))}
+function sfxCoffee(){[523,659,784,1047,1319].forEach((f,i)=>setTimeout(()=>tone(f,.18,'square',.1),i*90))}
+function sfxRejoice(){const n=[784,988,1175,1319,1175,1319,1568,1319,1568];n.forEach((f,i)=>setTimeout(()=>tone(f,.15,'square',.09),i*100))}
+function sfxBossHit(){tone(150,.3,'sawtooth',.18);setTimeout(()=>{tone(200,.1);tone(300,.15)},150)}
+function sfxBossRoar(){[130,110,90,130,150,130].forEach((f,i)=>setTimeout(()=>tone(f,.2,'sawtooth',.15),i*80))}
+function sfxVictory(){const n=[523,523,523,523,415,466,523,466,523];const d=[.15,.15,.15,.4,.15,.15,.15,.15,.6];let t=0;n.forEach((f,i)=>{setTimeout(()=>tone(f,d[i],'square',.1),t*1000);t+=d[i]})}
+function sfxPowerup(){[523,659,784,1047].forEach((f,i)=>setTimeout(()=>tone(f,.15,'square',.1),i*70))}
+
+// --- 8-Bit Background Music ---
+const melA=[ // main theme
+  [523,.12],[659,.12],[784,.12],[1047,.24],[0,.12],[784,.12],[659,.12],[523,.24],
+  [587,.12],[698,.12],[880,.12],[1175,.24],[0,.12],[880,.12],[698,.12],[587,.24],
+  [523,.12],[784,.12],[1047,.12],[784,.12],[659,.12],[523,.12],[784,.24],[0,.12],
+  [440,.12],[523,.12],[659,.12],[880,.24],[659,.12],[523,.12],[440,.12],[523,.24],
+];
+const melB=[ // boss theme (ominous)
+  [220,.2],[262,.2],[220,.2],[196,.2],[220,.2],[262,.2],[294,.2],[262,.2],
+  [196,.2],[220,.2],[196,.2],[165,.2],[196,.2],[220,.2],[262,.2],[220,.4],
+  [175,.2],[220,.2],[262,.2],[220,.2],[175,.2],[165,.2],[147,.2],[165,.4],
+];
+const bassA=[[131,.24],[131,.24],[165,.24],[165,.24],[147,.24],[147,.24],[175,.24],[175,.24],[131,.24],[165,.24],[196,.24],[165,.24],[110,.24],[131,.24],[165,.24],[131,.24]];
+const bassB=[[110,.4],[110,.4],[98,.4],[98,.4],[87,.4],[87,.4],[98,.4],[110,.4]];
+let mI=0,bI=0,mT=0,bT=0,lastMT=0;
+
+function toggleMusic(){initA();musicOn=!musicOn;document.getElementById('musicBtn').innerHTML=musicOn?'&#9834; MUSIC: ON':'&#9834; MUSIC: OFF';mI=bI=0;mT=bT=0}
+function tickMusic(ts){
+  if(!musicOn||!ac)return;
+  const dt=ts-lastMT;if(dt<16)return;lastMT=ts;
+  const mel=isBossLevel()?melB:melA, bas=isBossLevel()?bassB:bassA;
+  mT-=dt/1000;bT-=dt/1000;
+  if(mT<=0){const[f,d]=mel[mI%mel.length];if(f)tone(f,d*.85,'square',.06);mT=d;mI++}
+  if(bT<=0){const[f,d]=bas[bI%bas.length];if(f)tone(f,d*.85,'triangle',.07);bT=d;bI++}
+}
+
+// =================== CONSTANTS ===================
+const G=0.5,TILE=32,MAXVY=13;
+
+// =================== INPUT ===================
+const K={};
+window.addEventListener('keydown',e=>{K[e.code]=true;if(['Space','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.code))e.preventDefault();
+  if(state==='title'||state==='gameover'){if(e.code==='Space'||e.code==='Enter'){initA();startGame()}}
+  if(state==='rejoice'&&rejoiceTimer<=0&&(e.code==='Space'||e.code==='Enter'))advanceAfterRejoice();
+});
+window.addEventListener('keyup',e=>K[e.code]=false);
+function mob(id,code){const el=document.getElementById(id);if(!el)return;el.addEventListener('touchstart',e=>{e.preventDefault();K[code]=true;initA();if(state!=='playing'&&state!=='boss'){if(state==='rejoice'&&rejoiceTimer<=0)advanceAfterRejoice();else if(state!=='rejoice')startGame()}});el.addEventListener('touchend',e=>{e.preventDefault();K[code]=false})}
+mob('bL','ArrowLeft');mob('bR','ArrowRight');mob('bJ','Space');
+
+// =================== GAME STATE ===================
+let state='title'; // title,playing,boss,rejoice,gameover,win
+let score=0,lives=3,level=1,camX=0,frame=0;
+let invT=0,msgT=0,msg='',shakeT=0;
+let particles=[];
+let rejoiceTimer=0, rejoicePhase=0;
+let bossNum=0; // which boss encounter (1st, 2nd, 3rd...)
+
+function isBossLevel(){return level%4===0} // boss every 3 normal levels: 4,8,12,...
+function getBossNum(){return Math.floor(level/4)} // which boss encounter we're on
+
+// Boss state
+let boss={x:0,y:0,vx:0,vy:0,hp:3,maxHp:3,alive:true,phase:0,chargeTimer:0,stunTimer:0,yelling:'',yellTimer:0,facing:-1,w:52,h:56};
+
+// =================== PLAYER ===================
+let P={x:80,y:300,vx:0,vy:0,w:28,h:34,ground:false,face:1,fr:0,dead:false,deathVy:0,hasDoubleJumped:false,jumpPressed:false};
+
+// =================== LEVEL DEFINITIONS ===================
+// Tile types: 0=air, 1=ground, 2=brick, 3=pipe, 4=question, 5=coffee_machine
+
+// Seeded random for reproducible levels
+function seededRand(seed){let s=seed;return function(){s=(s*9301+49297)%233280;return s/233280}}
+
+function buildLevel(lvl){
+  const rows=Math.ceil(H/TILE);
+  const gY=13;
+
+  if(isBossLevel()){
+    // === BOSS ARENA === (scales with boss number)
+    const bn=getBossNum();
+    const w=28+Math.min(bn*2,10);
+    const t=makeEmptyMap(rows+1,w);
+    fillGround(t,gY,w);
+    // Walls
+    for(let r=0;r<gY;r++){t[r][0]=1;t[r][1]=1;t[r][w-1]=1;t[r][w-2]=1}
+    // Platforms (more with harder bosses)
+    const numPlats=3+Math.min(bn,4);
+    const spacing=Math.floor((w-6)/numPlats);
+    for(let i=0;i<numPlats;i++){
+      const px=3+i*spacing;
+      const py=gY-(3+(i%2)*2)-(bn>=3?((i%3)===0?2:0):0);
+      if(py>=2)addPlat(t,px,py,3+Math.min(Math.floor(bn/2),2));
+    }
+    // Extra high platforms for tough bosses
+    if(bn>=2){addPlat(t,Math.floor(w/2)-2,gY-7,4)}
+    if(bn>=3){addPlat(t,5,gY-8,3);addPlat(t,w-8,gY-8,3)}
+    return{tiles:t,w,gY,enemies:[],coffeeX:-999,coffeeY:-999};
+  }
+
+  // === NORMAL LEVEL (procedurally generated) ===
+  const rng=seededRand(lvl*7919+31337);
+  const difficulty=Math.min(lvl,20); // caps scaling at 20
+  const w=60+Math.floor(difficulty*8)+Math.floor(rng()*20);
+  const t=makeEmptyMap(rows+1,w);
+  fillGround(t,gY,w);
+
+  // Coffee machine safe zone: keep columns w-7 to w-1 clear of obstacles
+  const coffeeCol=w-4;
+  const safeEnd=w-7; // nothing generated at or past this column
+
+  // --- Gaps (more & wider with difficulty) ---
+  const numGaps=3+Math.floor(difficulty*0.8)+Math.floor(rng()*3);
+  const safeZone=10; // no gaps near start
+  let gapPositions=[];
+  for(let i=0;i<numGaps;i++){
+    const gx=safeZone+Math.floor(rng()*(w-safeZone-8));
+    const gw=2+Math.floor(rng()*Math.min(2+Math.floor(difficulty/4),4));
+    // Keep away from coffee machine zone
+    if(gx+gw>safeEnd)continue;
+    // Make sure gaps don't overlap or merge into huge death zones
+    let tooClose=false;
+    for(const gp of gapPositions){if(Math.abs(gx-gp.x)<gp.w+4){tooClose=true;break}}
+    if(tooClose)continue;
+    gapPositions.push({x:gx,w:gw});
+    clearGap(t,gY,gx,gw);
+  }
+
+  // --- Platforms --- 
+  // Over gaps (rescue platforms)
+  for(const gap of gapPositions){
+    if(rng()<0.7){
+      const py=gY-3-Math.floor(rng()*2);
+      const pw=Math.max(2,gap.w-Math.floor(rng()*2));
+      addPlat(t,gap.x,py,pw);
+    }
+  }
+  // Scattered platforms
+  const numPlats=5+Math.floor(difficulty*0.8)+Math.floor(rng()*4);
+  for(let i=0;i<numPlats;i++){
+    const px=6+Math.floor(rng()*(w-10));
+    if(px+4>safeEnd)continue; // keep away from coffee zone
+    const py=gY-3-Math.floor(rng()*Math.min(4+Math.floor(difficulty/3),7));
+    const pw=2+Math.floor(rng()*3);
+    if(py>=2)addPlat(t,px,py,pw);
+  }
+
+  // --- Question blocks ---
+  const numQs=2+Math.floor(difficulty*0.4)+Math.floor(rng()*2);
+  for(let i=0;i<numQs;i++){
+    const qx=8+Math.floor(rng()*(w-12));
+    if(qx>=safeEnd)continue; // keep away from coffee zone
+    const qy=gY-5-Math.floor(rng()*2);
+    if(qy>=2&&t[qy]&&t[qy][qx]===0)t[qy][qx]=4;
+  }
+
+  // --- Pipes ---
+  const numPipes=2+Math.floor(difficulty*0.3)+Math.floor(rng()*2);
+  for(let i=0;i<numPipes;i++){
+    const px=10+Math.floor(rng()*(w-16));
+    if(px+1>=safeEnd)continue; // keep away from coffee zone
+    const ph=2+Math.floor(rng()*2);
+    // Only place on solid ground
+    if(t[gY]&&t[gY][px]===1&&t[gY][px+1]===1)addPipe(t,gY,px,ph);
+  }
+
+  // --- Coffee machine at end ---
+  t[gY-1][coffeeCol]=5;t[gY-2][coffeeCol]=5;
+  // Explicitly clear everything above and around the coffee machine
+  for(let r=0;r<gY-2;r++){
+    for(let c=safeEnd;c<w;c++){
+      if(t[r]&&(t[r][c]===2||t[r][c]===3||t[r][c]===4))t[r][c]=0;
+    }
+  }
+
+  // --- Enemies (scales with difficulty) ---
+  const enemyTypes=['pothole','bug','karen'];
+  const numEnemies=4+Math.floor(difficulty*1.2)+Math.floor(rng()*3);
+  const enemyDefs=[];
+  for(let i=0;i<numEnemies;i++){
+    const col=8+Math.floor(rng()*(w-14));
+    if(col>=safeEnd)continue; // keep enemies away from coffee zone
+    // More enemy variety at higher levels
+    const maxType=Math.min(1+Math.floor(difficulty/2),3);
+    const etype=enemyTypes[Math.floor(rng()*maxType)];
+    // Only place on solid ground
+    if(t[gY]&&t[gY][col]===1)enemyDefs.push({type:etype,col});
+  }
+
+  return{tiles:t,w,gY,enemies:buildEnemies(enemyDefs,gY),coffeeX:coffeeCol*TILE,coffeeY:(gY-2)*TILE};
+}
+
+function makeEmptyMap(rows,cols){const t=[];for(let r=0;r<rows;r++){t[r]=[];for(let c=0;c<cols;c++)t[r][c]=0}return t}
+function fillGround(t,gY,w){for(let c=0;c<w;c++)for(let r=gY;r<t.length;r++)t[r][c]=1}
+function clearGap(t,gY,x,w){for(let c=x;c<x+w;c++)for(let r=gY;r<t.length;r++)if(t[r])t[r][c]=0}
+function addPlat(t,x,y,w){if(!t[y])return;for(let c=x;c<x+w;c++)if(c<t[y].length)t[y][c]=2}
+function addPipe(t,gY,x,h){for(let r=gY-h;r<gY;r++)if(t[r]){t[r][x]=3;if(x+1<t[r].length)t[r][x+1]=3}}
+function buildEnemies(defs,gY){return defs.map(d=>({type:d.type,x:d.col*TILE,y:(gY-1)*TILE,vx:(0.6+Math.random()*0.6)*(Math.random()>.5?1:-1),alive:true,fr:0,startX:(d.col-3)*TILE,endX:(d.col+3)*TILE}))}
+
+// =================== COLLECTIBLES ===================
+let items=[];
+function spawnItems(map){
+  items=[];
+  const gY=map.gY;
+  const safeEnd=map.w-7; // keep coffee machine area clear
+  // Batteries (coins) on platforms and ground
+  for(let c=5;c<safeEnd;c++){
+    for(let r=2;r<gY;r++){
+      if(map.tiles[r][c]===2){// on top of platforms
+        if(Math.random()<0.5)items.push({type:'battery',x:c*TILE+4,y:(r-1)*TILE+4,alive:true});
+      }
+    }
+    // Some floating above ground
+    if(c%5===0 && map.tiles[gY][c]===1){
+      items.push({type:'battery',x:c*TILE+4,y:(gY-2)*TILE,alive:true});
+    }
+  }
+  // Powerups from ? blocks (spawn on hit)
+}
+
+// =================== FRIENDS (for rejoicing) ===================
+let friends=[];
+function spawnFriends(coffeeX,gY){
+  friends=[];
+  const colors=['#2196F3','#4CAF50','#FF9800','#9C27B0'];
+  const names=['Dave','Raj','Kim','Alex'];
+  for(let i=0;i<4;i++){
+    friends.push({
+      x:coffeeX-20+i*22,y:(gY-1)*TILE,
+      color:colors[i],name:names[i],
+      jumpT:Math.random()*Math.PI*2, // offset for jump animation
+    });
+  }
+}
+
+// =================== PARTICLES ===================
+function spark(x,y,col,n=10){for(let i=0;i<n;i++)particles.push({x,y,vx:(Math.random()-.5)*6,vy:-Math.random()*5-2,life:25+Math.random()*20,color:col,sz:2+Math.random()*3})}
+function confetti(x,y,n=20){for(let i=0;i<n;i++)particles.push({x,y,vx:(Math.random()-.5)*8,vy:-Math.random()*8-3,life:50+Math.random()*40,color:`hsl(${Math.random()*360},80%,60%)`,sz:3+Math.random()*4})}
+
+// =================== MESSAGES ===================
+const funnyMsgs=[
+  "OTA update downloading...\njust kidding, fix it yourself!",
+  "Panel gap? That's a\n'feature', not a bug!",
+  "Autopilot says:\nI need a vacation too!",
+  "Error 404:\nTurn signal not found",
+  "Have you tried turning\nit off and on again?",
+  "Service manual says:\n'Good luck lol'",
+  "Replacing the blinker fluid\n...wait, wrong car.",
+  "Customer complaint:\n'My car updated itself\nand now speaks French'",
+  "Pro tip: Percussive\nmaintenance works 60%\nof the time, every time!",
+  "Battery at 1%...\njust like my patience!",
+  "Falcon Wing Door stuck?\nHave you tried asking nicely?",
+];
+const coffeeMsgs=[
+  "COFFEE TIME!\nThe universal fix for\neverything!",
+  "Finally! The sacred\ncoffee machine!\nRefueling technician...",
+  "Coffee acquired!\nProductivity +1000%!",
+];
+const rejoiceMsgs=[
+  "The crew is here!\nTime to celebrate!",
+  "Your friends saved you\na fresh cup!",
+  "Break room party!\nAnother shift survived!",
+];
+function showMsg(m,dur=3000){msg=m;msgT=dur}
+
+// =================== HUD ===================
+function updHUD(){
+  document.getElementById('sc').textContent=`SCORE: ${score}`;
+  let h='';for(let i=0;i<lives;i++)h+='\u2764';for(let i=lives;i<3;i++)h+='\u2661';
+  document.getElementById('lv').textContent=`LIVES: ${h}`;
+  document.getElementById('lbl').textContent=isBossLevel()?`BOSS #${getBossNum()}`:`LEVEL ${level}`;
+}
+
+// =================== TILE COLLISION ===================
+let lv=null; // current level data
+function tileAt(c,r){if(!lv||!lv.tiles[r])return 1;if(c<0||c>=lv.w)return 1;return lv.tiles[r][c]||0}
+function solid(x,y){const t=tileAt(Math.floor(x/TILE),Math.floor(y/TILE));return t===1||t===2||t===3||t===5}
+function overlap(a,b){return a.x<b.x+b.w&&a.x+a.w>b.x&&a.y<b.y+b.h&&a.y+a.h>b.y}
+
+// =================== GAME FLOW ===================
+function startGame(){state='playing';score=0;lives=3;level=1;bossNum=0;loadLevel()}
+function loadLevel(){
+  lv=buildLevel(level);
+  spawnItems(lv);
+  P.x=90;P.y=(lv.gY-2)*TILE;P.vx=P.vy=0;P.ground=false;P.dead=false;P.face=1;P.hasDoubleJumped=false;P.jumpPressed=false;
+  camX=0;particles=[];invT=60;friends=[];rejoiceTimer=0;rejoicePhase=0;
+  if(!isBossLevel()){
+    // Normal level — procedurally generated
+    const levelNames=["Morning Shift","Parts Run","Parking Lot Patrol","Service Bay Shuffle",
+      "Overtime Grind","Night Shift","Weekend Rush","Holiday Chaos","Double Shift","Manager's Special",
+      "Coffee Emergency","Warranty Maze","Recall Rally","Software Update Sprint","Battery Swap Blitz"];
+    const name=levelNames[(level-1)%levelNames.length];
+    const posInCycle=((level-1)%4)+1; // 1,2,3 within each cycle
+    const tilBoss=4-posInCycle;
+    showMsg(`LEVEL ${level}\n"${name}"\n${tilBoss===0?'BOSS IS NEXT!':tilBoss+' more until boss!'}\nReach the coffee machine!`,3000);
+    sfxCoffee();
+  }else{
+    // BOSS LEVEL
+    bossNum=getBossNum();
+    const bossHp=3+Math.floor((bossNum-1)*1.5); // 3, 4, 5, 7, 8...
+    const bossMaxHp=bossHp;
+    boss={x:lv.w*TILE/2-26,y:(lv.gY-3)*TILE,vx:2+bossNum*0.3,vy:0,
+      hp:bossHp,maxHp:bossMaxHp,alive:true,phase:0,
+      chargeTimer:120,stunTimer:0,yelling:'',yellTimer:0,facing:-1,w:52,h:56};
+    state='boss';
+    const bossNames=["Angry Customer","Furious Reviewer","Warranty Karen","Corporate Complainer",
+      "Reddit Warrior","Twitter Troll","Yelp Avenger","BBB Berserker","Class Action Carl","Recall Rager"];
+    const bname=bossNames[(bossNum-1)%bossNames.length];
+    showMsg(`BOSS FIGHT #${bossNum}!\n\n"${bname}" appears!\nHP: ${bossHp}\nStomp ${bossHp} times!\n\n'MY WARRANTY\nCOVERS THIS!!!'`,3500);
+    sfxBossRoar();
+  }
+  updHUD();
+}
+function advanceAfterRejoice(){
+  level++;
+  state='playing';
+  loadLevel();
+}
+
+// =================== PLAYER UPDATE ===================
+function updPlayer(){
+  if(P.dead)return;
+  const acc=0.5,mx=4.5,fri=0.82;
+  if(K.ArrowLeft||K.KeyA){P.vx-=acc;P.face=-1}
+  if(K.ArrowRight||K.KeyD){P.vx+=acc;P.face=1}
+  if(!K.ArrowLeft&&!K.KeyA&&!K.ArrowRight&&!K.KeyD)P.vx*=fri;
+  P.vx=Math.max(-mx,Math.min(mx,P.vx));
+  // Jump input (edge-triggered: must release and re-press to double jump)
+  const jumpBtn=!!(K.Space||K.ArrowUp||K.KeyW);
+  if(jumpBtn&&!P.jumpPressed){
+    if(P.ground){
+      // Normal jump from ground
+      P.vy=-11.5;P.ground=false;P.hasDoubleJumped=false;sfxJump();
+    }else if(!P.hasDoubleJumped){
+      // DOUBLE JUMP in mid-air!
+      P.vy=-10;P.hasDoubleJumped=true;sfxDoubleJump();
+      spark(P.x+P.w/2,P.y+P.h,'#FFD600',8);
+    }
+  }
+  P.jumpPressed=jumpBtn;
+
+  P.vy+=G;if(P.vy>MAXVY)P.vy=MAXVY;
+
+  // Horiz collision
+  P.x+=P.vx;
+  if(P.x<0)P.x=0;
+  const pr=P.x+P.w,pt=P.y+2,pb=P.y+P.h-2,pm=P.y+P.h/2;
+  if(P.vx>0){if(solid(pr,pt)||solid(pr,pb)||solid(pr,pm)){P.x=Math.floor(pr/TILE)*TILE-P.w;P.vx=0}}
+  else if(P.vx<0){if(solid(P.x,pt)||solid(P.x,pb)||solid(P.x,pm)){P.x=Math.floor(P.x/TILE)*TILE+TILE;P.vx=0}}
+
+  // Vert collision
+  P.y+=P.vy;P.ground=false;
+  const pl2=P.x+3,pr2=P.x+P.w-3;
+  if(P.vy>0){const ft=P.y+P.h;if(solid(pl2,ft)||solid(pr2,ft)){P.y=Math.floor(ft/TILE)*TILE-P.h;P.vy=0;P.ground=true;P.hasDoubleJumped=false}}
+  else if(P.vy<0){const hd=P.y;if(solid(pl2,hd)||solid(pr2,hd)){P.y=Math.floor(hd/TILE)*TILE+TILE;P.vy=0;
+    // Hit ? block
+    const bc=Math.floor((pl2+pr2)/2/TILE),br=Math.floor(hd/TILE);
+    if(lv.tiles[br]&&lv.tiles[br][bc]===4){lv.tiles[br][bc]=2;score+=25;sfxCoin();spark(bc*TILE+16,br*TILE,`#ff0`,8);
+      if(Math.random()<0.5)showMsg(funnyMsgs[Math.floor(Math.random()*funnyMsgs.length)],2200);
+      else{invT=200;showMsg("SUPERCHARGED!\n5 sec invincibility!",1500);sfxPowerup()}}
+  }}
+
+  // Fall below screen = DEATH
+  if(P.y>H){killPlayer();return}
+
+  // Animation
+  P.fr=Math.abs(P.vx)>.5?Math.floor(frame/6)%2:0;
+  if(invT>0)invT--;
+
+  // Camera
+  const tc=P.x-W/3;camX+=(tc-camX)*.1;
+  if(camX<0)camX=0;
+  const mc=lv.w*TILE-W;if(camX>mc)camX=mc;
+
+  // Collect items
+  for(const it of items){
+    if(!it.alive)continue;
+    if(overlap({x:P.x,y:P.y,w:P.w,h:P.h},{x:it.x,y:it.y,w:20,h:20})){
+      it.alive=false;score+=10;sfxCoin();spark(it.x+10,it.y+10,'#0f0',6);
+    }
+  }
+
+  // Enemy collision
+  for(const e of lv.enemies){
+    if(!e.alive)continue;
+    e.x+=e.vx;e.fr=Math.floor(frame/10)%2;
+    if(e.x<=e.startX||e.x>=e.endX)e.vx*=-1;
+    if(!solid(e.x+(e.vx>0?26:2),e.y+26))e.vx*=-1;
+    const eb={x:e.x,y:e.y,w:28,h:24},pb={x:P.x,y:P.y,w:P.w,h:P.h};
+    if(overlap(pb,eb)){
+      if(P.vy>0&&P.y+P.h-e.y<16){e.alive=false;P.vy=-9;score+=100;sfxStomp();spark(e.x+14,e.y+12,'#f00',12);
+        const sm=["Squashed that bug!\n+100","Service ticket: CLOSED\n+100","STOMPED!\n+100"];
+        if(Math.random()<.4)showMsg(sm[Math.floor(Math.random()*sm.length)],1500);
+      }else if(invT<=0){hitPlayer()}
+    }
+  }
+
+  // Check coffee machine (only on normal levels)
+  if(!isBossLevel()){
+    const cb={x:lv.coffeeX,y:lv.coffeeY,w:TILE,h:TILE*2};
+    if(overlap({x:P.x,y:P.y,w:P.w,h:P.h},cb)){
+      // LEVEL COMPLETE - start rejoicing!
+      state='rejoice';
+      rejoiceTimer=280; // ~4.5 seconds of celebration
+      rejoicePhase=0;
+      score+=500;
+      sfxCoffee();
+      spawnFriends(lv.coffeeX,lv.gY);
+      confetti(lv.coffeeX+16,(lv.gY-2)*TILE,30);
+      showMsg(coffeeMsgs[Math.floor(Math.random()*coffeeMsgs.length)],2500);
+    }
+  }
+}
+
+// =================== BOSS UPDATE ===================
+function updBoss(){
+  if(!boss.alive)return;
+  updPlayer(); // player still moves
+
+  if(boss.stunTimer>0){boss.stunTimer--;return}
+
+  // Boss AI
+  boss.chargeTimer--;
+  if(boss.chargeTimer<=0){
+    // Choose behavior based on HP ratio
+    const hpRatio=boss.hp/boss.maxHp;
+    if(hpRatio<=0.33)boss.phase=2; else if(hpRatio<=0.66)boss.phase=1; else boss.phase=0;
+
+    // Charge toward player (faster with each boss encounter)
+    const spd=2.5+boss.phase*1.2+bossNum*0.3;
+    boss.vx=P.x>boss.x?spd:-spd;
+    boss.facing=boss.vx>0?1:-1;
+
+    // Yell something angry
+    const yells=[
+      "MY WARRANTY!!!","I WANT A REFUND!","THIS IS OUTRAGEOUS!",
+      "I'LL CALL CORPORATE!","DO YOU KNOW WHO I AM?!","UNACCEPTABLE!",
+      "I PAID FULL PRICE!","CHECK YOUR EMAIL!","I WANT THE MANAGER!",
+      "I'LL LEAVE A 1-STAR\nREVIEW!","MY LAWYER WILL\nHEAR ABOUT THIS!",
+      "I'VE BEEN WAITING\nFOR 3 WEEKS!","THIS SHOULD BE\nCOVERED!!!",
+      "I POSTED THIS\nON REDDIT ALREADY!",
+    ];
+    if(boss.yellTimer<=0){boss.yelling=yells[Math.floor(Math.random()*yells.length)];boss.yellTimer=90;sfxBossRoar()}
+
+    boss.chargeTimer=60-boss.phase*15;
+  }
+
+  // Boss movement
+  boss.x+=boss.vx;
+  boss.vy+=G;if(boss.vy>10)boss.vy=10;
+  boss.y+=boss.vy;
+
+  // Boss ground collision
+  const bgY=lv.gY;
+  if(boss.y+boss.h>bgY*TILE){boss.y=bgY*TILE-boss.h;boss.vy=0;
+    // Jump if player is above
+    if(P.y<boss.y-TILE*2&&Math.random()<0.03+boss.phase*0.02+bossNum*0.01)boss.vy=-10-Math.min(bossNum,4);
+  }
+  // Boss wall bounce
+  if(boss.x<2*TILE){boss.x=2*TILE;boss.vx=Math.abs(boss.vx)}
+  if(boss.x+boss.w>(lv.w-2)*TILE){boss.x=(lv.w-2)*TILE-boss.w;boss.vx=-Math.abs(boss.vx)}
+
+  // Platform collision for boss
+  const bl=boss.x+4,br=boss.x+boss.w-4;
+  if(boss.vy>0){const bf=boss.y+boss.h;if(solid(bl,bf)||solid(br,bf)){boss.y=Math.floor(bf/TILE)*TILE-boss.h;boss.vy=0}}
+
+  boss.yellTimer--;
+
+  // Player vs Boss collision
+  const bb={x:boss.x,y:boss.y,w:boss.w,h:boss.h};
+  const pb={x:P.x,y:P.y,w:P.w,h:P.h};
+  if(overlap(pb,bb)){
+    if(P.vy>0&&P.y+P.h-boss.y<18&&boss.stunTimer<=0){
+      // STOMP THE BOSS!
+      boss.hp--;
+      boss.stunTimer=80;
+      boss.vx=0;
+      P.vy=-12;
+      score+=300;
+      sfxBossHit();
+      shakeT=20;
+      spark(boss.x+26,boss.y+10,'#f00',20);
+      confetti(boss.x+26,boss.y,15);
+
+      if(boss.hp<=0){
+        // BOSS DEFEATED!
+        boss.alive=false;
+        score+=1000+bossNum*500;
+        state='rejoice';
+        rejoiceTimer=350;
+        rejoicePhase=0;
+        // Spawn friends in boss arena
+        friends=[];
+        const colors=['#2196F3','#4CAF50','#FF9800','#9C27B0','#E91E63','#00BCD4','#CDDC39'];
+        const names=['Dave','Raj','Kim','Alex','Sam','Jo','Pat'];
+        const numFriends=Math.min(4+bossNum,7);
+        for(let i=0;i<numFriends;i++){
+          friends.push({x:P.x-40+i*22,y:(lv.gY-1)*TILE,color:colors[i%colors.length],name:names[i%names.length],jumpT:Math.random()*Math.PI*2});
+        }
+        confetti(P.x,P.y-30,40);
+        sfxVictory();
+        const defeatMsgs=[
+          "The customer finally\ncalmed down!\n'...fine, I'll read\nthe fine print.'",
+          "Customer rage: DEPLETED!\n'...maybe I was wrong.'",
+          "Boss defeated!\n'I'll just leave\na passive-aggressive\nsurvey instead.'",
+          "VICTORY!\n'Okay maybe it WAS\nuser error...'",
+          "Customer subdued!\n'I... I just wanted\nsomeone to listen.'",
+        ];
+        showMsg(`BOSS #${bossNum} DEFEATED!\n+${1000+bossNum*500} pts!\n\n${defeatMsgs[(bossNum-1)%defeatMsgs.length]}`,5000);
+      }else{
+        const stomped=boss.maxHp-boss.hp;
+        const stompMsgs=["OW! I'll sue!","THAT'S ASSAULT!!","MY LAWYER!!!","STOP THAT!","I'M CALLING THE POLICE!","THIS IS HARASSMENT!"];
+        showMsg(`Stomp ${stomped}/${boss.maxHp}!\n"${stompMsgs[(stomped-1)%stompMsgs.length]}"`,2000);
+      }
+    }else if(invT<=0&&boss.stunTimer<=0){
+      hitPlayer();
+    }
+  }
+
+  // Boss throws "complaint papers" projectiles (more frequently with higher bosses)
+  const paperRate=Math.max(40,90-bossNum*10);
+  if(boss.phase>=1&&frame%paperRate===0&&boss.stunTimer<=0){
+    const dx=P.x-boss.x;
+    const dir=dx>0?1:-1;
+    lv.enemies.push({
+      type:'paper',x:boss.x+26,y:boss.y+20,
+      vx:dir*(3+boss.phase),alive:true,fr:0,
+      startX:-9999,endX:99999
+    });
+  }
+}
+
+// =================== REJOICE UPDATE ===================
+function updRejoice(){
+  rejoiceTimer--;
+  if(rejoiceTimer===200)showMsg(rejoiceMsgs[Math.floor(Math.random()*rejoiceMsgs.length)],2500);
+  if(rejoiceTimer===100){sfxRejoice();confetti(P.x,P.y-20,25)}
+  if(rejoiceTimer===50&&isBossLevel())showMsg(`BOSS #${bossNum} CRUSHED!\nThe crew celebrates!\nAll hail the coffee!`,3500);
+  if(rejoiceTimer===50&&!isBossLevel())showMsg("Great shift!\n\nPress ENTER to\ncontinue...",4000);
+  if(rejoiceTimer<=0&&isBossLevel()&&frame%120===60)confetti(W/2,H/2,10);
+
+  // Friends jump happily
+  for(const f of friends){
+    f.jumpT+=0.08;
+  }
+
+  // Keep spawning confetti
+  if(rejoiceTimer>0&&frame%20===0)confetti(P.x+Math.random()*100-50,P.y-30+Math.random()*20,5);
+
+  // Particles
+  for(let i=particles.length-1;i>=0;i--){const p=particles[i];p.x+=p.vx;p.y+=p.vy;p.vy+=.12;p.life--;if(p.life<=0)particles.splice(i,1)}
+
+  updHUD();
+}
+
+// =================== DAMAGE ===================
+function hitPlayer(){
+  if(invT>0||P.dead)return;
+  lives--;invT=90;shakeT=15;sfxHit();spark(P.x+14,P.y+17,'#f00',15);
+  showMsg("OUCH! Service tech down!",1200);
+  if(lives<=0){state='gameover';sfxDie()}
+  updHUD();
+}
+function killPlayer(){
+  lives--;sfxDie();shakeT=10;
+  if(lives<=0){state='gameover';sfxDie();showMsg("Fell into the abyss!\n\nGAME OVER",2500)}
+  else{
+    P.x=90;P.y=(lv.gY-2)*TILE;P.vx=P.vy=0;invT=90;P.hasDoubleJumped=false;P.jumpPressed=false;
+    camX=0;
+    const deathMsgs=["Fell into the void!\nNot covered by warranty!","That hole wasn't in\nthe service manual!","OSHA violation detected!","Watch your step!\nFloor is lava... I mean,\nmissing!","The abyss called.\nYou answered."];
+    showMsg(deathMsgs[Math.floor(Math.random()*deathMsgs.length)],2200);
+  }
+  updHUD();
+}
+
+// =================== DRAWING ===================
+function drawSky(){
+  const g=cx.createLinearGradient(0,0,0,H);
+  if(isBossLevel()){g.addColorStop(0,'#4A0E0E');g.addColorStop(.5,'#8B2500');g.addColorStop(1,'#CC4400')}
+  else{g.addColorStop(0,'#1E88E5');g.addColorStop(.5,'#64B5F6');g.addColorStop(1,'#E3F2FD')}
+  cx.fillStyle=g;cx.fillRect(0,0,W,H);
+  // Clouds
+  cx.fillStyle=isBossLevel()?'rgba(50,0,0,0.3)':'rgba(255,255,255,0.7)';
+  for(let i=0;i<7;i++){const x=((i*170+40-camX*.15)%(W+200))-60,y=30+(i%3)*45;
+    cx.beginPath();cx.arc(x,y,18,0,Math.PI*2);cx.arc(x+18,y-8,22,0,Math.PI*2);cx.arc(x+40,y,18,0,Math.PI*2);cx.arc(x+18,y+4,16,0,Math.PI*2);cx.fill()}
+  // BG buildings
+  cx.fillStyle=isBossLevel()?'rgba(80,0,0,0.2)':'rgba(0,0,0,0.08)';
+  for(let i=0;i<8;i++){const bx=((i*140-camX*.25)%(W+300))-80,bh=50+(i%4)*35;cx.fillRect(bx,H-90-bh,70,bh)}
+}
+
+function drawTiles(){
+  const sc=Math.floor(camX/TILE),ec=sc+Math.ceil(W/TILE)+2;
+  for(let r=0;r<(lv?lv.tiles.length:0);r++){for(let c=sc;c<ec;c++){
+    const t=tileAt(c,r),tx=c*TILE-camX,ty=r*TILE;
+    if(t===1){// Ground
+      cx.fillStyle=r===lv.gY?'#4CAF50':'#795548';cx.fillRect(tx,ty,TILE,TILE);
+      if(r===lv.gY){cx.fillStyle='#66BB6A';for(let g=0;g<4;g++)cx.fillRect(tx+g*8+2,ty,4,3)}
+      else{cx.fillStyle='#6D4C41';cx.fillRect(tx+4,ty+8,4,4);cx.fillRect(tx+18,ty+16,4,4)}
+      cx.strokeStyle='rgba(0,0,0,.12)';cx.strokeRect(tx,ty,TILE,TILE);
+    }
+    if(t===2){cx.fillStyle='#D32F2F';cx.fillRect(tx,ty,TILE,TILE);cx.strokeStyle='#B71C1C';cx.lineWidth=1;cx.strokeRect(tx,ty,TILE,TILE);cx.beginPath();cx.moveTo(tx,ty+16);cx.lineTo(tx+TILE,ty+16);cx.moveTo(tx+16,ty);cx.lineTo(tx+16,ty+16);cx.stroke()}
+    if(t===3){cx.fillStyle='#43A047';cx.fillRect(tx,ty,TILE,TILE);cx.fillStyle='#2E7D32';cx.fillRect(tx+3,ty,TILE-6,TILE);cx.fillStyle='#1B5E20';cx.fillRect(tx+1,ty,TILE-2,4)}
+    if(t===4){// ? block
+      cx.fillStyle='#FFD600';cx.fillRect(tx,ty,TILE,TILE);cx.strokeStyle='#F57F17';cx.lineWidth=2;cx.strokeRect(tx+1,ty+1,TILE-2,TILE-2);
+      cx.fillStyle='#F57F17';cx.font='16px "Press Start 2P"';cx.fillText('?',tx+8,ty+24)}
+    if(t===5){// Coffee machine!
+      drawCoffeeMachine(tx,ty)}
+  }}
+}
+
+function drawCoffeeMachine(x,y){
+  const bob=Math.sin(frame*.06)*2;
+  // Body
+  cx.fillStyle='#5D4037';cx.fillRect(x+4,y+bob,24,TILE);
+  cx.fillStyle='#795548';cx.fillRect(x+6,y+2+bob,20,TILE-4);
+  // Screen
+  cx.fillStyle='#4CAF50';cx.fillRect(x+9,y+6+bob,14,8);
+  // Cup slot
+  cx.fillStyle='#333';cx.fillRect(x+10,y+20+bob,12,8);
+  // Cup
+  cx.fillStyle='#fff';cx.fillRect(x+12,y+18+bob,8,10);
+  cx.fillStyle='#6D4C41';cx.fillRect(x+13,y+19+bob,6,4);
+  // Steam
+  for(let i=0;i<3;i++){
+    const sx=x+14+Math.sin(frame*.08+i*2)*3;
+    const sy=y+bob-6-i*6;
+    cx.fillStyle=`rgba(255,255,255,${0.4-i*0.12})`;
+    cx.beginPath();cx.arc(sx,sy,3+i,0,Math.PI*2);cx.fill()}
+  // Glow
+  cx.fillStyle=`rgba(76,175,80,${.15+Math.sin(frame*.08)*.08})`;
+  cx.beginPath();cx.arc(x+16,y+TILE/2+bob,28,0,Math.PI*2);cx.fill();
+  // Label
+  cx.fillStyle='#FFD600';cx.font='7px "Press Start 2P"';cx.fillText('COFFEE',x,y-6+bob);
+}
+
+function drawPlayer(){
+  if(P.dead)return;
+  if(invT>0&&Math.floor(frame/3)%2===0)return;
+  const s=2,sx=P.x-camX;
+  // Simple but charming pixel technician
+  cx.save();
+  if(P.face<0){cx.translate(sx+P.w,P.y);cx.scale(-1,1);drawTech(0,0,s,P.fr)}
+  else drawTech(sx,P.y,s,P.fr);
+  cx.restore();
+  // Supercharged aura
+  if(invT>90){cx.strokeStyle=`hsl(${frame*10%360},100%,50%)`;cx.lineWidth=2;cx.strokeRect(sx-3,P.y-3,P.w+6,P.h+6)}
+  // Double-jump ready indicator (small sparkle under feet when airborne)
+  if(!P.ground&&!P.hasDoubleJumped){
+    const sa=0.4+Math.sin(frame*0.2)*0.2;
+    cx.fillStyle=`rgba(255,214,0,${sa})`;
+    cx.beginPath();cx.arc(sx+P.w/2,P.y+P.h+4,5+Math.sin(frame*0.15)*2,0,Math.PI*2);cx.fill();
+  }
+}
+
+function drawTech(x,y,s,fr){
+  // Hat (Tesla red cap)
+  cx.fillStyle='#CC0000';
+  cx.fillRect(x+4*s,y,8*s,3*s);
+  cx.fillRect(x+2*s,y+1*s,12*s,2*s);
+  // Face
+  cx.fillStyle='#FFD39B';
+  cx.fillRect(x+4*s,y+3*s,8*s,5*s);
+  // Eyes
+  cx.fillStyle='#333';
+  cx.fillRect(x+5*s,y+4*s,2*s,2*s);
+  cx.fillRect(x+9*s,y+4*s,2*s,2*s);
+  // Smile
+  cx.fillRect(x+6*s,y+6*s,4*s,1*s);
+  // Body (Tesla red uniform)
+  cx.fillStyle='#E82127';
+  cx.fillRect(x+3*s,y+8*s,10*s,5*s);
+  // T logo on chest
+  cx.fillStyle='#fff';
+  cx.fillRect(x+6*s,y+9*s,4*s,1*s);
+  cx.fillRect(x+7*s,y+9*s,2*s,3*s);
+  // Arms
+  cx.fillStyle='#FFD39B';
+  cx.fillRect(x+1*s,y+8*s,2*s,4*s);
+  cx.fillRect(x+13*s,y+8*s,2*s,4*s);
+  // Wrench in hand
+  cx.fillStyle='#90A4AE';
+  cx.fillRect(x+13*s,y+8*s,3*s,1*s);
+  cx.fillRect(x+15*s,y+7*s,1*s,3*s);
+  // Legs
+  cx.fillStyle='#1565C0';
+  if(fr===0){
+    cx.fillRect(x+4*s,y+13*s,3*s,3*s);
+    cx.fillRect(x+9*s,y+13*s,3*s,3*s);
+  }else{
+    cx.fillRect(x+3*s,y+13*s,3*s,3*s);
+    cx.fillRect(x+10*s,y+13*s,3*s,3*s);
+  }
+  // Boots
+  cx.fillStyle='#333';
+  cx.fillRect(x+(fr?3:4)*s,y+16*s,3*s,1*s);
+  cx.fillRect(x+(fr?10:9)*s,y+16*s,3*s,1*s);
+}
+
+function drawFriend(f,yOff){
+  const x=f.x-camX,y=f.y+yOff;
+  const jump=Math.sin(f.jumpT)*8;
+  // Head
+  cx.fillStyle=f.color;cx.fillRect(x+2,y-22+jump,12,8);
+  // Face
+  cx.fillStyle='#FFD39B';cx.fillRect(x+4,y-20+jump,8,6);
+  // Eyes (happy!)
+  cx.fillStyle='#333';
+  cx.fillRect(x+5,y-19+jump,2,1);cx.fillRect(x+9,y-19+jump,2,1);
+  // Big smile
+  cx.fillRect(x+6,y-16+jump,4,1);
+  // Body
+  cx.fillStyle=f.color;cx.fillRect(x+2,y-14+jump,12,8);
+  // Arms up (celebrating!)
+  cx.fillStyle='#FFD39B';
+  cx.fillRect(x,y-18+jump,2,4);cx.fillRect(x+14,y-18+jump,2,4);
+  // Legs
+  cx.fillStyle='#1565C0';
+  cx.fillRect(x+3,y-6+jump,3,4);cx.fillRect(x+10,y-6+jump,3,4);
+  // Name
+  cx.fillStyle='#fff';cx.font='6px "Press Start 2P"';
+  cx.textAlign='center';cx.fillText(f.name,x+8,y-26+jump);cx.textAlign='left';
+}
+
+function drawItems(){
+  for(const it of items){
+    if(!it.alive)continue;
+    const ix=it.x-camX,iy=it.y;
+    if(ix<-30||ix>W+30)continue;
+    const bob=Math.sin(frame*.08+it.x)* 3;
+    // Battery
+    cx.fillStyle='#4CAF50';cx.fillRect(ix,iy+bob,16,10);
+    cx.fillStyle='#66BB6A';cx.fillRect(ix+14,iy+bob+3,3,4);
+    cx.fillStyle='#fff';cx.fillRect(ix+5,iy+bob+3,6,2);cx.fillRect(ix+7,iy+bob+1,2,6);
+    cx.fillStyle='rgba(76,175,80,.2)';cx.beginPath();cx.arc(ix+8,iy+bob+5,12,0,Math.PI*2);cx.fill();
+  }
+}
+
+function drawEnemies(){
+  for(const e of lv.enemies){
+    if(!e.alive)continue;
+    const ex=e.x-camX;if(ex<-40||ex>W+40)continue;
+
+    if(e.type==='pothole'){
+      cx.fillStyle='#5D4037';cx.beginPath();cx.ellipse(ex+14,e.y+18,14,8,0,0,Math.PI*2);cx.fill();
+      cx.fillStyle='#3E2723';cx.beginPath();cx.ellipse(ex+14,e.y+18,10,5,0,0,Math.PI*2);cx.fill();
+      cx.fillStyle='#FF5722';cx.fillRect(ex+7,e.y+13,4,4);cx.fillRect(ex+17,e.y+13,4,4);
+      cx.strokeStyle='#FF5722';cx.lineWidth=2;cx.beginPath();cx.moveTo(ex+5,e.y+12);cx.lineTo(ex+11,e.y+14);cx.moveTo(ex+21,e.y+12);cx.lineTo(ex+15,e.y+14);cx.stroke()}
+
+    if(e.type==='bug'){
+      const b=Math.sin(frame*.15)*2;
+      cx.fillStyle='#9C27B0';cx.fillRect(ex+6,e.y+6+b,16,12);
+      cx.fillStyle='rgba(156,39,176,.5)';cx.fillRect(ex+2,e.y+2+b,8,8);cx.fillRect(ex+18,e.y+2+b,8,8);
+      cx.fillStyle='#fff';cx.fillRect(ex+8,e.y+8+b,4,4);cx.fillRect(ex+16,e.y+8+b,4,4);
+      cx.fillStyle='#000';cx.fillRect(ex+9,e.y+9+b,2,2);cx.fillRect(ex+17,e.y+9+b,2,2);
+      cx.fillStyle='#E1BEE7';cx.font='6px "Press Start 2P"';cx.fillText('BUG',ex+3,e.y+24+b)}
+
+    if(e.type==='karen'){
+      const b=e.fr*2;
+      cx.fillStyle='#FFD39B';cx.fillRect(ex+6,e.y+b,16,14);
+      cx.fillStyle='#FFD600';cx.fillRect(ex+4,e.y-4+b,20,8);cx.fillRect(ex+2,e.y+b,6,10);cx.fillRect(ex+20,e.y+b,6,6);
+      cx.fillStyle='#F44336';cx.fillRect(ex+9,e.y+5+b,3,3);cx.fillRect(ex+16,e.y+5+b,3,3);
+      cx.fillStyle='#D32F2F';cx.fillRect(ex+10,e.y+10+b,8,3);
+      cx.fillStyle='#E91E63';cx.fillRect(ex+4,e.y+14+b,20,10);
+      if(Math.floor(frame/40)%3===0){cx.fillStyle='#fff';cx.fillRect(ex-10,e.y-20+b,50,14);cx.fillStyle='#000';cx.font='6px "Press Start 2P"';cx.fillText('MANAGER!',ex-8,e.y-10+b)}}
+
+    if(e.type==='paper'){
+      // Complaint paper projectile
+      const rot=frame*.2;
+      cx.save();cx.translate(ex+8,e.y+8);cx.rotate(rot);
+      cx.fillStyle='#fff';cx.fillRect(-8,-6,16,12);
+      cx.fillStyle='#333';cx.font='5px "Press Start 2P"';cx.fillText('!!',- 4,-1);
+      cx.restore()}
+  }
+}
+
+function drawBoss(){
+  if(!boss.alive)return;
+  const bx=boss.x-camX,by=boss.y;
+  const stunned=boss.stunTimer>0;
+  const flash=stunned&&Math.floor(frame/4)%2;
+
+  cx.save();
+  if(boss.facing<0){cx.translate(bx+boss.w,by);cx.scale(-1,1);bx2=0;by2=0}
+  else{bx2=bx;by2=by}
+
+  if(!flash){
+    // Angry customer - BIG sprite
+    // Hair (messy, angry)
+    cx.fillStyle='#5D4037';
+    cx.fillRect(bx2+8,by2,36,12);cx.fillRect(bx2+4,by2+4,6,14);cx.fillRect(bx2+42,by2+4,6,14);
+
+    // Face (red with anger)
+    cx.fillStyle=stunned?'#A5D6A7':(boss.hp/boss.maxHp<=0.33)?'#E53935':'#FFAB91';
+    cx.fillRect(bx2+10,by2+10,32,18);
+
+    // Angry eyes
+    cx.fillStyle=stunned?'#666':'#D50000';
+    cx.fillRect(bx2+14,by2+14,8,6);cx.fillRect(bx2+30,by2+14,8,6);
+    cx.fillStyle='#000';cx.fillRect(bx2+16,by2+16,4,3);cx.fillRect(bx2+32,by2+16,4,3);
+    // ANGRY eyebrows (V shape)
+    if(!stunned){
+      cx.fillStyle='#5D4037';
+      cx.fillRect(bx2+12,by2+11,10,3);cx.fillRect(bx2+30,by2+11,10,3);
+      cx.fillStyle='#5D4037';cx.fillRect(bx2+14,by2+12,4,2);cx.fillRect(bx2+34,by2+12,4,2);
+    }
+    // Mouth (shouting)
+    cx.fillStyle=stunned?'#999':'#B71C1C';
+    cx.fillRect(bx2+18,by2+22,16,5);
+    if(!stunned){cx.fillStyle='#fff';cx.fillRect(bx2+20,by2+22,4,2);cx.fillRect(bx2+28,by2+22,4,2)} // teeth
+
+    // Body (business casual gone wrong)
+    cx.fillStyle='#37474F';
+    cx.fillRect(bx2+6,by2+28,40,20);
+    // Loosened tie
+    cx.fillStyle='#C62828';
+    cx.fillRect(bx2+24,by2+28,4,16);cx.fillRect(bx2+22,by2+28,8,4);
+    // Arms (waving angrily)
+    cx.fillStyle='#FFAB91';
+    const armWave=Math.sin(frame*.15)*4;
+    cx.fillRect(bx2,by2+28+armWave,8,6);cx.fillRect(bx2+44,by2+28-armWave,8,6);
+    // Fists
+    cx.fillStyle='#FF8A65';
+    cx.fillRect(bx2-2,by2+28+armWave,6,6);cx.fillRect(bx2+46,by2+28-armWave,6,6);
+
+    // Legs
+    cx.fillStyle='#455A64';
+    cx.fillRect(bx2+12,by2+48,10,8);cx.fillRect(bx2+30,by2+48,10,8);
+    // Shoes
+    cx.fillStyle='#212121';
+    cx.fillRect(bx2+10,by2+54,12,4);cx.fillRect(bx2+28,by2+54,12,4);
+
+    // Warranty paper in hand (waving it)
+    if(!stunned){
+      cx.fillStyle='#fff';
+      const pw=Math.sin(frame*.12)*6;
+      cx.save();cx.translate(bx2-2,by2+26+armWave);cx.rotate(pw*.05);
+      cx.fillRect(0,0,14,10);cx.fillStyle='#333';cx.font='4px "Press Start 2P"';
+      cx.fillText('WARRANTY',1,6);cx.restore();
+    }
+  }
+  cx.restore();
+
+  // HP bar
+  cx.fillStyle='#333';cx.fillRect(bx+2,by-14,boss.w-4,8);
+  cx.fillStyle=boss.hp>1?'#F44336':'#FF1744';
+  cx.fillRect(bx+3,by-13,(boss.w-6)*boss.hp/boss.maxHp,6);
+  cx.fillStyle='#fff';cx.font='6px "Press Start 2P"';cx.textAlign='center';
+  cx.fillText(`${boss.hp}/${boss.maxHp}`,bx+boss.w/2,by-7);cx.textAlign='left';
+
+  // Yell bubble
+  if(boss.yellTimer>0&&boss.yelling){
+    const bw=boss.yelling.split('\n').reduce((m,l)=>Math.max(m,l.length),0)*6+16;
+    const lines=boss.yelling.split('\n');
+    const bh=lines.length*12+10;
+    cx.fillStyle='rgba(255,255,255,0.95)';cx.fillRect(bx-bw/2+boss.w/2,by-22-bh,bw,bh);
+    cx.strokeStyle='#D50000';cx.lineWidth=2;cx.strokeRect(bx-bw/2+boss.w/2,by-22-bh,bw,bh);
+    cx.fillStyle='#D50000';cx.font='7px "Press Start 2P"';cx.textAlign='center';
+    lines.forEach((l,i)=>cx.fillText(l,bx+boss.w/2,by-14-bh+i*12+10));
+    cx.textAlign='left';
+  }
+
+  // Stunned stars
+  if(stunned){
+    for(let i=0;i<3;i++){
+      const sx=bx+10+i*16+Math.sin(frame*.1+i*2)*6;
+      const sy=by-8+Math.cos(frame*.12+i*2)*4;
+      cx.fillStyle='#FFD600';cx.font='10px "Press Start 2P"';cx.fillText('\u2605',sx,sy);
+    }
+  }
+}
+
+function drawParticles(){
+  for(const p of particles){cx.fillStyle=p.color;cx.globalAlpha=p.life/50;cx.fillRect(p.x-camX,p.y,p.sz,p.sz)}
+  cx.globalAlpha=1;
+}
+
+function drawMsg(){
+  if(msgT<=0)return;
+  const a=Math.min(1,msgT/500);
+  const lines=msg.split('\n');const h=lines.length*20+30;
+  cx.fillStyle=`rgba(0,0,0,${.75*a})`;cx.fillRect(W/2-180,H/2-h/2,360,h);
+  cx.strokeStyle=`rgba(232,33,39,${a})`;cx.lineWidth=2;cx.strokeRect(W/2-180,H/2-h/2,360,h);
+  cx.fillStyle=`rgba(255,255,255,${a})`;cx.font='10px "Press Start 2P"';cx.textAlign='center';
+  lines.forEach((l,i)=>cx.fillText(l,W/2,H/2-h/2+25+i*20));cx.textAlign='left';
+}
+
+// =================== TITLE SCREEN ===================
+function drawTitle(){
+  const g=cx.createLinearGradient(0,0,0,H);g.addColorStop(0,'#0D1B2A');g.addColorStop(1,'#1B2838');cx.fillStyle=g;cx.fillRect(0,0,W,H);
+  // Stars
+  for(let i=0;i<60;i++){const sx=(i*67+frame*.3)%W,sy=(i*43)%(H-120);cx.fillStyle=`rgba(255,255,255,${.2+Math.sin(frame*.05+i)*.3})`;cx.fillRect(sx,sy,2,2)}
+  // Title
+  const ty=75+Math.sin(frame*.03)*8;
+  cx.textAlign='center';
+  cx.fillStyle='#000';cx.font='30px "Press Start 2P"';cx.fillText('TESLA',W/2+3,ty+3);cx.fillText('SERVICE QUEST',W/2+3,ty+48);
+  cx.fillStyle='#E82127';cx.fillText('TESLA',W/2,ty);cx.fillStyle='#fff';cx.fillText('SERVICE QUEST',W/2,ty+45);
+  cx.fillStyle='#6D4C41';cx.font='11px "Press Start 2P"';cx.fillText('~ The Coffee Break Adventure ~',W/2,ty+75);
+  // Animated Tesla driving
+  const carX=(frame*2.5)%(W+200)-100;
+  cx.save();cx.translate(carX,240);
+  cx.fillStyle='#E82127';cx.fillRect(0,0,55,18);cx.fillRect(8,-10,32,12);
+  cx.fillStyle='#87CEEB';cx.fillRect(12,-8,10,9);cx.fillRect(28,-8,10,9);
+  cx.fillStyle='#333';cx.beginPath();cx.arc(12,20,5,0,Math.PI*2);cx.arc(42,20,5,0,Math.PI*2);cx.fill();
+  cx.restore();
+  // Animated tech running after car
+  if(carX>80){cx.save();drawTech(carX-60,233,2,Math.floor(frame/5)%2);cx.restore()}
+  // Instructions
+  cx.fillStyle='#fff';cx.font='10px "Press Start 2P"';
+  if(Math.floor(frame/30)%2)cx.fillText('PRESS ENTER OR SPACE',W/2,330);
+  cx.fillStyle='#888';cx.font='8px "Press Start 2P"';
+  cx.fillText('\u2190 \u2192  MOVE      SPACE  JUMP',W/2,380);
+  cx.fillText('DOUBLE TAP JUMP in mid-air!',W/2,400);
+  cx.fillText('Stomp enemies!  Reach the coffee!',W/2,420);
+  cx.fillStyle='#666';cx.font='7px "Press Start 2P"';
+  cx.fillText('Boss fight every 3 levels! How far can you go?',W/2,445);
+  cx.fillText('Fix Teslas. Drink coffee. Survive customers.',W/2,462);
+  cx.textAlign='left';
+}
+
+// =================== GAME OVER ===================
+function drawGameOver(){
+  cx.fillStyle='rgba(0,0,0,.85)';cx.fillRect(0,0,W,H);cx.textAlign='center';
+  const b=Math.sin(frame*.05)*5;
+  cx.fillStyle='#E82127';cx.font='36px "Press Start 2P"';cx.fillText('GAME OVER',W/2,140+b);
+  cx.fillStyle='#fff';cx.font='12px "Press Start 2P"';
+  cx.fillText(`Final Score: ${score}`,W/2,210);cx.fillText(`Level Reached: ${level}`,W/2,240);cx.fillText(`Bosses Defeated: ${Math.max(0,getBossNum()-(isBossLevel()?1:0))}`,W/2,270);
+  cx.fillStyle='#888';cx.font='9px "Press Start 2P"';
+  const j=['"Your shift has been terminated."','"Coffee machine is disappointed."','"The warranty outlived you."',
+    '"Service Center closed. Permanently."','"OTA update: Employee removed."'];
+  cx.fillText(j[Math.floor(frame/150)%j.length],W/2,330);
+  cx.fillStyle='#FFD600';cx.font='10px "Press Start 2P"';
+  if(Math.floor(frame/30)%2)cx.fillText('PRESS ENTER TO TRY AGAIN',W/2,400);
+  cx.textAlign='left';
+}
+
+// =================== WIN SCREEN ===================
+function drawWin(){
+  const g=cx.createLinearGradient(0,0,0,H);g.addColorStop(0,'#0D2137');g.addColorStop(1,'#1A3A5C');cx.fillStyle=g;cx.fillRect(0,0,W,H);
+  // Confetti
+  for(let i=0;i<50;i++){const x=(i*47+frame*(1+i%3))%W,y=(i*31+frame*2)%H;cx.fillStyle=`hsl(${(i*41+frame*3)%360},80%,60%)`;cx.fillRect(x,y,5,5)}
+  cx.textAlign='center';
+  const b=Math.sin(frame*.05)*5;
+  cx.fillStyle='#FFD600';cx.font='28px "Press Start 2P"';cx.fillText('YOU WIN!',W/2,90+b);
+  cx.fillStyle='#4CAF50';cx.font='12px "Press Start 2P"';cx.fillText('All shifts complete!',W/2,140);
+  cx.fillText('The angry customer calmed down!',W/2,165);
+  cx.fillStyle='#fff';cx.font='14px "Press Start 2P"';cx.fillText(`Final Score: ${score}`,W/2,220);
+  cx.fillStyle='#E82127';cx.font='10px "Press Start 2P"';
+  cx.fillText('"Employee of the Month"',W/2,270);cx.fillText('Award: UNLOCKED',W/2,295);
+  // Draw celebrating friends
+  const colors=['#2196F3','#4CAF50','#FF9800','#9C27B0','#E91E63'];
+  for(let i=0;i<5;i++){
+    const fx=W/2-60+i*30,fy=370;const jump=Math.sin(frame*.1+i)*10;
+    cx.fillStyle=colors[i];cx.fillRect(fx,fy+jump,16,20);cx.fillStyle='#FFD39B';cx.fillRect(fx+2,fy-10+jump,12,12);
+    cx.fillStyle='#333';cx.fillRect(fx+4,fy-6+jump,3,2);cx.fillRect(fx+9,fy-6+jump,3,2);cx.fillRect(fx+5,fy-3+jump,6,2);
+    // Arms up
+    cx.fillStyle='#FFD39B';cx.fillRect(fx-2,fy-6+jump,3,8);cx.fillRect(fx+15,fy-6+jump,3,8);
+  }
+  // Coffee cup in center
+  cx.fillStyle='#fff';cx.fillRect(W/2-8,340,16,14);cx.fillStyle='#6D4C41';cx.fillRect(W/2-6,342,12,6);
+  cx.fillStyle='#888';cx.font='8px "Press Start 2P"';
+  cx.fillText('All customers satisfied*',W/2,430);
+  cx.fillStyle='#555';cx.font='6px "Press Start 2P"';
+  cx.fillText('*Results may vary. Warranty terms apply. Coffee not included.',W/2,450);
+  if(Math.floor(frame/30)%2){cx.fillStyle='#FFD600';cx.font='10px "Press Start 2P"';cx.fillText('PRESS ENTER TO PLAY AGAIN',W/2,480)}
+  cx.textAlign='left';
+}
+
+// =================== REJOICE SCENE ===================
+function drawRejoice(){
+  // Keep drawing the level behind
+  drawSky();drawTiles();drawItems();drawEnemies();
+  if(isBossLevel())drawBoss();
+
+  // Draw coffee machine glow
+  if(!isBossLevel()){
+    const cfx=lv.coffeeX-camX,cfy=lv.coffeeY;
+    cx.fillStyle=`rgba(255,215,0,${.15+Math.sin(frame*.1)*.1})`;
+    cx.beginPath();cx.arc(cfx+16,cfy+TILE,60,0,Math.PI*2);cx.fill();
+  }
+
+  // Draw player (holding coffee cup)
+  drawPlayer();
+  // Coffee cup in player's hand
+  if(!P.dead){
+    const px=P.x-camX;
+    cx.fillStyle='#fff';cx.fillRect(px+P.w+2,P.y+12,8,10);
+    cx.fillStyle='#6D4C41';cx.fillRect(px+P.w+3,P.y+13,6,4);
+  }
+
+  // Draw friends jumping with joy!
+  for(const f of friends){
+    const jump=Math.sin(f.jumpT)*12;
+    drawFriend(f,jump);
+  }
+
+  // Celebration text
+  if(rejoiceTimer>150){
+    cx.textAlign='center';
+    cx.fillStyle=`hsl(${frame*5%360},80%,70%)`;
+    cx.font='16px "Press Start 2P"';
+    const btxt=isBossLevel()?`BOSS #${bossNum} DOWN!!!`:'COFFEE BREAK!';
+    cx.fillText(btxt,W/2,80+Math.sin(frame*.08)*5);
+    cx.textAlign='left';
+  }
+
+  // "REJOICE!" text bouncing around
+  if(rejoiceTimer>50){
+    for(let i=0;i<3;i++){
+      const rx=150+i*200+Math.sin(frame*.05+i*2)*30;
+      const ry=120+i*40+Math.cos(frame*.07+i)*20;
+      cx.fillStyle=`hsl(${(frame*8+i*120)%360},90%,65%)`;
+      cx.font='12px "Press Start 2P"';
+      cx.fillText(i===1?'HOORAY!':'REJOICE!',rx,ry);
+    }
+  }
+
+  drawParticles();
+  drawMsg();
+
+  // Prompt to continue
+  if(rejoiceTimer<=0){
+    cx.textAlign='center';cx.fillStyle='#FFD600';cx.font='10px "Press Start 2P"';
+    if(Math.floor(frame/30)%2){
+      cx.fillText('PRESS ENTER TO CONTINUE',W/2,H-30);
+    }
+    cx.textAlign='left';
+  }
+}
+
+// =================== MAIN LOOP ===================
+function loop(ts){
+  frame++;
+  cx.save();
+  if(shakeT>0){shakeT--;cx.translate((Math.random()-.5)*shakeT,(Math.random()-.5)*shakeT)}
+
+  if(state==='title')drawTitle();
+  else if(state==='gameover')drawGameOver();
+  else if(state==='rejoice'){
+    updRejoice();drawRejoice();
+  }
+  else if(state==='boss'){
+    updBoss();drawSky();drawTiles();drawEnemies();drawBoss();drawPlayer();drawParticles();drawMsg();
+    for(let i=particles.length-1;i>=0;i--){const p=particles[i];p.x+=p.vx;p.y+=p.vy;p.vy+=.12;p.life--;if(p.life<=0)particles.splice(i,1)}
+    if(msgT>0)msgT-=16;
+    updHUD();
+  }
+  else{
+    updPlayer();drawSky();drawTiles();drawItems();drawEnemies();drawPlayer();drawParticles();drawMsg();
+    for(let i=particles.length-1;i>=0;i--){const p=particles[i];p.x+=p.vx;p.y+=p.vy;p.vy+=.12;p.life--;if(p.life<=0)particles.splice(i,1)}
+    if(msgT>0)msgT-=16;
+  }
+
+  cx.restore();
+  tickMusic(ts);
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>
